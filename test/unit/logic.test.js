@@ -80,9 +80,9 @@ describe('ตรวจการตั้งค่า', () => {
 
 describe('ล็อกไม่เก็บข้อมูลลับ', () => {
   it('ลบเลขบัตรประชาชน คุกกี้ และรหัสผ่าน', () => {
-    const out = redact('id 1100801234567 / 1-1008-01234-56-7 cookie=abc123 PHPSESSID=xyz password: hunter2');
-    assert.ok(!out.includes('1100801234567'));
-    assert.ok(!out.includes('01234-56'));
+    const out = redact('id 3999999999991 / 3-9999-99999-99-1 cookie=abc123 PHPSESSID=xyz password: hunter2');
+    assert.ok(!out.includes('3999999999991'));
+    assert.ok(!out.includes('99999-99'));
     assert.ok(!out.includes('abc123'));
     assert.ok(!out.includes('xyz'));
     assert.ok(!out.includes('hunter2'));
