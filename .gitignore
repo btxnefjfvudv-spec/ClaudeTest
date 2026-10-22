@@ -1,0 +1,7 @@
+node_modules/
+data/settings.json
+logs/
+evidence/
+captures/
+.browser-profile/
+*.tmp

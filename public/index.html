@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ผู้ช่วยลงทะเบียน</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>ผู้ช่วยลงทะเบียนวิชาเลือก</h1>
+      <p class="sub">โปรแกรมช่วยเตรียมและติดตามผล ส่วนการเข้าสู่ระบบและการยืนยันขั้นสุดท้ายเป็นหน้าที่ของคุณ</p>
+    </div>
+    <div class="clock">
+      <div class="clock-label">เวลาตามเว็บโรงเรียน</div>
+      <div id="clock" class="clock-time">--:--:--</div>
+      <div id="offset" class="clock-note"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card status-card">
+      <div class="status-row">
+        <span id="statusBadge" class="badge">UNKNOWN</span>
+        <span id="statusLabel" class="status-label"></span>
+        <span id="busy" class="busy" hidden></span>
+      </div>
+      <p id="statusMessage" class="status-message"></p>
+      <div class="facts">
+        <div><span class="k">เบราว์เซอร์</span><span id="factBrowser">ปิดอยู่</span></div>
+        <div><span class="k">เข้าสู่ระบบ</span><span id="factLogin">-</span></div>
+        <div><span class="k">หน้าปัจจุบัน</span><span id="factPage">-</span></div>
+        <div><span class="k">เวลาเปิด</span><span id="factOpen">ยังไม่ตั้ง</span></div>
+        <div><span class="k">นับถอยหลัง</span><span id="countdown" class="countdown">-</span></div>
+        <div><span class="k">เฝ้ารอ</span><span id="factWatch">ไม่ได้เฝ้ารอ</span></div>
+      </div>
+      <p id="toast" class="toast" hidden></p>
+    </section>
+
+    <section class="card">
+      <h2>ขั้นตอน</h2>
+      <ol class="steps">
+        <li>
+          <button id="btnOpen" class="btn primary">1. เปิดเบราว์เซอร์</button>
+          <span class="hint">แล้วเข้าสู่ระบบด้วยตัวเองในหน้าต่างที่เปิดขึ้น</span>
+        </li>
+        <li>
+          <button id="btnCheck" class="btn">2. ตรวจสถานะตอนนี้</button>
+          <span class="hint">โหลดหน้าลงทะเบียน 1 ครั้ง แล้วอ่านสถานะวิชา</span>
+        </li>
+        <li>
+          <button id="btnWatch" class="btn">3. เริ่มเฝ้ารอเวลาเปิด</button>
+          <span class="hint">ไม่ส่งคำขอจนถึงเวลา (ยกเว้นตรวจความพร้อมตอน 10 และ 2 นาทีก่อนเปิด)</span>
+        </li>
+        <li>
+          <span class="hint">4. เมื่อระบบเปิด ตรวจรายการด้านล่าง แล้วกดยืนยัน หรือกดในเบราว์เซอร์เอง</span>
+        </li>
+        <li>
+          <button id="btnVerify" class="btn">5. ตรวจผล</button>
+          <span class="hint">เปิดหน้า "หน้าแรก" ของเว็บเพื่อดูตารางวิชาที่ลงทะเบียนแล้ว</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>แผนการลงทะเบียน</h2>
+        <button id="btnBackups" class="btn small" hidden>ใช้วิชาสำรอง</button>
+      </div>
+      <p id="planMessage" class="muted">ยังไม่ได้อ่านหน้าลงทะเบียน</p>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead><tr><th>#</th><th>วิชาที่ต้องการ</th><th>ประเภท</th><th>บนเว็บ</th><th>สถานะ</th><th>ดำเนินการ</th></tr></thead>
+          <tbody id="planBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" id="verifyCard" hidden>
+      <h2>ผลการตรวจจากเว็บไซต์</h2>
+      <p id="verifyMeta" class="muted"></p>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead><tr><th>รหัสวิชา</th><th>ชื่อวิชา</th><th>section</th></tr></thead>
+          <tbody id="verifyBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>ตั้งค่า</h2>
+      <form id="settingsForm" class="form">
+        <label>URL เว็บไซต์
+          <input id="siteUrl" type="url" required>
+        </label>
+        <label>วันและเวลาเปิดลงทะเบียน (เวลาโรงเรียน)
+          <input id="openTime" type="datetime-local" step="1">
+        </label>
+        <label>ต้องลงกี่วิชา
+          <input id="requiredCount" type="number" min="1" max="20">
+        </label>
+        <label>ตรวจซ้ำทุก (วินาที, อย่างน้อย 5)
+          <input id="pollIntervalSec" type="number" min="5" max="120">
+        </label>
+        <label>ตรวจซ้ำสูงสุด (ครั้ง)
+          <input id="maxPolls" type="number" min="1" max="360">
+        </label>
+        <label>เบราว์เซอร์
+          <select id="browserChannel">
+            <option value="auto">อัตโนมัติ (Chrome → Edge)</option>
+            <option value="chrome">Google Chrome</option>
+            <option value="msedge">Microsoft Edge</option>
+            <option value="chromium">Chromium ของ Playwright</option>
+          </select>
+        </label>
+        <label class="check"><input id="autoUseBackup" type="checkbox"> ถ้าวิชาหลักเต็ม ให้ใช้วิชาสำรองตามลำดับได้เลย (ยังต้องกดยืนยันก่อนส่ง)</label>
+        <label class="check"><input id="assistedClick" type="checkbox"> อนุญาตให้โปรแกรมกดปุ่มบนเว็บแทน หลังจากกดยืนยันที่หน้านี้</label>
+
+        <h3>วิชาที่ต้องการ <span class="muted">(บนสุด = สำคัญที่สุด)</span></h3>
+        <div class="table-wrap">
+          <table class="grid">
+            <thead><tr><th>#</th><th>รหัสวิชา</th><th>ชื่อวิชา</th><th>ลำดับบนเว็บ*</th><th>ประเภท</th><th></th></tr></thead>
+            <tbody id="coursesBody"></tbody>
+          </table>
+        </div>
+        <p class="muted small">* ใส่เฉพาะเมื่อมีรหัสวิชาเดียวกันหลายแถว</p>
+        <div class="row">
+          <button type="button" id="btnAddCourse" class="btn small">+ เพิ่มวิชา</button>
+          <button type="submit" class="btn primary">บันทึกการตั้งค่า</button>
+        </div>
+        <ul id="settingsErrors" class="errors"></ul>
+      </form>
+
+      <details id="siteCoursesBox">
+        <summary>เลือกจากรายวิชาที่อ่านได้จากเว็บ (<span id="siteCount">0</span> วิชา)</summary>
+        <div class="table-wrap">
+          <table class="grid">
+            <thead><tr><th>ลำดับ</th><th>รหัส</th><th>ชื่อวิชา</th><th>เลือก sec</th><th></th></tr></thead>
+            <tbody id="siteBody"></tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <section class="card">
+      <h2>ข้อความจากเว็บและบันทึกการทำงาน</h2>
+      <ul id="webMessages" class="web-messages"></ul>
+      <div class="row">
+        <button id="btnCapture" class="btn small">บันทึกโครงสร้างหน้านี้ (สำหรับปรับโปรแกรม)</button>
+        <button id="btnNotify" class="btn small">เปิดการแจ้งเตือน</button>
+      </div>
+      <details>
+        <summary>ส่วนที่ยังไม่ได้ยืนยันกับเว็บจริง</summary>
+        <ul id="unverified" class="muted small"></ul>
+      </details>
+      <ol id="log" class="log" reversed></ol>
+    </section>
+  </main>
+
+  <div id="dialogModal" class="modal" hidden>
+    <div class="modal-box">
+      <h2>เว็บไซต์ถามยืนยัน</h2>
+      <p id="dialogText" class="dialog-text"></p>
+      <p class="muted small">อ่านข้อความให้ดี ตอบแทนการกดในหน้าต่างของเว็บ</p>
+      <div class="row end">
+        <button id="dialogCancel" class="btn">ยกเลิก</button>
+        <button id="dialogOk" class="btn primary">ตกลง</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal" hidden>
+    <div class="modal-box">
+      <h2>ยืนยันการลงทะเบียน</h2>
+      <p id="confirmText"></p>
+      <label id="confirmSelectWrap" hidden>เลือก
+        <select id="confirmSelect"></select>
+      </label>
+      <p class="muted small">โปรแกรมจะกดบนเว็บให้ 1 ครั้ง จากนั้นต้องกด "ตรวจผล" เพื่อดูหลักฐานจากเว็บ</p>
+      <div class="row end">
+        <button id="confirmNo" class="btn">ยกเลิก</button>
+        <button id="confirmYes" class="btn primary">ยืนยัน กดให้เลย</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

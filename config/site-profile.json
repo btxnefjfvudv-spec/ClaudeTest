@@ -1,0 +1,28 @@
+{
+  "_about": "โครงสร้างหน้าเว็บ E-Enrollment ที่ตรวจจากของจริง: HTML หน้า std_register_course (บันทึกเมื่อ 22 ต.ค. 2569 ขณะระบบยังไม่เปิด) และภาพหน้าจอหน้า profile_student",
+  "_unverified": [
+    "fullTextPatterns: ยังไม่เคยเห็นหน้าเว็บตอนวิชาเต็ม คำว่า 'เต็ม' เป็นค่าตั้งต้นที่ยังไม่ได้ยืนยัน",
+    "failureTextPatterns: ยังไม่เคยเห็นข้อความแจ้งข้อผิดพลาดของเว็บจริง",
+    "registeredTable: ยืนยันจากภาพหน้าจอเท่านั้น ยังไม่ได้เห็น HTML",
+    "ช่อง 'เลือก sec' ตอนระบบเปิดแล้ว ยังไม่ทราบว่าเป็นลิงก์ ปุ่ม หรือ dropdown"
+  ],
+  "registerPath": "index.php?sop=std_register_course",
+  "profilePath": "index.php?sop=profile_student",
+  "logoutHrefContains": "sop=logout",
+  "courseTable": {
+    "headerSeq": "ลำดับ",
+    "headerCode": "รหัสวิชา",
+    "headerName": "ชื่อวิชา",
+    "headerCredit": "หน่วยกิต",
+    "headerAction": "เลือก sec"
+  },
+  "notOpenText": "ไม่ถึงเวลาเลือก",
+  "fullTextPatterns": ["เต็ม"],
+  "registeredTable": {
+    "headerCode": "รหัสวิชา",
+    "headerName": "ชื่อวิชา",
+    "headerMarker": "section",
+    "emptyText": "ไม่พบข้อมูลการลงทะเบียน"
+  },
+  "failureTextPatterns": ["ไม่สามารถ", "ผิดพลาด", "เต็ม", "ไม่ถึงเวลา", "หมดเวลา"]
+}

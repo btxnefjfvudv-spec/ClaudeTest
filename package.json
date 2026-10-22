@@ -1,0 +1,19 @@
+{
+  "name": "school-enrollment-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ผู้ช่วยลงทะเบียนวิชาเลือก สำหรับระบบ E-Enrollment (myzma68.com/rw_enrollment)",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test --test-concurrency=1 \"test/**/*.test.js\"",
+    "mock": "node test/mock-site/run.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "playwright": "1.56.1"
+  }
+}
