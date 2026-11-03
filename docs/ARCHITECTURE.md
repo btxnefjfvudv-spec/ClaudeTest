@@ -2,38 +2,58 @@
 
 ## Stack
 
-- **Phaser 3.90** — WebGL renderer, scene system, tween, particle, Web Audio; รองรับ touch หลายนิ้วด้วย `input.activePointers`
-- **TypeScript (strict)** + **Vite** — build เร็ว, deploy เป็น static ไฟล์ เล่น offline ได้
-- เสียง: สังเคราะห์ด้วย Web Audio (ไม่ต้องมีไฟล์เสียง)
+Phaser 3.90 (WebGL) · TypeScript strict · Vite · Web Audio (synth) · Service Worker (offline) · GitHub Pages.
 
-## โครงสร้าง
+## Render model
+
+- World is always **480 units tall**; width follows the screen aspect (clamped 4:3 – 1.6).
+- The canvas is sized to **device pixels** (DPR ≤ 2, height ≤ 1600 px) and every camera is zoomed by `canvas / world`, so pixel art stays blocky while text renders at native resolution (sharp Thai).
+- Art is painted at half resolution and displayed at **×2** (`S`).
+- `BaseScene.fitCamera` letterboxes if the screen changes mid-scene; scenes keep their world size for their whole life.
+
+## Code layout
 
 ```
 src/
-  main.ts                 สร้างเกม, กัน gesture ของ Safari, ปรับขนาดตามจอ
-  config.ts               ความละเอียด render, จำนวนนิ้วสูงสุด
-  core/                   types กลาง (MinigameDefinition, PlayerResult, SeatEntry...), palette, EventBus
+  main.ts                game config, Safari gesture blocking, resize
+  config.ts              render model (View, computeView)
+  core/                  shared types (MinigameDefinition, PlayerResult…), palette, EventBus
+  art/                   Painter, colour ramps, characters, classroom, stage, shared textures
+  data/                  characters (placeholders + on-device edits)
   systems/
-    input/                MultiTouchManager — แบ่งนิ้วให้ผู้เล่น
-    audio/                AudioManager — synth SFX, volume, Safari unlock
-    (Phase 1)             players, characters, animation, vfx, score
-  scenes/                 Boot, TouchTest (dev) — Phase 1: Menu, PlayerSelect, Intro, Results...
-  minigames/  (Phase 3)   1 โฟลเดอร์ต่อ 1 เกม, implement MinigameDefinition
-  data/       (Phase 2)   ผังที่นั่ง, ข้อมูลตัวละคร
+    input/               MultiTouchManager — finger → player ownership by zone
+    audio/               AudioManager — SFX presets + chiptune sequencer, Safari unlock
+    party/               Party state, scoring 10/7/5/3, tie-aware ranking, game picking
+    players/             Avatar (character sprite + shadow + marker)
+    vfx/                 particles, shake, flash, squash & stretch, pop text
+    settings.ts          per-device persistence (localStorage, failure-safe)
+  ui/                    txt(), Button (9-slice), TouchButton, DragStick
+  scenes/                Boot, Menu (living classroom), PlayerSelect, Mode, RoundIntro,
+                         Results, Final, Library, Settings, Credits, Characters, TouchTest
+  minigames/
+    BaseMinigame.ts      lifecycle for every game
+    catalog.ts           design data for all 50 games
+    registry.ts          auto-discovers games/*.ts (import.meta.glob)
+    kit/                 ArenaKit (top-down), SplitKit (per-player cameras), PanelKit (per-player panels), water
+    games/               one file per minigame
+tools/                   smoke test, art preview, icon + docs generators
 ```
+
+## Lifecycle
+
+BOOT → MAIN MENU → PLAYER SELECT → MODE SELECT → ROUND INTRO (roulette) → **MINIGAME** (INTRO card for both table sides + ready taps → COUNTDOWN → GAMEPLAY → FINISH banner) → RESULTS → next ROUND INTRO … → FINAL (winner ceremony) → MENU.
+
+`BaseMinigame` implements the standard contract from the brief (`MinigameDefinition`): `setup` (create), `onStart` (start), `tick`/`ambient` (update), pause/resume (built-in, also auto on app background), restart (`scene.restart`), cleanup (scene shutdown), `results()` (getResults).
 
 ## Multi-touch
 
-- นิ้วแต่ละนิ้ว **เป็นของผู้เล่นที่โซนแรกที่แตะ** จนกว่าจะยกนิ้ว — ลากข้ามโซนไม่แย่ง input กัน
-- โซนกำหนดเป็นสัดส่วนจอ (0..1) ใช้ได้ทุกขนาด iPad; มี preset `quadrants` (ค่าเริ่มต้น), `columns`, `halves` และกำหนดเองได้ต่อเกม
-- Event: `down`, `move`, `up`, `tap`, `swipe`, `cancel`
-- กันค้าง: touchcancel, ยกนิ้วนอกจอ, แอปไปพื้นหลัง (blur/hidden) และ failsafe ทุกเฟรม → ปล่อยนิ้วอัตโนมัติ
-- หน้าเว็บ: `touch-action: none`, block pinch / double-tap zoom / scroll / text selection / callout
+- Phaser touch input with 10 pointers; CSS `touch-action: none`, prevented `touchmove`/gesture/dblclick/contextmenu.
+- A finger belongs to the player whose zone it first touched until it lifts/cancels → no input stealing when sliding across zones.
+- Failsafes: touchcancel, release outside canvas, app blur/hidden, and a per-frame check drop stuck fingers.
+- Zones carry the seat direction (`facing`), so UI and swipe directions are rotated to each player's view.
 
-## Lifecycle (เป้าหมาย)
+## Testing
 
-BOOT → MAIN MENU → PLAYER SELECT → MODE SELECT → MINIGAME INTRO → COUNTDOWN → GAMEPLAY → GAME END → RESULTS → NEXT GAME → FINAL RESULTS
-
-## Minigame contract
-
-ดู `MinigameDefinition` ใน `src/core/types.ts` — ทุกเกมต้องคืน `PlayerResult[]` (rank + score + team) ให้ Party system คิดคะแนน 10/7/5/3
+- `tools/smoke.cjs`: every playable game, headless iPad Pro 11 emulation, random 4-finger input, time-accelerated (`?speed=4`), must reach Results without errors.
+- `?auto`, `?fast`, `?game=<id>`, `?speed=n` URL flags for automation.
+- Real-iPad checks are listed in `docs/QA_REPORT.md`.
