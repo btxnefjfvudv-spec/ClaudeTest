@@ -6,6 +6,7 @@ import { Audio } from '../systems/audio/AudioManager';
 import { Party } from '../systems/party/Party';
 import { loadSettings } from '../systems/settings';
 import { txt } from '../ui/text';
+import { keepAwake } from '../systems/wakeLock';
 import { BaseScene } from './BaseScene';
 
 export { UI_FONT } from '../ui/text';
@@ -38,6 +39,7 @@ export class BootScene extends BaseScene {
 
     const go = () => {
       Audio.unlock();
+      void keepAwake();
       Audio.sfx('power');
       if (direct) {
         Party.start('free');
