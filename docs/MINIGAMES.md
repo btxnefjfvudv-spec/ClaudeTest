@@ -52,12 +52,12 @@ Status: Planned → Prototype → In Development → Implemented → Playtested 
 | 42 | HIDE AND SEEK | ปาร์ตี้ขั้นสูง | Implemented | – |
 | 43 | KING OF THE HILL | ปาร์ตี้ขั้นสูง | Implemented | – |
 | 44 | MAGNET MADNESS | ปาร์ตี้ขั้นสูง | Implemented | – |
-| 45 | GRAVITY SWITCH | ปาร์ตี้ขั้นสูง | Planned | – |
-| 46 | FISHING FRENZY | ไวลด์การ์ด | Planned | – |
-| 47 | SNOWBALL SHOWDOWN | ไวลด์การ์ด | Planned | – |
-| 48 | ROCKET JUMP | ไวลด์การ์ด | Planned | – |
-| 49 | MINI TANK BATTLE | ไวลด์การ์ด | Planned | – |
-| 50 | FINAL CHAOS | ไวลด์การ์ด | Planned | – |
+| 45 | GRAVITY SWITCH | ปาร์ตี้ขั้นสูง | Implemented | – |
+| 46 | FISHING FRENZY | ไวลด์การ์ด | Implemented | – |
+| 47 | SNOWBALL SHOWDOWN | ไวลด์การ์ด | Implemented | – |
+| 48 | ROCKET JUMP | ไวลด์การ์ด | Implemented | – |
+| 49 | MINI TANK BATTLE | ไวลด์การ์ด | Implemented | – |
+| 50 | FINAL CHAOS | ไวลด์การ์ด | Implemented | – |
 
 ## QA checklist (per game)
 
