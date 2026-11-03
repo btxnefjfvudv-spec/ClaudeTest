@@ -10,4 +10,5 @@
 | 6 | Character editor, seating editor, wake lock | — |
 | 7 | Classroom 5/8 + 11 friends from photos, real seating chart | — |
 | 8 | All friends in white school uniform; checkpoint rule | 8e69bfa |
-| 9 | Game font → Kanit (bundled, offline) | (this commit) |
+| 9 | Game font → Kanit (bundled, offline) | 2e5d38d |
+| 10 | Batch G merged: Chaos Button, Treasure Thieves, Hide and Seek, King of the Hill, Magnet Madness (smoke PASS) | (this commit) |

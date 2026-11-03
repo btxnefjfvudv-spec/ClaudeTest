@@ -93,7 +93,7 @@ export const Vfx = {
   popText(scene: Scene, x: number, y: number, text: string, color = '#ffe066', size = 18, angle = 0): void {
     const t = scene.add
       .text(x, y, text, { fontFamily: UI_FONT, fontSize: `${size}px`, fontStyle: 'bold', color, stroke: '#1b1f3b', strokeThickness: 4 })
-      .setOrigin(0.5).setDepth(200).setResolution(View.zoom).setAngle(angle).setScale(0.4);
+      .setOrigin(0.5).setDepth(2900).setResolution(View.zoom).setAngle(angle).setScale(0.4);
     const up = angle === 180 ? 26 : -26;
     scene.tweens.add({ targets: t, scale: 1, duration: 160, ease: 'Back.easeOut' });
     scene.tweens.add({ targets: t, y: y + up, alpha: 0, delay: 380, duration: 420, ease: 'Cubic.easeIn', onComplete: () => t.destroy() });

@@ -23,7 +23,7 @@ async function runGame(browser, id) {
   let reached = '';
   let results = null;
   let touches = 0;
-  while (Date.now() - t0 < 90000) {
+  while (Date.now() - t0 < (+process.env.SMOKE_MS || 180000)) {
     // random input from all four seats (CPU seats ignore it)
     const pts = [0, 1, 2, 3].map((q, i) => ({
       x: vp.width * ((q % 2) * 0.5 + 0.08 + Math.random() * 0.34),
@@ -65,7 +65,7 @@ async function runGame(browser, id) {
   await page.close();
   const out = [];
   const queue = [...ids];
-  const workers = Array.from({ length: 4 }, async () => {
+  const workers = Array.from({ length: +process.env.SMOKE_WORKERS || 4 }, async () => {
     while (queue.length) {
       const id = queue.shift();
       const r = await runGame(browser, id);
