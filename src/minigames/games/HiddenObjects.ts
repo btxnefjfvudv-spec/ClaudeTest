@@ -325,7 +325,7 @@ export default class HiddenObjects extends BaseMinigame {
       // CPU plan for this round
       if (s.cursor) {
         const difficulty = 1 + this.spots.length * 0.02;
-        s.findAt = (0.9 + Math.random() * 1.8 + -Math.log(1 - Math.random() * 0.95) * 1.4) * difficulty / s.skill;
+        s.findAt = (0.8 + Math.random() * 1.5 + -Math.log(1 - Math.random() * 0.95) * 1.2) * difficulty / s.skill;
         s.wrongAt = Math.random() < 0.16 ? s.findAt * (0.3 + Math.random() * 0.4) : -1;
         s.goingFor = -1;
         s.wanderT = 0;
