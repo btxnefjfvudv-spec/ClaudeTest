@@ -1,0 +1,202 @@
+{
+ "teamwork-tug": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "fix-the-classroom": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "delivery-dash": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "number-rush": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "word-scramble": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "pattern-master": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "obstacle-chaos": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "floor-is-lava": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "rainbow-run": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "human-pinball": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "falling-blocks": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "tornado-trouble": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "ice-survival": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "boxing-buddies": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "bomb-tag": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "boomerang-battle": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "balloon-brawl": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "wobble-race": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "table-tennis": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "target-blast": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "mini-golf-mayhem": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "paper-plane-race": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "chaotic-kitchen": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "pizza-panic": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "hidden-objects": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "puzzle-panic": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "draw-it-fast": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "dance-off": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "silly-faces": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "balance-master": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "chaos-button": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "treasure-thieves": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "hide-and-seek": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "king-of-the-hill": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "magnet-madness": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "gravity-switch": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "fishing-frenzy": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "snowball-showdown": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "rocket-jump": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "mini-tank-battle": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "final-chaos": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "quick-draw": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "color-panic": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "button-masher": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "memory-flash": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "reaction-tiles": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "mini-basketball": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "classroom-dash": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "last-one-standing": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ },
+ "bumper-ball": {
+  "status": "Implemented",
+  "smoke": "PASS"
+ }
+}

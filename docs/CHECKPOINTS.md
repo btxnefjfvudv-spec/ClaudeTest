@@ -15,4 +15,5 @@
 | 11 | First real-iPad check by user: plays well (not detailed) | 3c1f4d0 |
 | 12 | Batch H merged: Gravity Switch, Fishing Frenzy, Snowball Showdown, Rocket Jump, Mini Tank Battle, Final Chaos (smoke 6/6 PASS) | done |
 | 13 | Batch C merged: Quick Draw, Color Panic, Button Masher, Memory Flash, Reaction Tiles, Mini Basketball (smoke 6/6 PASS) | done |
-| 14 | All 50 games merged (batches A, B, D, E, F) — full smoke run next | (this commit) |
+| 14 | All 50 games merged (batches A, B, D, E, F) — full smoke run next | done |
+| 15 | Full smoke: all 50 games PASS (headless iPad, random 4-finger input) | (this commit) |
