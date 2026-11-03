@@ -51,7 +51,7 @@ const defs: M[] = [
     blurb: 'ช่องไหนสว่างตบให้ไว หลบช่องระเบิด!', howTo: ['แตะช่องที่สว่าง +1 · ทองคำ +3', 'อย่าแตะระเบิด −3'], controls: 'แตะช่อง' },
   // E — Sports
   { id: 'mini-basketball', num: 21, name: 'MINI BASKETBALL', nameTh: 'ชู้ตบาสกลางห้อง', category: 'sports', color: 0xff9f43, duration: 45,
-    blurb: 'ปัดนิ้วชู้ตลูกบาสเข้าห่วงกลางที่เคลื่อนที่ได้', howTo: ['ปัดจากลูกบอลไปทางห่วง', 'ปัดแรง = ไกล · ห่วงไฟลุก = 3 แต้ม'], controls: 'ปัดนิ้ว' },
+    blurb: 'ปัดนิ้วชู้ตลูกบาสเข้าห่วงกลางที่เคลื่อนที่ได้', howTo: ['ลากนิ้วจากลูกบอลไปทางห่วง แล้วปล่อย', 'ลากยาว = ไกล · ห่วงไฟลุก = 3 แต้ม'], controls: 'ปัดนิ้ว' },
   { id: 'table-tennis', num: 22, name: 'TABLE TENNIS', nameTh: 'ปิงปอง 4 ทิศ', category: 'sports', color: 0x3d9bff, duration: 60,
     blurb: 'ป้องกันประตูของตัวเองด้วยไม้ปิงปอง ลูกเร็วขึ้นเรื่อยๆ', howTo: ['ลากนิ้วเลื่อนไม้ในโซนตัวเอง', 'ลูกเข้าประตูเรา = เสีย 1 แต้ม'], controls: 'ลากนิ้ว' },
   { id: 'mini-golf-mayhem', num: 23, name: 'MINI GOLF MAYHEM', nameTh: 'มินิกอล์ฟวุ่นวาย', category: 'sports', color: 0x7ee8b0, duration: 90,
