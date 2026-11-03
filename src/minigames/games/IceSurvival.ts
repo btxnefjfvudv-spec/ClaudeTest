@@ -265,7 +265,7 @@ export default class IceSurvival extends BaseMinigame {
       x: { min: -40, max: W + 40 }, y: -10, lifespan: 9000, speedY: { min: 18, max: 36 }, speedX: { min: -6, max: 14 },
       scale: { min: S * 0.5, max: S }, alpha: { start: 0.85, end: 0.4 }, frequency: 160, quantity: 1,
     });
-    snow.setDepth(3000);
+    snow.setDepth(920);
     snow.fastForward(9000);
     // occasional fish jump
     let fishT = 3;

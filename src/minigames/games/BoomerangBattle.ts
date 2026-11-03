@@ -88,8 +88,8 @@ export default class BoomerangBattle extends BaseMinigame {
         boomShadow: this.add.image(b.x, b.y, 'shadow').setScale(S * 0.45).setAlpha(0.25).setVisible(false),
         trailT: 0,
         arrow: this.add.image(b.x, b.y, `${ID}-arrow-${b.p}`).setScale(S).setAlpha(0.85),
-        hearts: [0, 1, 2].map(() => this.add.image(b.x, b.y, `${ID}-heart`).setScale(S).setDepth(3001)),
-        chip: this.add.image(b.x, b.y, playerMarkerKey(this, b.p)).setScale(S * 0.8).setDepth(3002).setAngle(this.angleFor(b.p)),
+        hearts: [0, 1, 2].map(() => this.add.image(b.x, b.y, `${ID}-heart`).setScale(S).setDepth(930)),
+        chip: this.add.image(b.x, b.y, playerMarkerKey(this, b.p)).setScale(S * 0.8).setDepth(931).setAngle(this.angleFor(b.p)),
         out: false,
         skill: 0.5 + Math.random() * 0.45, think: Math.random() * 0.3, wait: 0.6 + Math.random() * 0.8, strafe: Math.random() < 0.5 ? 1 : -1,
         dodge: 0, dodgeX: 0, dodgeY: 0,
@@ -248,7 +248,7 @@ export default class BoomerangBattle extends BaseMinigame {
     const W = this.vw, H = this.vh;
     // tumbleweeds rolling across
     for (let i = 0; i < 2; i++) {
-      const tw = this.add.image(-40, 0, `${ID}-tumble`, 0).setScale(S).setDepth(2900);
+      const tw = this.add.image(-40, 0, `${ID}-tumble`, 0).setScale(S).setDepth(900);
       const sh = this.add.image(-40, 0, 'shadow').setScale(S * 0.7).setAlpha(0.2).setDepth(-1900);
       let x = -40 - i * 400, t = 0;
       let y0 = 100 + i * 220;

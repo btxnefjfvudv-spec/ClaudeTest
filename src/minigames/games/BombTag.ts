@@ -319,7 +319,7 @@ export default class BombTag extends BaseMinigame {
     }
     // butterflies
     for (let i = 0; i < 4; i++) {
-      const f = this.add.sprite(0, 0, `${ID}-fly`, 0).setScale(S).setDepth(3000);
+      const f = this.add.sprite(0, 0, `${ID}-fly`, 0).setScale(S).setDepth(920);
       f.setTint([0xffffff, 0xffb3bd, 0xa8d3ff, 0xffe9a8][i]);
       let t = Math.random() * 100;
       const ox = this.vw * (0.15 + Math.random() * 0.7), oy = this.vh * (0.15 + Math.random() * 0.7);

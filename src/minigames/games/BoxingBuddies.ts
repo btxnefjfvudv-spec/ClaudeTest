@@ -101,10 +101,10 @@ export default class BoxingBuddies extends BaseMinigame {
       b.avatar.marker?.setVisible(false);
       const fa = Math.atan2(R.centerY - b.y, R.centerX - b.x);
       const gloves = [0, 1].map(() => this.add.image(b.x, b.y, `${ID}-glove-${p}`).setScale(S));
-      const barBg = this.add.image(b.x, b.y, `${ID}-bar`).setScale(S).setDepth(3000);
-      const bar = this.add.rectangle(b.x, b.y, 34, 4, PLAYER_COLORS[p].main).setOrigin(0, 0.5).setDepth(3001);
-      const guardBar = this.add.rectangle(b.x, b.y, 34, 2, 0x9fe3ff).setOrigin(0, 0.5).setDepth(3001);
-      const chip = this.add.image(b.x, b.y, playerMarkerKey(this, p)).setScale(S * 0.8).setDepth(3002).setAngle(this.angleFor(p));
+      const barBg = this.add.image(b.x, b.y, `${ID}-bar`).setScale(S).setDepth(930);
+      const bar = this.add.rectangle(b.x, b.y, 34, 4, PLAYER_COLORS[p].main).setOrigin(0, 0.5).setDepth(931);
+      const guardBar = this.add.rectangle(b.x, b.y, 34, 2, 0x9fe3ff).setOrigin(0, 0.5).setDepth(931);
+      const chip = this.add.image(b.x, b.y, playerMarkerKey(this, p)).setScale(S * 0.8).setDepth(932).setAngle(this.angleFor(p));
       const bx: Boxer = {
         b, fa, hp: MAX_HP, guard: 100, blocking: false, blockT: 0, punchT: -1, hitDone: false, side: 1, combo: 0, comboTarget: -1, comboT: 0,
         guardBroken: 0, gloves, barBg, bar, guardBar, chip, ko: false,
