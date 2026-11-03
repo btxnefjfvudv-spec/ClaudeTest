@@ -252,7 +252,7 @@ export default class RainbowRun extends BaseMinigame {
       const c = this.add.container(bx, by).setDepth(940).setAngle(deg);
       const w = 250, h = 58;
       const bg = this.add.nineslice(0, 0, 'ui-panel-dark', undefined, w / S, h / S, 6, 6, 6, 6).setScale(S).setAlpha(0.95);
-      const swatch = this.add.image(-w / 2 + 34, -2, 'rainbow-run-tile-0').setScale(S * 1.05);
+      const swatch = this.add.image(-w / 2 + 32, -1, 'rainbow-run-tile-0').setScale(S * 0.85);
       const word = txt(this, 16, -10, '', { size: 24, color: '#ffffff', strokeWidth: 6 });
       const en = txt(this, 16, 13, '', { size: 11, color: '#c7c9d6', strokeWidth: 3 });
       const barW = w - 80;

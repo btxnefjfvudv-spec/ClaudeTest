@@ -304,7 +304,7 @@ export default class ObstacleChaos extends BaseMinigame {
       const shadow = this.add.image(px + 6, py + 12, 'obstacle-chaos-hammer-shadow').setOrigin(0, 0.5).setScale(S).setAlpha(0.22).setDepth(-95);
       const arm = this.add.image(px, py - 10, 'obstacle-chaos-hammer').setOrigin(0, 0.5).setScale(S).setDepth(600);
       const post = this.add.image(px, py - 10, 'obstacle-chaos-post').setScale(S).setDepth(601);
-      this.hammers.push({ px, py, a: side < 0 ? 0 : Math.PI, w: side < 0 ? 2.1 : -2.1, arm, post, shadow });
+      this.hammers.push({ px, py, a: side < 0 ? 0 : Math.PI / 2, w: side < 0 ? 2.1 : -1.75, arm, post, shadow });
     }
     for (const side of [-1, 1]) {
       const x = this.cx, y = this.cy + side * 122;
