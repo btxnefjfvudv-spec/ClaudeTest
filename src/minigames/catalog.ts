@@ -62,7 +62,7 @@ const defs: M[] = [
     blurb: 'แตะให้เครื่องบินลอย ลอดช่องหน้าต่างให้ไกลที่สุด', howTo: ['แตะ = เชิด · ไม่แตะ = ร่อนลง · ดิ่ง = เร็วขึ้น', 'ลอดช่อง เก็บดาว = บูสต์ · ชน = ช้าลง · ไกลสุดชนะ'], controls: 'แตะที่ไหนก็ได้ในโซน' },
   // F — Cooking & Coop
   { id: 'chaotic-kitchen', num: 26, name: 'CHAOTIC KITCHEN', nameTh: 'ครัวป่วน', category: 'cooking-coop', color: 0xff9f43, duration: 60,
-    blurb: 'ย่างหมูปิ้งให้สุกพอดี กลับด้านให้ทัน อย่าให้ไหม้!', howTo: ['แตะไม้เสียบเพื่อวางบนเตา / กลับด้าน', 'สุกพอดีทั้งสองด้าน แตะส่งลูกค้า'], controls: 'แตะ' },
+    blurb: 'ย่างหมูปิ้งให้สุกพอดี กลับด้านให้ทัน อย่าให้ไหม้!', howTo: ['แตะช่องว่าง = วางไม้ · แตะไม้ = กลับด้าน (ดูแถบสีใต้ไม้)', 'สีทองทั้ง 2 ด้าน ปัดขึ้น = ส่งลูกค้า · ไหม้ ปัดลง = ทิ้ง'], controls: 'แตะ + ปัดขึ้น/ลง' },
   { id: 'pizza-panic', num: 27, name: 'PIZZA PANIC', nameTh: 'พิซซ่าตามสั่ง', category: 'cooking-coop', color: 0xffc93d, duration: 60,
     blurb: 'ลากท็อปปิ้งใส่พิซซ่าให้ตรงออร์เดอร์เป๊ะๆ', howTo: ['ลากท็อปปิ้งไปวางบนแป้ง', 'ครบตามออร์เดอร์แล้วกดส่ง'], controls: 'ลาก-วาง' },
   { id: 'delivery-dash', num: 28, name: 'DELIVERY DASH', nameTh: 'ส่งของด่วน', category: 'cooking-coop', color: 0x8455d6, duration: 60,
