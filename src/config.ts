@@ -10,6 +10,8 @@ export const WORLD_H = 480;
 export const MIN_ASPECT = 4 / 3;
 export const MAX_ASPECT = 1.6;
 export const MAX_DPR = 2;
+/** Cap on canvas height in device pixels (fill-rate safety on 12.9" iPads). */
+export const MAX_CANVAS_H = 1600;
 
 /** Fingers tracked at once: 4 players x 2 fingers + spare. */
 export const MAX_POINTERS = 10;
@@ -28,7 +30,7 @@ export function computeView(cssW: number, cssH: number, dpr: number): void {
   const aspect = Math.min(MAX_ASPECT, Math.max(MIN_ASPECT, cssW / Math.max(1, cssH)));
   const boxH = Math.min(cssH, cssW / aspect);
   const d = Math.min(MAX_DPR, Math.max(1, dpr));
-  View.canvasH = Math.max(WORLD_H, Math.round(boxH * d));
+  View.canvasH = Math.min(MAX_CANVAS_H, Math.max(WORLD_H, Math.round(boxH * d)));
   View.canvasW = Math.round(View.canvasH * aspect);
   View.zoom = View.canvasH / WORLD_H;
   View.height = WORLD_H;

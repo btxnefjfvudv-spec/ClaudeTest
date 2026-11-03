@@ -6,3 +6,4 @@ dist/
 # Reference photos of real classmates stay local: the repo is public.
 reference/photos/*
 !reference/photos/.gitkeep
+.claude/

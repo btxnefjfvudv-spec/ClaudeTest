@@ -10,6 +10,8 @@
     <meta name="theme-color" content="#1e1f26" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icon-180.png" />
+    <link rel="icon" href="./icon-180.png" />
     <title>CLASSROOM 5/8 PARTY</title>
     <style>
       html, body {
@@ -60,5 +62,10 @@
     <div id="game"></div>
     <div id="rotate">หมุน iPad เป็นแนวนอน<br />Rotate to landscape</div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
+        window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+      }
+    </script>
   </body>
 </html>

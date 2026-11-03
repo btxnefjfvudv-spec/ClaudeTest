@@ -95,6 +95,10 @@ export abstract class BaseMinigame extends BaseScene {
     this.showIntro();
     Audio.playMusic(this.meta.music ?? 'game');
     this.input.keyboard?.on('keydown-P', () => this.togglePause());
+    // Auto-pause when the iPad is locked / app switched.
+    const onHidden = () => { if (document.visibilityState === 'hidden' && !this.paused && this.state === 'play') this.togglePause(); };
+    document.addEventListener('visibilitychange', onHidden);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => document.removeEventListener('visibilitychange', onHidden));
   }
 
   // ───────────────────────────── HUD ─────────────────────────────
