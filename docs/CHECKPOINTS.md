@@ -19,4 +19,5 @@
 | 15 | Full smoke: all 50 games PASS (headless iPad, random 4-finger input) | done |
 | 16 | Framework cleanup: HUD above markers, auto shutdown hook, 350 ms taps, shadow layering fix, dev-guide lessons | done |
 | 17 | QA: 50-game visual review, 5-round party flow PASS, docs/roadmap/QA report updated | 5a1fbd0 |
-| 18 | Screen dividers (dark cross + player-colour frames) in all 23 split-screen / panel games | (this commit) |
+| 18 | Screen dividers (dark cross + player-colour frames) in all 23 split-screen / panel games | 53c0216 |
+| 19 | Downloadable single-file offline build (npm run build:offline) | (this commit) |

@@ -7,7 +7,8 @@
     "dev": "vite --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:offline": "vite build -c vite.offline.config.ts && node tools/singlefile.cjs"
   },
   "dependencies": {
     "@fontsource/kanit": "^5.3.0",

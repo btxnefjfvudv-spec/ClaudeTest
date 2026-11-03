@@ -7,3 +7,5 @@ dist/
 reference/photos/*
 !reference/photos/.gitkeep
 .claude/
+release/
+dist-offline/
