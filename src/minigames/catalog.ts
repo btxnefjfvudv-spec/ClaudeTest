@@ -97,7 +97,7 @@ const defs: M[] = [
   { id: 'treasure-thieves', num: 41, name: 'TREASURE THIEVES', nameTh: 'โจรขโมยเหรียญ', category: 'advanced-party', color: 0xffc93d, duration: 60,
     blurb: 'เก็บเหรียญไปฝากตู้เซฟ ชนเพื่อนให้เหรียญร่วง', howTo: ['ลากนิ้วเดินเก็บเหรียญ', 'กลับมุมตัวเองเพื่อฝาก · ชนเพื่อน = เหรียญร่วง'], controls: 'ลากนิ้ว + ปุ่มพุ่ง' },
   { id: 'hide-and-seek', num: 42, name: 'HIDE AND SEEK', nameTh: 'ซ่อนแอบในความมืด', category: 'advanced-party', color: 0x2b3263, duration: 60,
-    blurb: 'ผลัดกันถือไฟฉายหาเพื่อนในห้องมืด', howTo: ['คนถือไฟฉาย: ส่องโดนเพื่อน = แต้ม', 'คนซ่อน: หลบแสง · รอดได้แต้ม'], controls: 'ลากนิ้ว = เดิน' },
+    blurb: 'ผลัดกันถือไฟฉายหาเพื่อนในห้องมืด', howTo: ['ไฟฉายสลับคนถือทุก 15 วิ · ส่องโดนเพื่อน = +5', 'คนซ่อน: อยู่ในมืดได้แต้ม · ใกล้คนหา x2', 'มุดใต้โต๊ะซ่อนได้ แต่อยู่นานโต๊ะจะสั่น!'], controls: 'ลากนิ้ว = เดิน (ไฟฉายหันตามทางเดิน)' },
   { id: 'king-of-the-hill', num: 43, name: 'KING OF THE HILL', nameTh: 'ราชาแห่งเนิน', category: 'advanced-party', color: 0xffe066, duration: 60,
     blurb: 'ยืนในวงที่เคลื่อนที่ให้นานที่สุด ผลักคนอื่นออกไป', howTo: ['อยู่ในวงคนเดียว = ได้แต้ม', 'พุ่งชนเพื่อนให้กระเด็นออกจากวง'], controls: 'ลากนิ้ว + ปุ่มพุ่ง' },
   { id: 'magnet-madness', num: 44, name: 'MAGNET MADNESS', nameTh: 'แม่เหล็กป่วน', category: 'advanced-party', color: 0xff5a6e, duration: 60,
