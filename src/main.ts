@@ -17,7 +17,7 @@ const initial = virtualSize(window.innerWidth, window.innerHeight);
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  backgroundColor: PALETTE.deepNavy,
+  backgroundColor: PALETTE.table,
   pixelArt: true,
   roundPixels: true,
   width: initial.width,

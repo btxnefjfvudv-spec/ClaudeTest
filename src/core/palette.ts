@@ -11,6 +11,8 @@ export const PALETTE = {
   orange: 0xff9f43,
   lavender: 0xb8a6ff,
   purple: 0x8455d6,
+  /** Neutral dark used under player colours so no hue gets shifted. */
+  table: 0x1e1f26,
 } as const;
 
 /** Player colours: picked to stay distinct from each other and for colour-blind players. */
@@ -22,3 +24,10 @@ export const PLAYER_COLORS = [
 ] as const;
 
 export const toCss = (c: number): string => `#${c.toString(16).padStart(6, '0')}`;
+
+/** Solid blend of two colours (t = 0 → a, 1 → b). Use instead of alpha over a tinted background. */
+export function mix(a: number, b: number, t: number): number {
+  const ch = (c: number, s: number) => (c >> s) & 0xff;
+  const m = (s: number) => Math.round(ch(a, s) + (ch(b, s) - ch(a, s)) * t) << s;
+  return m(16) | m(8) | m(0);
+}

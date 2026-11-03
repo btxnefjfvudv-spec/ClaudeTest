@@ -8,31 +8,37 @@ export interface TouchZone {
   y: number;
   w: number;
   h: number;
+  /**
+   * Which way the player sits, in degrees: the rotation their UI needs to read
+   * upright. 0 = bottom edge, 180 = top edge (across the table), 90 = left, 270 = right.
+   */
+  facing: 0 | 90 | 180 | 270;
 }
 
 export type ZoneLayout = 'quadrants' | 'columns' | 'halves';
 
 /** Default layouts. Minigames can pass their own zones instead. */
 export const ZONE_LAYOUTS: Record<ZoneLayout, TouchZone[]> = {
-  // P1 top-left, P2 top-right, P3 bottom-left, P4 bottom-right.
+  // Players sit around the iPad: P1, P2 across the table (top edge), P3, P4 on the near side.
   quadrants: [
-    { player: 0, x: 0, y: 0, w: 0.5, h: 0.5 },
-    { player: 1, x: 0.5, y: 0, w: 0.5, h: 0.5 },
-    { player: 2, x: 0, y: 0.5, w: 0.5, h: 0.5 },
-    { player: 3, x: 0.5, y: 0.5, w: 0.5, h: 0.5 },
+    { player: 0, x: 0, y: 0, w: 0.5, h: 0.5, facing: 180 },
+    { player: 1, x: 0.5, y: 0, w: 0.5, h: 0.5, facing: 180 },
+    { player: 2, x: 0, y: 0.5, w: 0.5, h: 0.5, facing: 0 },
+    { player: 3, x: 0.5, y: 0.5, w: 0.5, h: 0.5, facing: 0 },
   ],
+  // Everyone on one side of the iPad.
   columns: [
-    { player: 0, x: 0, y: 0, w: 0.25, h: 1 },
-    { player: 1, x: 0.25, y: 0, w: 0.25, h: 1 },
-    { player: 2, x: 0.5, y: 0, w: 0.25, h: 1 },
-    { player: 3, x: 0.75, y: 0, w: 0.25, h: 1 },
+    { player: 0, x: 0, y: 0, w: 0.25, h: 1, facing: 0 },
+    { player: 1, x: 0.25, y: 0, w: 0.25, h: 1, facing: 0 },
+    { player: 2, x: 0.5, y: 0, w: 0.25, h: 1, facing: 0 },
+    { player: 3, x: 0.75, y: 0, w: 0.25, h: 1, facing: 0 },
   ],
-  // Two teams: P1+P3 left, P2+P4 right; each half split top/bottom.
+  // Two teams: P1+P3 left half, P2+P4 right half.
   halves: [
-    { player: 0, x: 0, y: 0, w: 0.5, h: 0.5 },
-    { player: 2, x: 0, y: 0.5, w: 0.5, h: 0.5 },
-    { player: 1, x: 0.5, y: 0, w: 0.5, h: 0.5 },
-    { player: 3, x: 0.5, y: 0.5, w: 0.5, h: 0.5 },
+    { player: 0, x: 0, y: 0, w: 0.5, h: 0.5, facing: 180 },
+    { player: 2, x: 0, y: 0.5, w: 0.5, h: 0.5, facing: 0 },
+    { player: 1, x: 0.5, y: 0, w: 0.5, h: 0.5, facing: 180 },
+    { player: 3, x: 0.5, y: 0.5, w: 0.5, h: 0.5, facing: 0 },
   ],
 };
 
@@ -47,10 +53,25 @@ export interface TrackedTouch {
 }
 
 export interface SwipeInfo {
+  /** Screen-space movement. */
   dx: number;
   dy: number;
+  /** Movement as the player sees it from their seat (up = away from them). */
+  localDx: number;
+  localDy: number;
+  /** Angle of the local movement. */
   angle: number;
   speed: number;
+}
+
+/** Rotate a screen-space vector into the frame of a player sitting at `facing`. */
+export function toLocal(facing: number, dx: number, dy: number): { x: number; y: number } {
+  switch (facing) {
+    case 180: return { x: -dx, y: -dy };
+    case 90: return { x: dy, y: -dx };
+    case 270: return { x: -dy, y: dx };
+    default: return { x: dx, y: dy };
+  }
 }
 
 const TAP_MAX_MS = 250;
@@ -102,14 +123,19 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
     return new Phaser.Geom.Rectangle(zone.x * width, zone.y * height, zone.w * width, zone.h * height);
   }
 
-  playerAt(x: number, y: number): PlayerIndex | undefined {
+  zoneAt(x: number, y: number): TouchZone | undefined {
     const { width, height } = this.scene.scale.gameSize;
     const nx = x / width;
     const ny = y / height;
-    for (const z of this.zones) {
-      if (nx >= z.x && nx < z.x + z.w && ny >= z.y && ny < z.y + z.h) return z.player;
-    }
-    return undefined;
+    return this.zones.find((z) => nx >= z.x && nx < z.x + z.w && ny >= z.y && ny < z.y + z.h);
+  }
+
+  playerAt(x: number, y: number): PlayerIndex | undefined {
+    return this.zoneAt(x, y)?.player;
+  }
+
+  zoneOf(player: PlayerIndex): TouchZone | undefined {
+    return this.zones.find((z) => z.player === player);
   }
 
   /** Active fingers for one player, oldest first. */
@@ -184,7 +210,15 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
     if (ms <= TAP_MAX_MS && dist <= TAP_MAX_MOVE * unit) {
       this.emit('tap', t);
     } else if (dist >= SWIPE_MIN_MOVE * unit) {
-      const swipe: SwipeInfo = { dx, dy, angle: Math.atan2(dy, dx), speed: dist / ms };
+      const local = toLocal(this.zoneOf(t.player)?.facing ?? 0, dx, dy);
+      const swipe: SwipeInfo = {
+        dx,
+        dy,
+        localDx: local.x,
+        localDy: local.y,
+        angle: Math.atan2(local.y, local.x),
+        speed: dist / ms,
+      };
       this.emit('swipe', t, swipe);
     }
   }
