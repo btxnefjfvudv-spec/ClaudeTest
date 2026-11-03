@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ศึกสี่มุม">
+<meta name="theme-color" content="#1c1512">
+<title>ศึกสี่มุม</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=IBM+Plex+Sans+Thai+Looped:wght@400;500;600&display=swap">
+<style>
+/* Layout: the iPad lies flat like a game table. Four player mats in a 2x2 grid, the far pair turned 180deg to face players across the table, a round hub where the mats meet. */
+:root{
+  --table:#1c1512; --table-2:#2a1f19;
+  --ink:#f7efe4; --ink-dim:#c9b9a6; --ink-dark:#1b120c;
+  --p1:#ef5a3c; --p2:#f2b230; --p3:#3d8be2; --p4:#2fae78;
+  --bad:#ff6b5b;
+  --c-red:#ff5747; --c-yellow:#ffd13b; --c-blue:#46a6ff; --c-green:#39d38b;
+  --f-display:"Mitr","Sukhumvit Set","Thonburi",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai Looped","Sukhumvit Set","Thonburi",system-ui,sans-serif;
+  --u:1cqmin;
+  color-scheme:dark;
+}
+@supports not (width:1cqmin){ :root{ --u:.45vmin } }
+
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{
+  margin:0;background:var(--table);color:var(--ink);font-family:var(--f-body);
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+  -webkit-tap-highlight-color:transparent;touch-action:none;
+}
+button{font:inherit;color:inherit}
+
+#app{
+  position:fixed;inset:0;
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));
+  background:
+    radial-gradient(120% 85% at 50% 50%, transparent 45%, rgba(0,0,0,.45)),
+    repeating-linear-gradient(97deg, rgba(255,255,255,.02) 0 2px, transparent 2px 11px),
+    linear-gradient(180deg, var(--table-2), var(--table));
+}
+.board{
+  position:relative;height:100%;display:grid;
+  grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+  grid-template-areas:"p4 p3" "p1 p2";gap:clamp(8px,1.4vmin,14px);
+}
+.zone{position:relative;min-width:0;min-height:0}
+.zone[data-p="0"]{grid-area:p1;--pc:var(--p1)}
+.zone[data-p="1"]{grid-area:p2;--pc:var(--p2)}
+.zone[data-p="2"]{grid-area:p3;--pc:var(--p3)}
+.zone[data-p="3"]{grid-area:p4;--pc:var(--p4)}
+
+.mat{
+  position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  container-type:size;
+  border-radius:clamp(14px,2.4vmin,26px);border:3px solid var(--pc);
+  background:#171110;background:color-mix(in oklab, var(--pc) 12%, #120d0b);
+  transition:background-color .12s, opacity .3s, filter .3s;
+}
+.zone.far .mat{transform:rotate(180deg)}
+.mat::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(110% 70% at 50% 108%, color-mix(in oklab, var(--pc) 30%, transparent), transparent 65%);
+}
+.mat.off{opacity:.3;filter:saturate(.25)}
+.mat.dim{background:#0d0908}
+.mat.dim::before{opacity:.25}
+.mat.go{background:var(--pc)}
+.mat.go::before{opacity:0}
+.mat.go .stage{color:var(--ink-dark)}
+.mat.early{background:repeating-linear-gradient(45deg,#3d1612 0 14px,#2a0f0c 14px 28px)}
+.mat.win{animation:glow 1.6s ease-in-out infinite}
+
+.stage{
+  position:relative;z-index:1;flex:1;min-height:0;display:grid;place-items:center;
+  padding:calc(var(--u)*3.5) calc(var(--u)*5);text-align:center;
+}
+.plate{
+  position:relative;z-index:1;display:flex;align-items:center;gap:calc(var(--u)*2.4);
+  padding:calc(var(--u)*1.8) calc(var(--u)*3.6);background:var(--pc);color:var(--ink-dark);
+  font-family:var(--f-display);line-height:1.1;
+}
+.token{
+  width:max(26px,calc(var(--u)*7.5));height:max(26px,calc(var(--u)*7.5));flex:none;border-radius:50%;
+  background:var(--ink-dark);color:var(--pc);display:grid;place-items:center;
+  font-weight:600;font-size:max(14px,calc(var(--u)*4.4));
+}
+.pname{font-size:max(14px,calc(var(--u)*4.4));font-weight:500;white-space:nowrap}
+.pcolor{font-size:max(12px,calc(var(--u)*3.4));opacity:.7;white-space:nowrap}
+.score{margin-left:auto;font-size:max(12px,calc(var(--u)*3.6));white-space:nowrap;font-variant-numeric:tabular-nums}
+.score b{font-size:max(18px,calc(var(--u)*6.4));font-weight:600;margin-right:.15em}
+
+/* type */
+.stack{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2.4);min-width:0;max-width:100%}
+.stack.wide{width:100%}
+.eyebrow{margin:0;font-family:var(--f-display);font-size:max(12px,calc(var(--u)*3.6));letter-spacing:.06em;color:var(--ink-dim)}
+.h{margin:0;font-family:var(--f-display);font-weight:600;font-size:max(22px,calc(var(--u)*10));line-height:1.1;text-wrap:balance;color:var(--ink)}
+.h.dim{color:var(--ink-dim);font-weight:400}
+.p{margin:0;font-size:max(13px,calc(var(--u)*4.2));line-height:1.55;color:var(--ink-dim);max-width:34ch;text-wrap:balance}
+.big{font-family:var(--f-display);font-weight:600;font-size:max(40px,calc(var(--u)*24));line-height:1;font-variant-numeric:tabular-nums}
+.big.sm{font-size:max(32px,calc(var(--u)*17))}
+.mat.go .eyebrow,.mat.go .p,.mat.go .h{color:var(--ink-dark)}
+.mat.early .big{color:var(--bad)}
+
+/* lobby */
+.tapring{
+  width:max(70px,calc(var(--u)*24));aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+  border:max(3px,calc(var(--u)*.8)) solid var(--pc);background:color-mix(in oklab, var(--pc) 18%, transparent);
+  font-family:var(--f-display);font-size:max(18px,calc(var(--u)*6.5));color:var(--pc);
+  animation:ripple 1.8s ease-out infinite;
+}
+.check{width:max(56px,calc(var(--u)*18));height:auto}
+.check circle{fill:var(--pc)}
+.check path{fill:none;stroke:var(--ink-dark);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.chip{
+  border:2px solid rgba(247,239,228,.28);background:transparent;border-radius:999px;
+  padding:calc(var(--u)*1.2) calc(var(--u)*4);font-size:max(12px,calc(var(--u)*3.4));color:var(--ink-dim);cursor:pointer;
+}
+.pill{
+  font-family:var(--f-display);font-weight:500;font-size:max(15px,calc(var(--u)*4.8));
+  padding:calc(var(--u)*1.8) calc(var(--u)*6);border-radius:999px;background:var(--pc);color:var(--ink-dark);
+  border:2px solid var(--pc);animation:breathe 1.6s ease-in-out infinite;
+}
+.pill.is-ready{background:transparent;color:var(--pc);animation:none}
+.count{font-family:var(--f-display);font-weight:600;font-size:max(64px,calc(var(--u)*42));line-height:1;color:var(--pc);animation:pop .45s ease-out}
+
+/* shared HUD */
+.hud{display:flex;align-items:center;gap:calc(var(--u)*3);width:100%}
+.hud .sc{font-family:var(--f-display);font-weight:600;font-size:max(20px,calc(var(--u)*7.5));min-width:2.2ch;text-align:left;font-variant-numeric:tabular-nums}
+.tbar{flex:1;height:max(5px,calc(var(--u)*1.6));border-radius:99px;background:rgba(247,239,228,.12);overflow:hidden}
+.tbar i{display:block;height:100%;background:var(--pc);transform-origin:left center}
+
+/* mash */
+.mash{position:absolute;inset:0;display:grid;place-items:center}
+.mash .tbar{position:absolute;left:calc(var(--u)*6);right:calc(var(--u)*6);top:calc(var(--u)*4)}
+.balloon{
+  width:calc(var(--u)*64);aspect-ratio:1;max-width:90%;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, color-mix(in oklab, var(--pc) 45%, #fff), var(--pc) 45%, color-mix(in oklab, var(--pc) 65%, #000));
+  transform:scale(var(--s,.28));transition:transform .09s ease-out;
+}
+.mash .num{position:absolute;font-family:var(--f-display);font-weight:600;font-size:max(40px,calc(var(--u)*20));color:var(--ink);text-shadow:0 2px 12px rgba(0,0,0,.45);font-variant-numeric:tabular-nums}
+
+/* stroop */
+.stroop{width:100%;height:100%;display:grid;grid-template-rows:auto 1fr auto;align-items:center;justify-items:center;gap:calc(var(--u)*2)}
+.word{font-family:var(--f-display);font-weight:600;font-size:max(40px,calc(var(--u)*17));line-height:1}
+.word.pop{animation:pop .22s ease-out}
+.pads{display:flex;justify-content:center;gap:calc(var(--u)*4)}
+.pad{
+  width:max(48px,calc(var(--u)*16));aspect-ratio:1;border-radius:50%;border:0;padding:0;cursor:pointer;
+  background:var(--ink-c);box-shadow:inset 0 calc(var(--u)*-1) 0 rgba(0,0,0,.28), 0 0 0 calc(var(--u)*.6) rgba(247,239,228,.08);
+}
+.pad:active{transform:scale(.92)}
+.stroop.lock .word{opacity:.3;animation:shake .35s}
+
+/* stop */
+.clock{font-family:var(--f-display);font-weight:600;font-size:max(48px,calc(var(--u)*26));line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.clock.hidden{color:var(--ink-dim)}
+.clock.stopped{color:var(--pc);font-size:max(36px,calc(var(--u)*16))}
+
+/* stars */
+.stars{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*2)}
+.field{display:grid;grid-template-columns:repeat(3,auto);gap:calc(var(--u)*2.8);margin:auto}
+.field.shake{animation:shake .35s}
+.hole{
+  position:relative;width:calc(var(--u)*18);height:calc(var(--u)*18);min-width:44px;min-height:44px;border-radius:50%;
+  display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 38%, rgba(0,0,0,.6), rgba(0,0,0,.28) 72%);
+  box-shadow:inset 0 calc(var(--u)*.8) calc(var(--u)*1.6) rgba(0,0,0,.65), 0 1px 0 rgba(255,255,255,.07);
+}
+.hole::after{content:"";width:80%;height:80%;transform:scale(0);transition:transform .12s ease-out}
+.hole.on::after{transform:scale(1)}
+.hole.star::after{background:var(--c-yellow);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}
+.hole.bomb::after{border-radius:50%;width:68%;height:68%;background:radial-gradient(circle at 35% 32%, #77706a, #1a1716 62%);box-shadow:0 0 0 calc(var(--u)*.7) var(--bad)}
+.float{position:absolute;left:50%;top:0;translate:-50% 0;pointer-events:none;font-family:var(--f-display);font-weight:600;font-size:max(18px,calc(var(--u)*6));color:var(--c-yellow);animation:floatup .7s ease-out forwards}
+.float.bad{color:var(--bad)}
+
+/* results */
+.res{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:calc(var(--u)*3) calc(var(--u)*6);width:100%}
+.res-main{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*1.2)}
+.place{font-family:var(--f-display);font-weight:600;font-size:max(28px,calc(var(--u)*12));line-height:1.05;color:var(--pc)}
+.stat{margin:0;font-family:var(--f-display);font-size:max(16px,calc(var(--u)*5.6));font-variant-numeric:tabular-nums}
+.gain{font-family:var(--f-display);font-weight:500;font-size:max(13px,calc(var(--u)*4));padding:.2em .9em;border-radius:99px;background:var(--pc);color:var(--ink-dark)}
+.crown{width:max(48px,calc(var(--u)*15));height:auto;fill:var(--p2);animation:pop .5s ease-out}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:calc(var(--u)*1);min-width:min(100%,max(200px,calc(var(--u)*58)))}
+.list li{
+  display:grid;grid-template-columns:auto auto 1fr auto;align-items:center;gap:calc(var(--u)*2);
+  padding:calc(var(--u)*1.1) calc(var(--u)*2.6);border-radius:calc(var(--u)*1.8);
+  font-size:max(12px,calc(var(--u)*3.7));background:rgba(247,239,228,.05);text-align:left;
+}
+.list li.me{background:color-mix(in oklab, var(--pc) 24%, transparent);box-shadow:inset 0 0 0 2px var(--pc)}
+.list .rk{font-family:var(--f-display);color:var(--ink-dim);font-variant-numeric:tabular-nums}
+.list i{width:max(9px,calc(var(--u)*2.6));aspect-ratio:1;border-radius:50%;background:var(--qc)}
+.list b{font-family:var(--f-display);font-weight:500;font-variant-numeric:tabular-nums}
+.hint{margin:0;font-size:max(11px,calc(var(--u)*3.2));color:var(--ink-dim)}
+.pop{animation:pop .45s ease-out}
+
+/* hub */
+.hub{
+  --hub:clamp(76px,14vmin,132px);
+  position:absolute;left:50%;top:50%;width:var(--hub);height:var(--hub);translate:-50% -50%;z-index:5;
+  border-radius:50%;background:var(--table);box-shadow:0 6px 22px rgba(0,0,0,.55);
+}
+.hub-btn{
+  position:absolute;inset:16%;border-radius:50%;padding:0;cursor:pointer;display:grid;place-items:center;
+  border:3px solid var(--ink);background:var(--table-2);color:var(--ink);box-shadow:0 0 0 4px var(--table);
+}
+.hub-btn svg{width:46%;height:46%}
+.hub-btn[aria-disabled="true"]{opacity:.4;cursor:default}
+.hub-btn.is-logo{opacity:1;border-color:rgba(247,239,228,.35)}
+.hub-btn.pulse{animation:hubpulse 1.4s ease-in-out infinite}
+.hub-btn:focus-visible{outline:3px solid var(--p2);outline-offset:5px}
+.logo{width:52%;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--p3) 0 25%, var(--p2) 0 50%, var(--p1) 0 75%, var(--p4) 0)}
+.dot{
+  position:absolute;width:calc(var(--hub)*.08);height:calc(var(--hub)*.08);
+  left:calc(50% - var(--hub)*.04);top:calc(50% - var(--hub)*.04);border-radius:50%;
+  background:rgba(247,239,228,.2);transform:rotate(calc(var(--i)*72deg)) translateY(calc(var(--hub)*-.44));
+}
+.dot.done{background:var(--ink)}
+.dot.now{background:var(--p2);box-shadow:0 0 0 2px rgba(242,178,48,.35)}
+
+@keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.07);opacity:1}100%{transform:scale(1)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes ripple{0%{box-shadow:0 0 0 0 color-mix(in oklab, var(--pc) 55%, transparent)}100%{box-shadow:0 0 0 calc(var(--u)*7) transparent}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes floatup{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(calc(var(--u)*-9))}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 var(--pc)}50%{box-shadow:0 0 calc(var(--u)*5) calc(var(--u)*.8) var(--pc)}}
+@keyframes hubpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="board" id="board">
+    <section class="zone" data-p="0"><div class="mat"><div class="stage"></div><footer class="plate"><span class="token">1</span><span class="pname">ผู้เล่น 1</span><span class="pcolor">แดง</span><span class="score"><b>0</b>คะแนน</span></footer></div></section>
+    <section class="zone" data-p="1"><div class="mat"><div class="stage"></div><footer class="plate"><span class="token">2</span><span class="pname">ผู้เล่น 2</span><span class="pcolor">เหลือง</span><span class="score"><b>0</b>คะแนน</span></footer></div></section>
+    <section class="zone far" data-p="2"><div class="mat"><div class="stage"></div><footer class="plate"><span class="token">3</span><span class="pname">ผู้เล่น 3</span><span class="pcolor">ฟ้า</span><span class="score"><b>0</b>คะแนน</span></footer></div></section>
+    <section class="zone far" data-p="3"><div class="mat"><div class="stage"></div><footer class="plate"><span class="token">4</span><span class="pname">ผู้เล่น 4</span><span class="pcolor">เขียว</span><span class="score"><b>0</b>คะแนน</span></footer></div></section>
+    <div class="hub"><div id="hubDots"></div><button class="hub-btn" id="hubBtn" type="button" aria-label="เริ่มเกม"></button></div>
+  </div>
+</div>
+<script>
+(() => {
+  'use strict';
+  const PLAYERS = [
+    { name: 'ผู้เล่น 1' }, { name: 'ผู้เล่น 2' }, { name: 'ผู้เล่น 3' }, { name: 'ผู้เล่น 4' },
+  ];
+  const INKS = [
+    { name: 'แดง', v: 'var(--c-red)' },
+    { name: 'เหลือง', v: 'var(--c-yellow)' },
+    { name: 'ฟ้า', v: 'var(--c-blue)' },
+    { name: 'เขียว', v: 'var(--c-green)' },
+  ];
+
+  const zones = [...document.querySelectorAll('.zone')].sort((a, b) => a.dataset.p - b.dataset.p);
+  const mats = zones.map(z => z.querySelector('.mat'));
+  const stages = zones.map(z => z.querySelector('.stage'));
+  const scoreEls = zones.map(z => z.querySelector('.score b'));
+  const hubBtn = document.getElementById('hubBtn');
+  const hubDots = document.getElementById('hubDots');
+
+  const S = { phase: 'lobby', joined: [false, false, false, false], ready: [false, false, false, false], totals: [0, 0, 0, 0], order: [], round: 0 };
+  const active = () => [0, 1, 2, 3].filter(p => S.joined[p]);
+  let onTap = null;
+  let hubAction = null;
+
+  /* ---------- timers ---------- */
+  let timers = [], loopToken = 0;
+  const later = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+  function loop(fn) {
+    const tok = ++loopToken;
+    const step = () => { if (tok !== loopToken) return; if (fn() !== false) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  }
+  function clearAll() { timers.forEach(clearTimeout); timers = []; loopToken++; onTap = null; }
+
+  /* ---------- helpers ---------- */
+  function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function shuffle(arr, rnd = Math.random) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+  const setStage = (p, html) => { stages[p].innerHTML = html; };
+  const matState = (p, cls) => { mats[p].className = 'mat' + (cls ? ' ' + cls : ''); };
+  function rankBy(ps, val, better) {
+    const r = {};
+    ps.forEach(p => { const v = val(p); r[p] = ps.filter(q => better === 'high' ? val(q) > v : val(q) < v).length; });
+    return r;
+  }
+  function float(host, text, cls) {
+    const el = document.createElement('span');
+    el.className = 'float' + (cls ? ' ' + cls : '');
+    el.textContent = text;
+    host.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+  }
+  function restart(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  const renderScores = () => scoreEls.forEach((el, p) => { el.textContent = S.totals[p]; });
+
+  /* ---------- sound ---------- */
+  let ac = null;
+  function unlockAudio() {
+    try {
+      if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return; ac = new C(); }
+      if (ac.state === 'suspended') ac.resume();
+    } catch (e) { /* no audio */ }
+  }
+  function tone(f, d = .12, type = 'sine', v = .12, when = 0) {
+    if (!ac || ac.state !== 'running') return;
+    const t = ac.currentTime + when, o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + d + .03);
+  }
+  const sfx = {
+    join: () => { tone(660, .1, 'triangle'); tone(990, .14, 'triangle', .12, .08); },
+    leave: () => { tone(440, .1, 'triangle'); tone(330, .14, 'triangle', .1, .08); },
+    tick: () => tone(600, .07, 'square', .05),
+    go: () => { tone(880, .16, 'square', .08); tone(1320, .2, 'triangle', .1, .05); },
+    good: () => tone(1040, .07, 'triangle', .1),
+    bad: () => tone(140, .2, 'sawtooth', .08),
+    start: () => [392, 523, 659].forEach((f, i) => tone(f, .16, 'triangle', .11, i * .09)),
+    end: () => { tone(523, .14, 'triangle'); tone(784, .2, 'triangle', .12, .1); },
+    win: () => [523, 659, 784, 1046].forEach((f, i) => tone(f, .28, 'triangle', .12, i * .13)),
+  };
+
+  /* ---------- wake lock & gestures ---------- */
+  let wake = null;
+  async function keepAwake() {
+    try { if ('wakeLock' in navigator && !wake) { wake = await navigator.wakeLock.request('screen'); wake.addEventListener('release', () => { wake = null; }); } } catch (e) { /* not allowed */ }
+  }
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.phase !== 'lobby') keepAwake(); });
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
+  document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  zones.forEach((z, p) => z.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    unlockAudio();
+    if (onTap) onTap(p, e);
+  }));
+
+  /* ---------- hub ---------- */
+  const ICON = {
+    play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>',
+    again: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4v4.5H9"/></svg>',
+    trophy: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3.5 4M17 6h3a3 3 0 0 1-3.5 4M12 14v4M8 20h8"/></svg>',
+    logo: '<span class="logo" aria-hidden="true"></span>',
+  };
+  function setHub(icon, action, label) {
+    hubBtn.innerHTML = ICON[icon];
+    hubBtn.className = 'hub-btn is-' + icon + (action ? ' pulse' : '');
+    hubBtn.setAttribute('aria-disabled', action ? 'false' : 'true');
+    hubBtn.setAttribute('aria-label', label || 'ศึกสี่มุม');
+    hubAction = action || null;
+  }
+  function fireHub() { if (!hubAction) return; const a = hubAction; hubAction = null; a(); }
+  hubBtn.addEventListener('pointerdown', e => { e.preventDefault(); unlockAudio(); fireHub(); });
+  hubBtn.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); unlockAudio(); fireHub(); } });
+  function renderDots() {
+    const n = 5;
+    hubDots.innerHTML = Array.from({ length: n }, (_, i) => {
+      let c = '';
+      if (S.phase !== 'lobby') c = i < S.round ? 'done' : (i === S.round && S.phase !== 'final' ? 'now' : '');
+      return `<i class="dot ${c}" style="--i:${i}"></i>`;
+    }).join('');
+  }
+
+  /* ---------- mini games ---------- */
+  const GAMES = {
+    reaction: {
+      name: 'แตะให้ไว', better: 'low',
+      how: 'รอจนช่องของคุณเปลี่ยนเป็นสีสว่าง แล้วแตะให้เร็วที่สุด แตะก่อนสัญญาณโดนปรับเวลา · เล่น 3 ครั้ง',
+      start(ctx) {
+        const ps = ctx.ps, HEATS = 3, times = {};
+        ps.forEach(p => { times[p] = []; });
+        let heat = 0;
+        const msg = (big, small) => `<div class="stack pop"><div class="big sm">${big}</div><p class="p">${small}</p></div>`;
+        const runHeat = () => {
+          let phase = 'wait', t0 = 0, ended = false;
+          const done = {};
+          ps.forEach(p => { matState(p, 'dim'); setStage(p, `<div class="stack"><p class="eyebrow">ครั้งที่ ${heat + 1} / ${HEATS}</p><div class="big">รอ…</div><p class="p">อย่าเพิ่งแตะ</p></div>`); });
+          const end = () => {
+            if (ended) return; ended = true; onTap = null; heat++;
+            later(() => {
+              if (heat < HEATS) return runHeat();
+              ctx.finish(Object.fromEntries(ps.map(p => {
+                const avg = Math.round(times[p].reduce((s, x) => s + x, 0) / times[p].length);
+                return [p, { v: avg, label: `เฉลี่ย ${avg} ms` }];
+              })));
+            }, 1300);
+          };
+          later(() => {
+            if (ended) return;
+            phase = 'go'; t0 = performance.now(); sfx.go();
+            ps.forEach(p => { if (!done[p]) { matState(p, 'go'); setStage(p, '<div class="big">แตะ!</div>'); } });
+            later(() => {
+              if (ended) return;
+              ps.forEach(p => { if (!done[p]) { done[p] = true; times[p].push(1500); matState(p, 'dim'); setStage(p, msg('ช้าไป', 'นับเป็น 1500 ms')); } });
+              end();
+            }, 1500);
+          }, 1400 + Math.random() * 2600);
+          onTap = p => {
+            if (!ps.includes(p) || done[p]) return;
+            done[p] = true;
+            if (phase === 'wait') {
+              times[p].push(1000); matState(p, 'early'); setStage(p, msg('เร็วไป!', 'ปรับเป็น 1000 ms')); sfx.bad();
+            } else {
+              const rt = Math.round(performance.now() - t0);
+              times[p].push(rt); matState(p); setStage(p, msg(`${rt} ms`, `ครั้งที่ ${heat + 1} / ${HEATS}`)); sfx.good();
+            }
+            if (ps.every(q => done[q])) end();
+          };
+        };
+        runHeat();
+      },
+    },
+
+    mash: {
+      name: 'รัวนิ้ว', better: 'high',
+      how: 'แตะช่องของคุณรัวๆ ให้ได้มากที่สุดใน 7 วินาที ใช้กี่นิ้วก็ได้ ลูกโป่งใครใหญ่สุดชนะ',
+      start(ctx) {
+        const ps = ctx.ps, T = 7000, n = {}, el = {};
+        ps.forEach(p => {
+          n[p] = 0; matState(p);
+          setStage(p, '<div class="mash"><div class="tbar"><i></i></div><div class="balloon"></div><div class="num">0</div></div>');
+          el[p] = { b: stages[p].querySelector('.balloon'), num: stages[p].querySelector('.num'), bar: stages[p].querySelector('.tbar i') };
+        });
+        const t0 = performance.now();
+        onTap = p => {
+          if (!(p in n)) return;
+          n[p]++;
+          el[p].num.textContent = n[p];
+          el[p].b.style.setProperty('--s', (0.28 + Math.min(n[p] / 80, 1) * 0.72).toFixed(3));
+        };
+        loop(() => {
+          const left = Math.max(0, 1 - (performance.now() - t0) / T);
+          ps.forEach(p => { el[p].bar.style.transform = `scaleX(${left})`; });
+          if (left <= 0) { ctx.finish(Object.fromEntries(ps.map(p => [p, { v: n[p], label: `${n[p]} ครั้ง` }]))); return false; }
+        });
+      },
+    },
+
+    stroop: {
+      name: 'สีหลอกตา', better: 'high',
+      how: 'แตะวงกลมที่ตรงกับ “สีของตัวอักษร” ห้ามอ่านคำ! ถูก +1 ผิด −1 · 20 วินาที',
+      start(ctx) {
+        const ps = ctx.ps, T = 20000, rng = mulberry32(Date.now() >>> 0), ri = k => Math.floor(rng() * k);
+        const seq = [];
+        let prev = -1;
+        for (let i = 0; i < 240; i++) {
+          let ink; do { ink = ri(4); } while (ink === prev);
+          let word = ink;
+          if (rng() < 0.8) { do { word = ri(4); } while (word === ink); }
+          seq.push({ ink, word }); prev = ink;
+        }
+        const order = shuffle([0, 1, 2, 3], rng);
+        const st = {}, el = {};
+        const draw = p => {
+          const q = seq[st[p].i % seq.length];
+          el[p].w.textContent = INKS[q.word].name;
+          el[p].w.style.color = INKS[q.ink].v;
+          restart(el[p].w, 'pop');
+        };
+        ps.forEach(p => {
+          st[p] = { i: 0, sc: 0, lock: false }; matState(p);
+          setStage(p, `<div class="stroop"><div class="hud"><span class="sc">0</span><div class="tbar"><i></i></div></div><div class="word"></div><div class="pads">${order.map(k => `<button type="button" class="pad" data-v="${k}" style="--ink-c:${INKS[k].v}" aria-label="${INKS[k].name}"></button>`).join('')}</div></div>`);
+          const s = stages[p];
+          el[p] = { root: s.querySelector('.stroop'), w: s.querySelector('.word'), sc: s.querySelector('.sc'), bar: s.querySelector('.tbar i') };
+          draw(p);
+        });
+        onTap = (p, e) => {
+          const b = e.target.closest('.pad');
+          if (!b || !st[p] || st[p].lock) return;
+          const q = seq[st[p].i % seq.length];
+          if (+b.dataset.v === q.ink) {
+            st[p].sc++; st[p].i++; el[p].sc.textContent = st[p].sc; sfx.good(); draw(p);
+          } else {
+            st[p].sc--; el[p].sc.textContent = st[p].sc; sfx.bad();
+            st[p].lock = true; el[p].root.classList.add('lock');
+            later(() => { st[p].lock = false; el[p].root.classList.remove('lock'); st[p].i++; draw(p); }, 500);
+          }
+        };
+        const t0 = performance.now();
+        loop(() => {
+          const left = Math.max(0, 1 - (performance.now() - t0) / T);
+          ps.forEach(p => { el[p].bar.style.transform = `scaleX(${left})`; });
+          if (left <= 0) { ctx.finish(Object.fromEntries(ps.map(p => [p, { v: st[p].sc, label: `${st[p].sc} แต้ม` }]))); return false; }
+        });
+      },
+    },
+
+    stop: {
+      name: 'หยุดที่ 5 วินาที', better: 'low',
+      how: 'ตัวเลขจะหายไปหลัง 1.5 วินาที นับในใจแล้วแตะเมื่อคิดว่าครบ 5.00 วินาที ใครใกล้สุดชนะ',
+      start(ctx) {
+        const ps = ctx.ps, TARGET = 5, MAX = 10, at = {}, el = {};
+        ps.forEach(p => {
+          matState(p);
+          setStage(p, '<div class="stack"><p class="eyebrow">เป้าหมาย 5.00 วินาที</p><div class="clock">0.00</div><p class="p msg">แตะที่ไหนก็ได้เพื่อหยุด</p></div>');
+          el[p] = { c: stages[p].querySelector('.clock'), m: stages[p].querySelector('.msg') };
+        });
+        const t0 = performance.now();
+        let hidden = false, finished = false;
+        const done = () => {
+          if (finished) return; finished = true;
+          ctx.finish(Object.fromEntries(ps.map(p => {
+            if (!(p in at)) return [p, { v: MAX, label: 'ไม่ได้หยุด' }];
+            return [p, { v: Math.abs(at[p] - TARGET), label: `${at[p].toFixed(2)} วิ` }];
+          })));
+        };
+        onTap = p => {
+          if (!ps.includes(p) || p in at) return;
+          at[p] = (performance.now() - t0) / 1000;
+          sfx.tick();
+          el[p].c.textContent = 'หยุด'; el[p].c.className = 'clock stopped';
+          el[p].m.textContent = 'รอเพื่อน…';
+          if (ps.every(q => q in at)) later(done, 500);
+        };
+        loop(() => {
+          if (finished) return false;
+          const s = (performance.now() - t0) / 1000;
+          if (s < 1.5) ps.forEach(p => { if (!(p in at)) el[p].c.textContent = s.toFixed(2); });
+          else if (!hidden) { hidden = true; ps.forEach(p => { if (!(p in at)) { el[p].c.textContent = '?.??'; el[p].c.className = 'clock hidden'; } }); }
+          if (s >= MAX) { done(); return false; }
+        });
+      },
+    },
+
+    stars: {
+      name: 'เก็บดาว', better: 'high',
+      how: 'แตะดาวที่โผล่ขึ้นมาให้ทัน ดาว +1 ระเบิด −2 · 18 วินาที ทุกคนได้ดาวตำแหน่งเดียวกัน',
+      start(ctx) {
+        const ps = ctx.ps, T = 18000, LIFE = 1000, rng = mulberry32((Date.now() ^ 0x9e3779b9) >>> 0);
+        const ev = [], busy = Array(9).fill(-1);
+        for (let t = 500; t < T - 600; t += 380 + rng() * 420) {
+          const free = [...Array(9).keys()].filter(i => busy[i] < t);
+          if (!free.length) continue;
+          const h = free[Math.floor(rng() * free.length)];
+          ev.push({ t, h, bomb: rng() < 0.22 });
+          busy[h] = t + LIFE + 150;
+        }
+        const st = {}, el = {};
+        ps.forEach(p => {
+          st[p] = { sc: 0, holes: Array(9).fill(null) }; matState(p);
+          setStage(p, `<div class="stars"><div class="hud"><span class="sc">0</span><div class="tbar"><i></i></div></div><div class="field">${Array.from({ length: 9 }, (_, i) => `<div class="hole" data-h="${i}"></div>`).join('')}</div></div>`);
+          const s = stages[p];
+          el[p] = { holes: [...s.querySelectorAll('.hole')], sc: s.querySelector('.sc'), bar: s.querySelector('.tbar i'), field: s.querySelector('.field') };
+        });
+        onTap = (p, e) => {
+          const hEl = e.target.closest('.hole');
+          if (!hEl || !st[p]) return;
+          const h = +hEl.dataset.h, o = st[p].holes[h];
+          if (!o) return;
+          st[p].holes[h] = null; hEl.classList.remove('on');
+          if (o.bomb) { st[p].sc -= 2; sfx.bad(); float(hEl, '−2', 'bad'); restart(el[p].field, 'shake'); }
+          else { st[p].sc++; sfx.good(); float(hEl, '+1'); }
+          el[p].sc.textContent = st[p].sc;
+        };
+        let k = 0;
+        const t0 = performance.now();
+        loop(() => {
+          const now = performance.now() - t0;
+          while (k < ev.length && ev[k].t <= now) {
+            const e = ev[k++];
+            ps.forEach(p => {
+              st[p].holes[e.h] = { until: e.t + LIFE, bomb: e.bomb };
+              const hEl = el[p].holes[e.h];
+              hEl.classList.toggle('bomb', e.bomb); hEl.classList.toggle('star', !e.bomb); hEl.classList.add('on');
+            });
+          }
+          ps.forEach(p => st[p].holes.forEach((o, h) => { if (o && now > o.until) { st[p].holes[h] = null; el[p].holes[h].classList.remove('on'); } }));
+          const left = Math.max(0, 1 - now / T);
+          ps.forEach(p => { el[p].bar.style.transform = `scaleX(${left})`; });
+          if (left <= 0) { ctx.finish(Object.fromEntries(ps.map(p => [p, { v: st[p].sc, label: `${st[p].sc} ดาว` }]))); return false; }
+        });
+      },
+    },
+  };
+  const GAME_KEYS = Object.keys(GAMES);
+
+  /* ---------- screens ---------- */
+  function offZone(p) {
+    matState(p, 'off');
+    setStage(p, `<div class="stack"><p class="eyebrow">${PLAYERS[p].name}</p><h2 class="h dim">ว่าง</h2></div>`);
+  }
+  const lobbyHint = () => active().length < 2 ? 'รอเพื่อนเข้าร่วมอีกอย่างน้อย 1 คน' : 'ครบแล้ว กดปุ่ม ▶ กลางจอเพื่อเริ่ม';
+
+  function lobbyZone(p) {
+    matState(p);
+    setStage(p, S.joined[p] ? `
+      <div class="stack pop">
+        <svg class="check" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22"/><path d="M14 25l7 7 13-15"/></svg>
+        <h2 class="h">พร้อมลุย!</h2>
+        <p class="p lobby-hint">${lobbyHint()}</p>
+        <button type="button" class="chip" data-act="leave">ออกจากเกม</button>
+      </div>` : `
+      <div class="stack">
+        <p class="eyebrow">ศึกสี่มุม · ปาร์ตี้ 5 มินิเกม</p>
+        <div class="tapring">แตะ</div>
+        <h2 class="h">แตะเพื่อเข้าร่วม</h2>
+      </div>`);
+  }
+  function lobbyRefresh() {
+    stages.forEach(s => { const h = s.querySelector('.lobby-hint'); if (h) h.textContent = lobbyHint(); });
+    const n = active().length;
+    setHub('play', n >= 2 ? startMatch : null, n >= 2 ? 'เริ่มเกม' : 'ต้องมีผู้เล่นอย่างน้อย 2 คน');
+  }
+  function showLobby() {
+    clearAll();
+    S.phase = 'lobby'; S.totals = [0, 0, 0, 0]; S.round = 0; S.order = [];
+    renderScores(); renderDots();
+    [0, 1, 2, 3].forEach(lobbyZone);
+    onTap = (p, e) => {
+      if (S.joined[p]) {
+        if (e.target.closest('[data-act="leave"]')) { S.joined[p] = false; sfx.leave(); lobbyZone(p); lobbyRefresh(); }
+        return;
+      }
+      S.joined[p] = true; sfx.join(); lobbyZone(p); lobbyRefresh();
+    };
+    lobbyRefresh();
+  }
+
+  function startMatch() {
+    S.totals = [0, 0, 0, 0]; S.order = shuffle(GAME_KEYS.slice()); S.round = 0;
+    renderScores(); keepAwake(); sfx.start();
+    goIntro();
+  }
+
+  function introZone(p, g) {
+    matState(p);
+    setStage(p, `<div class="stack">
+      <p class="eyebrow">เกม ${S.round + 1} / ${S.order.length}</p>
+      <h2 class="h">${g.name}</h2>
+      <p class="p">${g.how}</p>
+      <div class="pill ${S.ready[p] ? 'is-ready' : ''}">${S.ready[p] ? 'พร้อมแล้ว · รอเพื่อน…' : 'แตะเมื่อพร้อม'}</div>
+    </div>`);
+  }
+  function goIntro() {
+    clearAll();
+    S.phase = 'intro'; renderDots(); setHub('logo', null);
+    const g = GAMES[S.order[S.round]];
+    S.ready = [false, false, false, false];
+    [0, 1, 2, 3].forEach(p => (S.joined[p] ? introZone(p, g) : offZone(p)));
+    onTap = p => {
+      if (!S.joined[p] || S.ready[p]) return;
+      S.ready[p] = true; sfx.tick(); introZone(p, g);
+      if (active().every(q => S.ready[q])) countdown(g);
+    };
+  }
+  function countdown(g) {
+    onTap = null;
+    let n = 3;
+    const show = () => { active().forEach(p => setStage(p, `<div class="stack"><p class="eyebrow">${g.name}</p><div class="count">${n}</div></div>`)); sfx.tick(); };
+    const step = () => {
+      n--;
+      if (n > 0) { show(); later(step, 750); return; }
+      sfx.go(); S.phase = 'play';
+      let finished = false;
+      g.start({ ps: active(), finish: res => { if (finished) return; finished = true; finishRound(g, res); } });
+    };
+    show(); later(step, 750);
+  }
+
+  function listHTML(me, sorted, rk, labelOf) {
+    return `<ol class="list">${sorted.map(q => `<li class="${q === me ? 'me' : ''}" style="--qc:var(--p${q + 1})"><span class="rk">${rk[q] + 1}</span><i></i><span>${PLAYERS[q].name}</span><b>${labelOf(q)}</b></li>`).join('')}</ol>`;
+  }
+  function finishRound(g, res) {
+    clearAll();
+    S.phase = 'result';
+    const ps = active(), n = ps.length;
+    const rk = rankBy(ps, p => res[p].v, g.better);
+    const gain = {};
+    ps.forEach(p => { gain[p] = n - 1 - rk[p]; S.totals[p] += gain[p]; });
+    S.round++;
+    renderScores(); renderDots();
+    const sorted = ps.slice().sort((a, b) => rk[a] - rk[b]);
+    const last = S.round >= S.order.length;
+    ps.forEach(p => {
+      matState(p);
+      setStage(p, `<div class="stack wide">
+        <div class="res">
+          <div class="res-main pop">
+            <p class="eyebrow">${g.name}</p>
+            <div class="place">${rk[p] === 0 ? 'ที่ 1!' : 'อันดับ ' + (rk[p] + 1)}</div>
+            <p class="stat">${res[p].label}</p>
+            <span class="gain">+${gain[p]} คะแนน</span>
+          </div>
+          ${listHTML(p, sorted, rk, q => res[q].label)}
+        </div>
+        <p class="hint">${last ? 'กดปุ่มกลางจอเพื่อดูผลรวม' : 'กด ▶ กลางจอเพื่อเล่นเกมถัดไป'}</p>
+      </div>`);
+    });
+    sfx.end();
+    setHub('logo', null);
+    later(() => setHub(last ? 'trophy' : 'play', last ? showFinal : goIntro, last ? 'ดูผลรวม' : 'เกมถัดไป'), 800);
+  }
+  function showFinal() {
+    clearAll();
+    S.phase = 'final'; renderDots();
+    const ps = active();
+    const rk = rankBy(ps, p => S.totals[p], 'high');
+    const sorted = ps.slice().sort((a, b) => rk[a] - rk[b]);
+    ps.forEach(p => {
+      matState(p, rk[p] === 0 ? 'win' : '');
+      setStage(p, `<div class="stack wide">
+        <div class="res">
+          <div class="res-main pop">
+            ${rk[p] === 0 ? '<svg class="crown" viewBox="0 0 64 44" aria-hidden="true"><path d="M4 12l14 12L32 3l14 21 14-12-6 30H10z"/></svg>' : ''}
+            <p class="eyebrow">จบการแข่งขัน</p>
+            <div class="place">${rk[p] === 0 ? 'แชมป์!' : 'อันดับ ' + (rk[p] + 1)}</div>
+            <p class="stat">${S.totals[p]} คะแนน</p>
+          </div>
+          ${listHTML(p, sorted, rk, q => `${S.totals[q]} คะแนน`)}
+        </div>
+        <p class="hint">กด ↻ กลางจอเพื่อเล่นอีกรอบ</p>
+      </div>`);
+    });
+    sfx.win();
+    setHub('logo', null);
+    later(() => setHub('again', showLobby, 'เล่นอีกรอบ'), 1200);
+  }
+
+  /* ---------- boot (keeps the match across live updates) ---------- */
+  window.claude?.hot?.snapshot?.(() => ({ joined: S.joined, totals: S.totals, order: S.order, round: S.round, phase: S.phase }));
+  function boot(data) {
+    data = data || {};
+    if (Array.isArray(data.joined) && data.joined.length === 4) S.joined = data.joined.map(Boolean);
+    const okOrder = Array.isArray(data.order) && data.order.length === GAME_KEYS.length && data.order.every(k => k in GAMES);
+    if (okOrder && ['intro', 'play', 'result'].includes(data.phase) && data.round < data.order.length && active().length >= 2) {
+      S.order = data.order; S.round = data.round | 0;
+      S.totals = Array.isArray(data.totals) ? data.totals.map(x => x | 0) : [0, 0, 0, 0];
+      renderScores(); goIntro();
+    } else {
+      showLobby();
+    }
+  }
+  window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
+</body>
+</html>
