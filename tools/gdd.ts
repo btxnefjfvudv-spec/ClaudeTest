@@ -6,7 +6,7 @@ import * as fs from 'fs';
 
 const implemented = new Set(fs.readdirSync('src/minigames/games').map((f) => f.replace('.ts', '')));
 const statusOf = (name: string) => {
-  const cls = name.split(/[^A-Za-z0-9]+/).map((w) => w[0] + w.slice(1).toLowerCase()).join('');
+  const cls = name.split(/[^A-Za-z0-9]+/).map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join('');
   return implemented.has(cls) ? 'Implemented' : 'Planned';
 };
 const STATUS = JSON.parse(fs.existsSync('docs/qa-status.json') ? fs.readFileSync('docs/qa-status.json', 'utf8') : '{}');

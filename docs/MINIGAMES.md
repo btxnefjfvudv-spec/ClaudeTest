@@ -8,17 +8,17 @@ Status: Planned → Prototype → In Development → Implemented → Playtested 
 
 | # | Game | Category | Status | Smoke test |
 |---|---|---|---|---|
-| 1 | CLASSROOM DASH | แข่งความเร็ว | Planned | – |
+| 1 | CLASSROOM DASH | แข่งความเร็ว | Implemented | – |
 | 2 | FLOOR IS LAVA | แข่งความเร็ว | Planned | – |
 | 3 | RAINBOW RUN | แข่งความเร็ว | Planned | – |
 | 4 | OBSTACLE CHAOS | แข่งความเร็ว | Planned | – |
 | 5 | HUMAN PINBALL | แข่งความเร็ว | Planned | – |
-| 6 | LAST ONE STANDING | เอาตัวรอด | Planned | – |
+| 6 | LAST ONE STANDING | เอาตัวรอด | Implemented | – |
 | 7 | FALLING BLOCKS | เอาตัวรอด | Planned | – |
 | 8 | TORNADO TROUBLE | เอาตัวรอด | Planned | – |
 | 9 | BOMB TAG | เอาตัวรอด | Planned | – |
 | 10 | ICE SURVIVAL | เอาตัวรอด | Planned | – |
-| 11 | BUMPER BALL | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 11 | BUMPER BALL | ฟิสิกส์ & ต่อสู้ | Implemented | – |
 | 12 | BOXING BUDDIES | ฟิสิกส์ & ต่อสู้ | Planned | – |
 | 13 | BOOMERANG BATTLE | ฟิสิกส์ & ต่อสู้ | Planned | – |
 | 14 | BALLOON BRAWL | ฟิสิกส์ & ต่อสู้ | Planned | – |
@@ -47,11 +47,11 @@ Status: Planned → Prototype → In Development → Implemented → Playtested 
 | 37 | DANCE OFF | สร้างสรรค์ & ฮา | Planned | – |
 | 38 | SILLY FACES | สร้างสรรค์ & ฮา | Planned | – |
 | 39 | BALANCE MASTER | สร้างสรรค์ & ฮา | Planned | – |
-| 40 | CHAOS BUTTON | สร้างสรรค์ & ฮา | Planned | – |
-| 41 | TREASURE THIEVES | ปาร์ตี้ขั้นสูง | Planned | – |
-| 42 | HIDE AND SEEK | ปาร์ตี้ขั้นสูง | Planned | – |
-| 43 | KING OF THE HILL | ปาร์ตี้ขั้นสูง | Planned | – |
-| 44 | MAGNET MADNESS | ปาร์ตี้ขั้นสูง | Planned | – |
+| 40 | CHAOS BUTTON | สร้างสรรค์ & ฮา | Implemented | – |
+| 41 | TREASURE THIEVES | ปาร์ตี้ขั้นสูง | Implemented | – |
+| 42 | HIDE AND SEEK | ปาร์ตี้ขั้นสูง | Implemented | – |
+| 43 | KING OF THE HILL | ปาร์ตี้ขั้นสูง | Implemented | – |
+| 44 | MAGNET MADNESS | ปาร์ตี้ขั้นสูง | Implemented | – |
 | 45 | GRAVITY SWITCH | ปาร์ตี้ขั้นสูง | Planned | – |
 | 46 | FISHING FRENZY | ไวลด์การ์ด | Planned | – |
 | 47 | SNOWBALL SHOWDOWN | ไวลด์การ์ด | Planned | – |
