@@ -39,7 +39,7 @@ const defs: M[] = [
   { id: 'wobble-race', num: 15, name: 'WOBBLE RACE', nameTh: 'เดินเซแข่ง', category: 'physics-fighting', color: 0xb8a6ff, duration: 45,
     blurb: 'ก้าวขาซ้ายขวาให้ถูกจังหวะ ไม่งั้นล้มคว่ำ!', howTo: ['กดซ้าย-ขวาสลับกันเพื่อก้าว', 'ตัวเอียงไปทางไหน กดฝั่งตรงข้ามเพื่อทรงตัว'], controls: 'ปุ่ม L / R' },
   // D — Reflex
-  { id: 'quick-draw', num: 16, name: 'QUICK DRAW', nameTh: 'ดวลปืนฉีดน้ำ', category: 'reflex', color: 0xffc93d, duration: 0,
+  { id: 'quick-draw', num: 16, name: 'QUICK DRAW', nameTh: 'ดวลปืนฉีดน้ำ', category: 'reflex', color: 0xffc93d, duration: 0, music: 'tension',
     blurb: 'รอสัญญาณ "ยิง!" แล้วแตะให้ไวที่สุด ห้ามกดก่อน!', howTo: ['รอคำว่า ยิง! แล้วแตะโซนตัวเองทันที', 'กดก่อน = ฟาวล์ · ระวังคำหลอก!'], controls: 'แตะ' },
   { id: 'color-panic', num: 17, name: 'COLOR PANIC', nameTh: 'สีอะไรกันแน่', category: 'reflex', color: 0xb8a6ff, duration: 45,
     blurb: 'แตะสีของ "ตัวหนังสือ" ไม่ใช่คำที่อ่าน! สมองจะงง', howTo: ['ดูสีของตัวอักษร แล้วแตะปุ่มสีนั้น', 'ถูก +1 · ผิด −1 · เร็วสุดได้โบนัส'], controls: 'แตะปุ่มสี' },
