@@ -11,16 +11,17 @@ export interface CharacterEntry {
   notes?: string;
 }
 
-// School uniform seen in the photos: mint-green short-sleeve shirt, two blue
+// Characters wear the regular school uniform (white shirt), not the mint
+// activity shirt seen in the photos. Details kept from the photos: two blue
 // collar stars, name embroidered in blue, orange wing emblem on the pocket.
-const MINT = 0x9be6c8;
+const WHITE = 0xf4f6fa;
 const SHORTS = 0x262c44; // dark navy shorts (boys, from the classroom photos)
 const SKIRT = 0x283a72; // ASSUMPTION: girls' bottoms are not visible in the photos
 const SHOES = 0x24222c;
 const HAIR = 0x1d1917;
 
 const uniform = (o: Partial<CharacterLook>): CharacterLook => ({
-  skin: 0xe0a882, hair: HAIR, hairStyle: 'short', shirt: MINT, bottom: SHORTS, bottomStyle: 'shorts',
+  skin: 0xe0a882, hair: HAIR, hairStyle: 'short', shirt: WHITE, bottom: SHORTS, bottomStyle: 'shorts',
   shoes: SHOES, accent: 0x3d9bff, accessory: 'none', eye: 0x2a1a14, build: 'normal', outfit: 'uniform', ...o,
 });
 
@@ -34,12 +35,12 @@ export const CHARACTERS: CharacterEntry[] = [
     look: uniform({ skin: 0xc98f68, hairStyle: 'bowl', build: 'big', accent: 0x3ed17a }) },
   { id: 'c04', name: 'มิว', placeholder: false, notes: 'ผมยาวตรงสีดำ แสกกลาง หน้ากลม ยิ้มมุมปาก',
     look: uniform({ skin: 0xf3d0b6, hairStyle: 'long', bottom: SKIRT, bottomStyle: 'skirt', accent: 0xd9a0ff, mouth: 'flat' }) },
-  { id: 'c05', name: 'บิ๊กแบง', placeholder: false, notes: 'เสื้อบาสสีดำทองเบอร์ 22 ผมสั้นยุ่งๆ ยิ้มเห็นฟัน ผอมสูง',
-    look: uniform({ skin: 0xd8a07c, hairStyle: 'spiky', build: 'slim', outfit: 'jersey', shirt: 0x1e1e26, detail: 0xd9b04a, bottom: 0xe8e8ee, accent: 0xd9b04a, mouth: 'teeth' }) },
+  { id: 'c05', name: 'บิ๊กแบง', placeholder: false, notes: 'ผมสั้นยุ่งๆ ยิ้มเห็นฟัน ผอมสูง (ในรูปใส่เสื้อบาสเบอร์ 22 — ในเกมใส่ชุดนักเรียน, สีประจำตัวดำทอง)',
+    look: uniform({ skin: 0xd8a07c, hairStyle: 'spiky', build: 'slim', accent: 0xd9b04a, mouth: 'teeth' }) },
   { id: 'c06', name: 'ฟางข้าว', placeholder: false, notes: 'ผมสั้นเกรียนหน้าม้าตรง ตัวใหญ่ ยิ้มกว้าง สะพายเป้',
     look: uniform({ skin: 0xb9784e, hairStyle: 'crew', build: 'big', accent: 0xffc93d, mouth: 'grin' }) },
-  { id: 'c07', name: 'โชกุน', placeholder: false, notes: 'เสื้อแจ็กเก็ตดำทับเสื้อนักเรียน ผมแสกกลางมีวอลลุ่ม ใส่หูฟัง',
-    look: uniform({ skin: 0xc98a60, hairStyle: 'curtain', build: 'slim', outfit: 'jacket', shirt: 0x24252d, detail: MINT, earbuds: true, accent: 0x7ee8b0, mouth: 'flat' }) },
+  { id: 'c07', name: 'โชกุน', placeholder: false, notes: 'ผมแสกกลางมีวอลลุ่ม ใส่หูฟัง (ในรูปใส่แจ็กเก็ตดำ — ในเกมใส่ชุดนักเรียน)',
+    look: uniform({ skin: 0xc98a60, hairStyle: 'curtain', build: 'slim', earbuds: true, accent: 0x7ee8b0, mouth: 'flat' }) },
   { id: 'c08', name: 'ชัน', placeholder: false, notes: 'ผมสั้นเฟดข้าง หน้านิ่ง หุ่นนักกีฬา',
     look: uniform({ skin: 0xc98c64, hairStyle: 'fade', accent: 0xff9f43, mouth: 'flat' }) },
   { id: 'c09', name: 'ตูน', placeholder: false, notes: 'ผมสั้นรองทรง ทำปากจู๋ ดาวที่ปกเสื้อสีเหลือง',
@@ -54,7 +55,7 @@ export function characterById(id: string): CharacterEntry {
   return CHARACTERS.find((c) => c.id === id) ?? CHARACTERS[0];
 }
 
-const STORE = 'c58-chars-v2';
+const STORE = 'c58-chars-v3';
 
 /** Apply edits saved on this device (names / looks) over the defaults. */
 export function loadCharacterEdits(): void {
