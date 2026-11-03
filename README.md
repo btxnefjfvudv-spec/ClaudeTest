@@ -1,6 +1,6 @@
 # CLASSROOM 5/8 PARTY
 
-เกมปาร์ตี้ Pixel Art สำหรับเพื่อน 4 คน นั่งล้อม iPad เครื่องเดียว · 50 มินิเกม · ห้องเรียน 5/8 เป็นศูนย์กลาง
+เกมปาร์ตี้ Pixel Art สำหรับเพื่อน 4 คน นั่งล้อม iPad เครื่องเดียว · **50/50 มินิเกมเล่นได้** · ห้องเรียน 5/8 จากรูปจริง · ตัวละครเพื่อน 11 คน
 
 - **Play:** Party (3/5/7/10/กำหนดเอง รอบ, 10/7/5/3 แต้ม) · Quick Play · Minigame Collection (Free play / Practice) · Characters (แก้ไขตัวละครได้) · Settings · Credits
 - **Tech:** Phaser 3.90 · TypeScript · Vite · ภาพและเสียงสร้างด้วยโค้ดทั้งหมด · เล่น offline ได้ · Add to Home Screen ได้

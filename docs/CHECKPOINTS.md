@@ -17,4 +17,5 @@
 | 13 | Batch C merged: Quick Draw, Color Panic, Button Masher, Memory Flash, Reaction Tiles, Mini Basketball (smoke 6/6 PASS) | done |
 | 14 | All 50 games merged (batches A, B, D, E, F) — full smoke run next | done |
 | 15 | Full smoke: all 50 games PASS (headless iPad, random 4-finger input) | done |
-| 16 | Framework cleanup: HUD above markers, auto shutdown hook, 350 ms taps, shadow layering fix, dev-guide lessons | (this commit) |
+| 16 | Framework cleanup: HUD above markers, auto shutdown hook, 350 ms taps, shadow layering fix, dev-guide lessons | done |
+| 17 | QA: 50-game visual review, 5-round party flow PASS, docs/roadmap/QA report updated | (this commit) |

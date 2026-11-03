@@ -20,4 +20,10 @@
 
 ## Automated (headless iPad Pro 11 emulation, random 4-finger input)
 
-See `node tools/smoke.cjs` — results are recorded per batch in `docs/CHECKPOINTS.md`.
+- **Smoke test, all 50 games: 50/50 PASS** — each game starts, plays with 1 random-touch human + 3 CPUs, ends with valid ranked results, no console errors. Per-game status: `docs/MINIGAMES.md`.
+- **Party flow:** 5-round party (roulette → game → results ×5 → winner ceremony) completes with correct totals, no errors.
+- **Restart** (pause → เริ่มใหม่) checked per game by the builders; no errors.
+- **Visual review:** mid-play screenshots of all 50 games reviewed (contact sheets).
+- **Not verifiable here:** real 60 fps, real multi-touch feel, audio on iPad Safari — needs the real-iPad checklist above.
+
+Status meaning: all 50 games are **Implemented**; none is **Playtested/Verified** until played on a real iPad by real players.

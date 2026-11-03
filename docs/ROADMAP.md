@@ -3,13 +3,13 @@
 | Phase | งาน | สถานะ |
 |---|---|---|
 | 0 — Research & Audit | Audit repo, เลือก Engine, โครงสร้างโปรเจกต์, Multi-touch test, Deploy | ✅ เสร็จ (รอทดสอบบน iPad จริง) |
-| 1 — Foundation | Scene flow, Player/Character/Score/VFX/Animation system, Minigame framework | ⏳ |
+| 1 — Foundation | Scene flow, Player/Character/Score/VFX/Animation system, Minigame framework | ✅ |
 | 2 — Classroom World | ห้อง 5/8 จากรูปจริง, ผังที่นั่ง 39 โต๊ะ, ตัวละครเพื่อน 11 คน | ✅ ทำแล้ว — รอผู้ใช้ตรวจ + ข้อมูลที่นั่งจริง |
-| 3 — Vertical Slice | 3 เกมคุณภาพเต็ม (Racing / Survival / Fighting) + ทดสอบ 4 คน | ⏳ |
-| 4 — Minigame Production | เกมที่เหลือ 47 เกม ทีละกลุ่ม | ⏳ |
-| 5 — Party Mode | รอบ, คะแนน, อันดับ, Winner Ceremony | ⏳ |
-| 6 — Visual Polish | Lighting, Particles, Transitions, Sound | ⏳ |
-| 7 — QA | ทดสอบทุกเกมบน iPad จริง | ⏳ |
+| 3 — Vertical Slice | 3 เกมคุณภาพเต็ม (Racing / Survival / Fighting) + ทดสอบ 4 คน | ✅ |
+| 4 — Minigame Production | เกมที่เหลือ 47 เกม ทีละกลุ่ม | ✅ 50/50 Implemented (smoke PASS) |
+| 5 — Party Mode | รอบ, คะแนน, อันดับ, Winner Ceremony | ✅ (ทดสอบ 5 รอบอัตโนมัติผ่าน) |
+| 6 — Visual Polish | Lighting, Particles, Transitions, Sound | 🔄 ต่อเนื่องตาม feedback |
+| 7 — QA | ทดสอบทุกเกมบน iPad จริง | ⏳ รอผู้ใช้ทดสอบละเอียดบน iPad |
 
 ## Phase 0 — ผล Audit
 
