@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { PlayerIndex } from '../../core/types';
+import { View, WORLD_H } from '../../config';
 
 /** A player's touch area in normalised screen space (0..1). */
 export interface TouchZone {
@@ -117,14 +118,26 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
     return this.zones;
   }
 
-  /** Zone rectangle in game pixels. */
+  /** World size this manager maps zones onto. */
+  private get world(): { width: number; height: number } {
+    const s = this.scene as Phaser.Scene & { vw?: number; vh?: number };
+    return { width: s.vw ?? View.width, height: s.vh ?? WORLD_H };
+  }
+
+  /** Pointer position in world units (main camera). */
+  private worldOf(pointer: Phaser.Input.Pointer): { x: number; y: number } {
+    const v = pointer.positionToCamera(this.scene.cameras.main) as Phaser.Math.Vector2;
+    return { x: v.x, y: v.y };
+  }
+
+  /** Zone rectangle in world units. */
   zoneRect(zone: TouchZone): Phaser.Geom.Rectangle {
-    const { width, height } = this.scene.scale.gameSize;
+    const { width, height } = this.world;
     return new Phaser.Geom.Rectangle(zone.x * width, zone.y * height, zone.w * width, zone.h * height);
   }
 
   zoneAt(x: number, y: number): TouchZone | undefined {
-    const { width, height } = this.scene.scale.gameSize;
+    const { width, height } = this.world;
     const nx = x / width;
     const ny = y / height;
     return this.zones.find((z) => nx >= z.x && nx < z.x + z.w && ny >= z.y && ny < z.y + z.h);
@@ -164,15 +177,16 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
 
   private onDown(pointer: Phaser.Input.Pointer): void {
     if (!this.enabled) return;
-    const player = this.playerAt(pointer.x, pointer.y);
+    const w = this.worldOf(pointer);
+    const player = this.playerAt(w.x, w.y);
     if (player === undefined) return;
     const t: TrackedTouch = {
       pointerId: pointer.id,
       player,
-      startX: pointer.x,
-      startY: pointer.y,
-      x: pointer.x,
-      y: pointer.y,
+      startX: w.x,
+      startY: w.y,
+      x: w.x,
+      y: w.y,
       startTime: this.scene.time.now,
     };
     this.touches.set(pointer.id, t);
@@ -182,16 +196,18 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
   private onMove(pointer: Phaser.Input.Pointer): void {
     const t = this.touches.get(pointer.id);
     if (!t) return;
-    t.x = pointer.x;
-    t.y = pointer.y;
+    const w = this.worldOf(pointer);
+    t.x = w.x;
+    t.y = w.y;
     this.emit('move', t);
   }
 
   private onUp(pointer: Phaser.Input.Pointer): void {
     const t = this.touches.get(pointer.id);
     if (!t) return;
-    t.x = pointer.x;
-    t.y = pointer.y;
+    const w = this.worldOf(pointer);
+    t.x = w.x;
+    t.y = w.y;
     this.touches.delete(pointer.id);
 
     if (pointer.wasCanceled) {
@@ -200,8 +216,7 @@ export class MultiTouchManager extends Phaser.Events.EventEmitter {
     }
     this.emit('up', t);
 
-    const { width, height } = this.scene.scale.gameSize;
-    const unit = Math.min(width, height);
+    const unit = Math.min(this.world.width, this.world.height);
     const dx = t.x - t.startX;
     const dy = t.y - t.startY;
     const dist = Math.hypot(dx, dy);

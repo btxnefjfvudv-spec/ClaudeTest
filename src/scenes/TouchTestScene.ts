@@ -4,6 +4,7 @@ import { PLAYER_INDICES, type PlayerIndex } from '../core/types';
 import { Audio } from '../systems/audio/AudioManager';
 import { MultiTouchManager, type SwipeInfo, type TouchZone, type TrackedTouch } from '../systems/input/MultiTouchManager';
 import { UI_FONT } from './BootScene';
+import { BaseScene } from './BaseScene';
 
 const PITCH = [523, 659, 784, 988];
 const ARROWS = ['→', '↓', '←', '↑'];
@@ -13,7 +14,7 @@ const ARROWS = ['→', '↓', '←', '↑'];
  * each zone's text faces its owner, every finger is drawn in its owner's colour.
  * Not final art.
  */
-export class TouchTestScene extends Phaser.Scene {
+export class TouchTestScene extends BaseScene {
   private touch!: MultiTouchManager;
   private gfx!: Phaser.GameObjects.Graphics;
   private panels: { box: Phaser.GameObjects.Container; text: Phaser.GameObjects.Text }[] = [];
@@ -25,7 +26,7 @@ export class TouchTestScene extends Phaser.Scene {
     super('TouchTest');
   }
 
-  create(): void {
+  build(): void {
     this.cameras.main.setBackgroundColor(PALETTE.table);
     this.stats = PLAYER_INDICES.map(() => ({ taps: 0, swipes: 0, cancels: 0, lastSwipe: '' }));
     this.maxSimultaneous = 0;
@@ -90,7 +91,7 @@ export class TouchTestScene extends Phaser.Scene {
 
   update(): void {
     const g = this.gfx;
-    const { width, height } = this.scale.gameSize;
+    const width = this.vw, height = this.vh;
     g.clear();
 
     for (const zone of this.touch.getZones()) {

@@ -1,7 +1,18 @@
 import Phaser from 'phaser';
-import { MAX_POINTERS, virtualSize } from './config';
-import { PALETTE } from './core/palette';
+import { MAX_POINTERS, View, computeView } from './config';
+import { SCENES, playableIds } from './minigames/registry';
+import { Party } from './systems/party/Party';
 import { BootScene } from './scenes/BootScene';
+import { CharactersScene } from './scenes/CharactersScene';
+import { CreditsScene } from './scenes/CreditsScene';
+import { FinalScene } from './scenes/FinalScene';
+import { LibraryScene } from './scenes/LibraryScene';
+import { MenuScene } from './scenes/MenuScene';
+import { ModeScene } from './scenes/ModeScene';
+import { PlayerSelectScene } from './scenes/PlayerSelectScene';
+import { ResultsScene } from './scenes/ResultsScene';
+import { RoundIntroScene } from './scenes/RoundIntroScene';
+import { SettingsScene } from './scenes/SettingsScene';
 import { TouchTestScene } from './scenes/TouchTestScene';
 import { Audio } from './systems/audio/AudioManager';
 
@@ -12,28 +23,36 @@ for (const type of ['gesturestart', 'gesturechange', 'gestureend', 'dblclick', '
 }
 document.addEventListener('touchmove', block, { passive: false });
 
-const initial = virtualSize(window.innerWidth, window.innerHeight);
+computeView(window.innerWidth, window.innerHeight, window.devicePixelRatio || 1);
 
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
-  backgroundColor: PALETTE.table,
+  backgroundColor: '#1b1f3b',
   pixelArt: true,
-  roundPixels: true,
-  width: initial.width,
-  height: initial.height,
+  roundPixels: false,
+  antialias: false,
+  width: View.canvasW,
+  height: View.canvasH,
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
   input: { activePointers: MAX_POINTERS, touch: { capture: true } },
-  scene: [BootScene, TouchTestScene],
+  physics: { default: 'arcade', arcade: { gravity: { x: 0, y: 0 }, debug: false } },
+  fps: { target: 60, smoothStep: true },
+  render: { powerPreference: 'high-performance', batchSize: 4096 },
+  scene: [
+    BootScene, MenuScene, PlayerSelectScene, ModeScene, RoundIntroScene, ResultsScene, FinalScene,
+    LibraryScene, SettingsScene, CreditsScene, CharactersScene, TouchTestScene, ...SCENES,
+  ],
 });
 
 game.events.once(Phaser.Core.Events.READY, () => Audio.init(game));
+Object.assign(window as unknown as Record<string, unknown>, { __game: game, __party: Party, __playable: playableIds() });
 
-// Keep the virtual width matched to the screen aspect (rotation, Split View, toolbar changes).
+// Keep the canvas matched to the screen (rotation, Split View, toolbar changes).
 function fitToScreen(): void {
-  const { width, height } = virtualSize(window.innerWidth, window.innerHeight);
-  if (width !== game.scale.gameSize.width || height !== game.scale.gameSize.height) {
-    game.scale.setGameSize(width, height);
+  computeView(window.innerWidth, window.innerHeight, window.devicePixelRatio || 1);
+  if (View.canvasW !== game.scale.gameSize.width || View.canvasH !== game.scale.gameSize.height) {
+    game.scale.setGameSize(View.canvasW, View.canvasH);
   }
   game.scale.refresh();
 }
