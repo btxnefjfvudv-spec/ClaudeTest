@@ -4,7 +4,8 @@ import { S } from '../art/common';
 import {
   CLASS_H, WALL_BOTTOM, classroomLayout, paintCloud, paintDesk, paintFloor, paintLightShaft, paintOutside, paintTree, paintWall,
 } from '../art/classroom';
-import { CHARACTERS } from '../data/characters';
+import { characterById } from '../data/characters';
+import { SEATING, SEAT_COLS, SEAT_ROWS, loadSeating } from '../data/seating';
 import { burst } from '../systems/vfx/Vfx';
 
 /** Classroom draws in a negative depth band so any UI (depth ≥ 0) is above it. */
@@ -68,8 +69,8 @@ export class ClassroomView {
       f.play('cls-fan-spin');
     }
     // Props
-    scene.add.image(this.boardX - 70, WALL_BOTTOM * S + 46, 'cls-teacher-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 46));
-    scene.add.image(this.boardX - 80, WALL_BOTTOM * S - 14, 'cls-books').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 47));
+    scene.add.image(this.boardX - 20, WALL_BOTTOM * S + 46, 'cls-teacher-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 46));
+    scene.add.image(this.boardX - 30, WALL_BOTTOM * S - 14, 'cls-books').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 47));
     scene.add.image(16, WALL_BOTTOM * S + 6, 'cls-cabinet').setOrigin(0, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S));
     scene.add.image(worldW - 22, WALL_BOTTOM * S + 10, 'cls-plant').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 10));
     scene.add.image(90, WALL_BOTTOM * S + 8, 'cls-bin').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 8));
@@ -77,21 +78,24 @@ export class ClassroomView {
     if (opts.seated !== false) this.placeStudents(opts.rows ?? [318, 372, 426]);
   }
 
+  /** Seats follow the seating chart (row 0 = front, nearest the board). */
   private placeStudents(rows: number[]): void {
-    const left = 84, right = this.boardX - 190;
-    const cols = Math.max(3, Math.floor((right - left) / 96) + 1);
-    let n = 0;
-    rows.forEach((y, ri) => {
-      for (let c = 0; c < cols; c++) {
-        const x = left + c * ((right - left) / Math.max(1, cols - 1)) + (ri % 2) * 12;
-        const ch = CHARACTERS[n++ % CHARACTERS.length];
-        const key = buildCharacter(this.scene, ch.id, ch.look);
-        this.scene.add.image(x - 14, y, 'cls-chair').setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 2));
-        const sprite = this.scene.add.sprite(x, y - 4, key, 24).setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 1));
-        this.scene.add.image(x + 40, y + 2, 'cls-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (y));
-        this.seats.push({ x, y: y - 4, sprite, key, busy: false });
-      }
-    });
+    if (!SEATING.length) loadSeating();
+    const left = 70, right = this.boardX - 150;
+    const cols = SEAT_COLS;
+    const colX = (c: number) => left + (cols - 1 - c) * ((right - left) / Math.max(1, cols - 1));
+    for (const seat of SEATING) {
+      if (seat.row >= SEAT_ROWS || seat.column >= cols) continue;
+      // front row sits nearest the board (right side), back rows further left
+      const y = rows[seat.row % rows.length];
+      const x = colX(seat.column) + (seat.row % 2) * 6;
+      const ch = characterById(seat.characterId);
+      const key = buildCharacter(this.scene, ch.id, ch.look);
+      this.scene.add.image(x - 14, y, 'cls-chair').setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 2));
+      const sprite = this.scene.add.sprite(x, y - 4, key, 24).setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 1));
+      this.scene.add.image(x + 40, y + 2, 'cls-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (y));
+      this.seats.push({ x, y: y - 4, sprite, key, busy: false });
+    }
     this.scene.time.addEvent({ delay: 1400, loop: true, callback: () => this.randomEvent() });
   }
 

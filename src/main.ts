@@ -14,6 +14,7 @@ import { PlayerSelectScene } from './scenes/PlayerSelectScene';
 import { ResultsScene } from './scenes/ResultsScene';
 import { RoundIntroScene } from './scenes/RoundIntroScene';
 import { SettingsScene } from './scenes/SettingsScene';
+import { SeatingScene } from './scenes/SeatingScene';
 import { TouchTestScene } from './scenes/TouchTestScene';
 import { Audio } from './systems/audio/AudioManager';
 
@@ -42,7 +43,7 @@ const game = new Phaser.Game({
   render: { powerPreference: 'high-performance', batchSize: 4096 },
   scene: [
     BootScene, MenuScene, PlayerSelectScene, ModeScene, RoundIntroScene, ResultsScene, FinalScene,
-    LibraryScene, SettingsScene, CreditsScene, CharactersScene, TouchTestScene, ...SCENES,
+    LibraryScene, SettingsScene, CreditsScene, CharactersScene, SeatingScene, TouchTestScene, ...SCENES,
   ],
 });
 

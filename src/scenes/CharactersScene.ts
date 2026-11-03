@@ -57,7 +57,8 @@ export class CharactersScene extends BaseScene {
       this.sprites.push(s);
       this.names.push(txt(this, x, y + 16, c.name, { size: 12 }));
     });
-    new Button(this, this.vw / 2, this.vh - 26, { w: 140, h: 40, label: '◀ กลับ', size: 16, skin: 'ui-btn-grey', sound: 'back', onTap: () => this.goto('Menu') });
+    new Button(this, this.vw / 2 - 90, this.vh - 26, { w: 140, h: 40, label: '◀ กลับ', size: 16, skin: 'ui-btn-grey', sound: 'back', onTap: () => this.goto('Menu') });
+    new Button(this, this.vw / 2 + 90, this.vh - 26, { w: 150, h: 40, label: 'ผังที่นั่ง', size: 16, skin: 'ui-btn-mint', onTap: () => this.goto('Seating') });
   }
 
   private openEditor(c: CharacterEntry, i: number): void {
