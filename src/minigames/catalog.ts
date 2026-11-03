@@ -64,7 +64,7 @@ const defs: M[] = [
   { id: 'chaotic-kitchen', num: 26, name: 'CHAOTIC KITCHEN', nameTh: 'ครัวป่วน', category: 'cooking-coop', color: 0xff9f43, duration: 60,
     blurb: 'ย่างหมูปิ้งให้สุกพอดี กลับด้านให้ทัน อย่าให้ไหม้!', howTo: ['แตะช่องว่าง = วางไม้ · แตะไม้ = กลับด้าน (ดูแถบสีใต้ไม้)', 'สีทองทั้ง 2 ด้าน ปัดขึ้น = ส่งลูกค้า · ไหม้ ปัดลง = ทิ้ง'], controls: 'แตะ + ปัดขึ้น/ลง' },
   { id: 'pizza-panic', num: 27, name: 'PIZZA PANIC', nameTh: 'พิซซ่าตามสั่ง', category: 'cooking-coop', color: 0xffc93d, duration: 60,
-    blurb: 'ลากท็อปปิ้งใส่พิซซ่าให้ตรงออร์เดอร์เป๊ะๆ', howTo: ['ลากท็อปปิ้งไปวางบนแป้ง', 'ครบตามออร์เดอร์แล้วกดส่ง'], controls: 'ลาก-วาง' },
+    blurb: 'ลากท็อปปิ้งใส่พิซซ่าให้ตรงออร์เดอร์เป๊ะๆ', howTo: ['ลากท็อปปิ้งจากถาดไปวางบนแป้ง (ลากออกเพื่อเอาคืน)', 'จำนวนตรงเป๊ะแล้วกดกระดิ่ง · ไว = โบนัส · ผิด −2'], controls: 'ลาก-วาง + แตะกระดิ่ง' },
   { id: 'delivery-dash', num: 28, name: 'DELIVERY DASH', nameTh: 'ส่งของด่วน', category: 'cooking-coop', color: 0x8455d6, duration: 60,
     blurb: 'รับพัสดุกลางเมือง ไปส่งบ้านที่ขึ้นไฟ ชนแย่งกันได้', howTo: ['รับกล่องที่ไปรษณีย์กลางเมือง', 'ส่งบ้านที่มีเพชร · ดาวเยอะ = แต้มเยอะ · พุ่งชนให้ของหล่น'], controls: 'ลากนิ้ว + ปุ่มพุ่ง' },
   { id: 'teamwork-tug', num: 29, name: 'TEAMWORK TUG', nameTh: 'ชักเย่อจังหวะ', category: 'cooking-coop', color: 0x3ed17a, duration: 30, team: true, layout: 'halves',
