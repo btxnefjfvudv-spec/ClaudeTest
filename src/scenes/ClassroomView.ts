@@ -4,8 +4,8 @@ import { S } from '../art/common';
 import {
   CLASS_H, WALL_BOTTOM, classroomLayout, paintCloud, paintDesk, paintFloor, paintLightShaft, paintOutside, paintTree, paintWall,
 } from '../art/classroom';
-import { characterById } from '../data/characters';
-import { SEATING, SEAT_COLS, SEAT_ROWS, loadSeating } from '../data/seating';
+import { CHARACTERS, characterById } from '../data/characters';
+import { SEATING, loadSeating } from '../data/seating';
 import { burst } from '../systems/vfx/Vfx';
 
 /** Classroom draws in a negative depth band so any UI (depth ≥ 0) is above it. */
@@ -37,65 +37,80 @@ export class ClassroomView {
     // Far: outside
     scene.add.image(0, 0, paintOutside(scene, aw)).setOrigin(0).setScale(S).setDepth(D + (-100));
     const cloudKey = paintCloud(scene);
-    for (let i = 0; i < 4; i++) {
-      const c = scene.add.image(Math.random() * worldW, 30 + Math.random() * 60, cloudKey).setScale(S).setDepth(D + (-99)).setAlpha(0.95);
-      scene.tweens.add({ targets: c, x: { from: -80, to: worldW + 80 }, duration: 70000 + i * 12000, repeat: -1, delay: -i * 15000 });
+    for (let i = 0; i < 3; i++) {
+      const c = scene.add.image(Math.random() * worldW, 10 + Math.random() * 30, cloudKey).setScale(S).setDepth(D + (-99)).setAlpha(0.9);
+      scene.tweens.add({ targets: c, x: { from: -80, to: worldW + 80 }, duration: 80000 + i * 15000, repeat: -1, delay: -i * 20000 });
     }
     const treeKey = paintTree(scene);
     for (const win of L.windows) {
-      const t = scene.add.image((win.x + win.w * 0.3) * S, (win.y + win.h + 30) * S, treeKey).setOrigin(0.5, 1).setScale(S).setDepth(D + (-98));
-      scene.tweens.add({ targets: t, angle: { from: -1.5, to: 1.5 }, duration: 2200 + Math.random() * 800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      for (let k = 0; k < 2; k++) {
+        const t = scene.add.image((win.x + win.w * (0.25 + k * 0.5)) * S, (win.y + win.h + 4) * S, treeKey).setOrigin(0.5, 1).setScale(S).setDepth(D + (-98));
+        scene.tweens.add({ targets: t, angle: { from: -1.2, to: 1.2 }, x: t.x + 3, duration: 2400 + Math.random() * 900, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      }
     }
     // Wall + floor
     scene.add.image(0, 0, paintWall(scene, aw, L)).setOrigin(0).setScale(S).setDepth(D + (-90));
     scene.add.image(0, WALL_BOTTOM * S, paintFloor(scene, aw)).setOrigin(0).setScale(S).setDepth(D + (-89));
-    // Sun shafts from each window (additive, gently pulsing)
+    // Daylight from the windows + dust in the air
     const shaft = paintLightShaft(scene);
     for (const win of L.windows) {
-      const s = scene.add.image((win.x + 4) * S, (win.y + win.h) * S, shaft).setOrigin(0, 0).setScale(S).setDepth(D + (-80)).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.7);
-      scene.tweens.add({ targets: s, alpha: 0.45, duration: 3000, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+      const s = scene.add.image((win.x + 4) * S, (win.y + win.h) * S, shaft).setOrigin(0, 0).setScale(S).setDepth(D + (-80)).setBlendMode(Phaser.BlendModes.ADD).setAlpha(0.8);
+      scene.tweens.add({ targets: s, alpha: 0.5, duration: 3200, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       const dust = scene.add.particles(0, 0, 'dot2', {
         x: { min: (win.x + 4) * S, max: (win.x + win.w + 30) * S },
         y: { min: win.y * S + 120, max: CLASS_H * S - 40 },
         lifespan: 4000, speedX: { min: -6, max: 6 }, speedY: { min: -8, max: 2 },
-        scale: { start: 1, end: 0 }, alpha: { start: 0.8, end: 0 }, frequency: 500, tint: 0xfff6d0,
+        scale: { start: 1, end: 0 }, alpha: { start: 0.7, end: 0 }, frequency: 600, tint: 0xffffff,
       });
       dust.setDepth(D + (-79));
     }
+    // Fluorescent flicker on one tube (life!)
+    const flick = scene.add.rectangle(14 * S + 64 * S, 13 * S, 32 * S, 2 * S, 0xffffff).setOrigin(0).setDepth(D + (-60)).setAlpha(0);
+    scene.time.addEvent({ delay: 2600, loop: true, callback: () => { if (Math.random() < 0.5) scene.tweens.add({ targets: flick, alpha: { from: 0.9, to: 0 }, duration: 90, repeat: 2 }); } });
     paintDesk(scene);
-    // Fans
-    for (let x = 0.3; x < 1; x += 0.4) {
-      const f = scene.add.sprite(worldW * x, 20, 'cls-fan').setOrigin(0.5, 0).setScale(S).setDepth(D + (-70));
+    // Oscillating ceiling fans + projector
+    for (const fx of [0.18, 0.46, 0.74]) {
+      const f = scene.add.sprite(worldW * fx, 18, 'cls-fan').setOrigin(0.5, 0).setScale(S).setDepth(D + (-70));
       f.play('cls-fan-spin');
+      scene.tweens.add({ targets: f, scaleX: { from: S, to: S * 0.55 }, duration: 2600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     }
-    // Props
-    scene.add.image(this.boardX - 20, WALL_BOTTOM * S + 46, 'cls-teacher-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 46));
-    scene.add.image(this.boardX - 30, WALL_BOTTOM * S - 14, 'cls-books').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 47));
-    scene.add.image(16, WALL_BOTTOM * S + 6, 'cls-cabinet').setOrigin(0, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S));
-    scene.add.image(worldW - 22, WALL_BOTTOM * S + 10, 'cls-plant').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 10));
-    scene.add.image(90, WALL_BOTTOM * S + 8, 'cls-bin').setOrigin(0.5, 1).setScale(S).setDepth(D + (WALL_BOTTOM * S + 8));
+    scene.add.image(worldW * 0.6, 18, 'cls-projector').setOrigin(0.5, 0).setScale(S).setDepth(D + (-69));
+    // Props from the photos
+    const floorY = WALL_BOTTOM * S;
+    scene.add.image(this.boardX - 16, floorY + 46, 'cls-teacher-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 46));
+    scene.add.image(this.boardX - 26, floorY - 14, 'cls-books').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 47));
+    scene.add.image(this.boardX + 30, floorY + 40, 'cls-bluechair').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 40));
+    scene.add.image(8, floorY + 14, 'cls-door').setOrigin(0, 1).setScale(S).setDepth(D + (floorY));
+    scene.add.image(80, floorY + 8, 'cls-broom').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 8)).setAngle(-8);
+    scene.add.image(98, floorY + 10, 'cls-dustpan').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 10));
+    scene.add.image(worldW - 20, floorY + 10, 'cls-bin').setOrigin(0.5, 1).setScale(S).setDepth(D + (floorY + 10));
 
     if (opts.seated !== false) this.placeStudents(opts.rows ?? [318, 372, 426]);
   }
 
-  /** Seats follow the seating chart (row 0 = front, nearest the board). */
+  /**
+   * The hub shows up to 12 friends at desks. Friends assigned on the seating
+   * chart come first, front rows first; everyone else follows.
+   */
   private placeStudents(rows: number[]): void {
-    if (!SEATING.length) loadSeating();
+    loadSeating();
+    const assigned = [...SEATING].sort((a, b) => a.row - b.row || a.column - b.column).map((s) => s.characterId);
+    const ids = [...new Set([...assigned, ...CHARACTERS.map((c) => c.id)])];
     const left = 70, right = this.boardX - 150;
-    const cols = SEAT_COLS;
+    const cols = 4;
     const colX = (c: number) => left + (cols - 1 - c) * ((right - left) / Math.max(1, cols - 1));
-    for (const seat of SEATING) {
-      if (seat.row >= SEAT_ROWS || seat.column >= cols) continue;
-      // front row sits nearest the board (right side), back rows further left
-      const y = rows[seat.row % rows.length];
-      const x = colX(seat.column) + (seat.row % 2) * 6;
-      const ch = characterById(seat.characterId);
+    ids.slice(0, rows.length * cols).forEach((id, i) => {
+      const row = Math.floor(i / cols), column = i % cols;
+      const y = rows[row];
+      const x = colX(column) + (row % 2) * 6;
+      const ch = characterById(id);
       const key = buildCharacter(this.scene, ch.id, ch.look);
       this.scene.add.image(x - 14, y, 'cls-chair').setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 2));
       const sprite = this.scene.add.sprite(x, y - 4, key, 24).setOrigin(0.5, 1).setScale(S).setDepth(D + (y - 1));
       this.scene.add.image(x + 40, y + 2, 'cls-desk').setOrigin(0.5, 1).setScale(S).setDepth(D + (y));
+      if ((row + column) % 3 === 0) this.scene.add.image(x + 22, y + 2, 'cls-bag').setOrigin(0.5, 1).setScale(S).setDepth(D + (y + 1));
       this.seats.push({ x, y: y - 4, sprite, key, busy: false });
-    }
+    });
     this.scene.time.addEvent({ delay: 1400, loop: true, callback: () => this.randomEvent() });
   }
 

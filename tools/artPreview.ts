@@ -8,11 +8,12 @@ class Preview extends Phaser.Scene {
     this.cameras.main.setBackgroundColor(0x5a6a8a);
     const q = new URLSearchParams(location.search);
     const only = q.get('c');
-    const max = +(q.get('n') ?? 99);
+    const max = +(q.get("n") ?? 99);
+    const start = +(q.get("s") ?? 0);
     CHARACTERS.filter((c) => !only || only.split(',').includes(c.id)).forEach((c, row) => {
       const key = buildCharacter(this, c.id, c.look);
       const frames = this.textures.get(key).frameTotal - 1;
-      for (let f = 0; f < Math.min(frames, max); f++) this.add.image(20 + f * 34, 20 + row * 36, key, f).setOrigin(0);
+      for (let f = start; f < Math.min(frames, start + max); f++) this.add.image(20 + (f - start) * 34, 20 + row * 36, key, f).setOrigin(0);
     });
   }
 }

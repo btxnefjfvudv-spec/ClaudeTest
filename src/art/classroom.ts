@@ -3,20 +3,28 @@ import { ramp, shift } from './color';
 import { makeSheet, makeTexture, rng, type Painter } from './Painter';
 
 /**
- * Placeholder 5/8 classroom (until the real photos arrive): side-on view,
- * board on the right, windows on the back wall, rows of desks facing the board.
- * Painted at art resolution (world / 2).
+ * Classroom 5/8, painted from the class photos: sky-blue walls with a
+ * periwinkle lower band, white grid ceiling with fluorescent tubes and
+ * oscillating ceiling fans, two big dark-framed windows onto green trees and
+ * the next school building (AC units above), a cream whiteboard with a wood
+ * rail, round wall clock, posters, maroon-top desks on black metal frames,
+ * white floor tiles. Side-on view: the board is on the right.
  */
 
-const WALL = 0xf3e9cf;
-const WAINSCOT = 0x5fa89a;
-const FLOOR_A = 0xe9d7b4;
-const FLOOR_B = 0xdcc49b;
-const WOOD = 0xc0834a;
-const BOARD = 0x2f6b4f;
+const WALL = 0x8fd8ec;
+const WALL_LOW = 0x86a2e6;
+const CEIL = 0xe9edf0;
+const FLOOR_A = 0xf1f4f7;
+const FLOOR_B = 0xe2e8ed;
+const WOOD = 0x8a5a36;
+const BOARD = 0xf3eedc;
+const FRAME = 0x3e2c22;
+const DESK_TOP = 0x6e2c24;
+const METAL = 0x1f1f26;
 
 export const CLASS_H = 240;
 export const WALL_BOTTOM = 132;
+const CEIL_H = 20;
 
 export interface ClassroomLayout {
   w: number;
@@ -25,236 +33,272 @@ export interface ClassroomLayout {
 }
 
 export function classroomLayout(w: number): ClassroomLayout {
-  const bw = Math.round(w * 0.27);
-  const board = { x: w - bw - 14, y: 34, w: bw, h: 62 };
+  const bw = Math.round(w * 0.3);
+  const board = { x: w - bw - 10, y: 44, w: bw, h: 50 };
   const windows = [] as ClassroomLayout['windows'];
-  const avail = board.x - 30;
-  const n = avail > 260 ? 3 : 2;
-  const ww = 58;
-  const gap = (avail - n * ww) / (n + 1);
-  for (let i = 0; i < n; i++) windows.push({ x: Math.round(14 + gap + i * (ww + gap)), y: 30, w: ww, h: 66 });
+  const avail = board.x - 40;
+  const n = 2;
+  const gap = 10;
+  const ww = Math.floor((avail - gap * (n + 1)) / n);
+  for (let i = 0; i < n; i++) windows.push({ x: 26 + gap + i * (ww + gap), y: 48, w: ww, h: 60 });
   return { w, windows, board };
 }
 
-/** Outside view seen through the windows (sky, far school building, trees). */
+/** Outside: lush trees in front of the cream next school building. */
 export function paintOutside(scene: Phaser.Scene, w: number): string {
   return makeTexture(scene, `cls-outside-${w}`, w, WALL_BOTTOM, (p) => {
-    p.gradient(0, 0, w, 110, [0x7fc8ff, 0xa8dcff, 0xd9f1ff]);
-    // far school building
-    const r = rng(7);
-    for (let x = 0; x < w; x += 90) {
-      p.box(x + 10, 60, 70, 50, 0xf0c9a0);
-      p.rect(x + 10, 56, 70, 5, 0xc55a4a);
-      for (let wx = 0; wx < 4; wx++) for (let wy = 0; wy < 2; wy++) p.rect(x + 16 + wx * 16, 68 + wy * 18, 9, 10, 0x6fa7c8);
+    p.gradient(0, 0, w, 60, [0xbfe6f5, 0xe6f6fb]);
+    // next building: cream with dark window strips + AC compressors
+    p.rect(0, 30, w, 80, 0xe9dcae);
+    for (let y = 38; y < 110; y += 22) {
+      p.rect(0, y, w, 9, 0x5b6470);
+      for (let x = 4; x < w; x += 16) p.vline(x, y, 9, 0x3a4048);
+      p.hline(0, y + 9, w, 0xd5c896);
     }
-    // ground + hedge
-    p.rect(0, 100, w, 32, 0x7cc46a);
-    for (let x = 0; x < w; x++) p.px(x, 100 + Math.round(r()), 0x5aa858);
-    return;
+    for (let x = 30; x < w; x += 70) { p.box(x, 74, 12, 10, 0xe8eaee); p.ring(x + 6, 79, 3.5, 0x8a8f9c); }
+    // trees (big leaves)
+    const r = rng(17);
+    for (let i = 0; i < w / 5; i++) {
+      const x = r() * w, y = 50 + r() * 70;
+      p.ball(x, y, 5 + r() * 6, 4 + r() * 4, r() > 0.5 ? 0x4f9e48 : 0x6ab85a, false);
+      if (r() > 0.7) p.ball(x + 2, y - 2, 3, 2, 0x9fd66e, false);
+    }
+    for (let x = 10; x < w; x += 55) p.rect(x, 60, 3, 72, 0x6a4a32);
   });
 }
 
-/** Tree canopy blob that sways in front of the outside view. */
+/** Foreground leaves swaying in front of the window glass. */
 export function paintTree(scene: Phaser.Scene): string {
-  return makeTexture(scene, 'cls-tree', 64, 60, (p) => {
-    p.rect(29, 34, 6, 26, 0x7a4a2c);
-    p.vline(29, 34, 26, 0x5a3420);
+  return makeTexture(scene, 'cls-tree', 64, 40, (p) => {
     const r = rng(3);
-    for (let i = 0; i < 14; i++) p.ball(12 + r() * 40, 10 + r() * 28, 9 + r() * 4, 8 + r() * 3, 0x58b05a, false);
-    for (let i = 0; i < 6; i++) p.ball(16 + r() * 32, 6 + r() * 14, 6, 5, 0x7ccf66, false);
-    p.outline(-0.6);
+    for (let i = 0; i < 12; i++) p.ball(8 + r() * 48, 8 + r() * 26, 7 + r() * 4, 5 + r() * 3, r() > 0.4 ? 0x5aae52 : 0x7cc760, false);
+    for (let i = 0; i < 5; i++) p.ball(10 + r() * 44, 6 + r() * 12, 4, 3, 0xa8dc78, false);
   });
 }
 
 export function paintWall(scene: Phaser.Scene, w: number, L: ClassroomLayout): string {
   return makeTexture(scene, `cls-wall-${w}`, w, WALL_BOTTOM, (p) => {
-    // wall with soft vertical lighting
-    p.gradient(0, 0, w, WALL_BOTTOM - 22, [0xfaf3df, WALL, shift(WALL, -0.12)]);
-    // ceiling strip + lights
-    p.rect(0, 0, w, 10, 0xe1d7bf);
-    p.hline(0, 10, w, shift(WALL, -0.35));
-    for (let x = 30; x < w; x += 110) {
-      p.rect(x, 3, 40, 4, 0xffffff);
-      p.hline(x, 7, 40, 0xc9c3b4);
+    const r = rng(23);
+    // wall: sky blue, slightly darker near the floor, periwinkle lower band
+    p.gradient(0, CEIL_H, w, WALL_BOTTOM - CEIL_H - 26, [0x9adfef, WALL, shift(WALL, -0.08)]);
+    const lowY = WALL_BOTTOM - 26;
+    p.rect(0, lowY, w, 26, WALL_LOW);
+    p.hline(0, lowY, w, shift(WALL_LOW, 0.3));
+    p.hline(0, lowY + 1, w, shift(WALL_LOW, 0.12));
+    p.rect(0, WALL_BOTTOM - 2, w, 2, shift(WALL_LOW, -0.45));
+    // ceiling: white grid panels + conduit
+    p.rect(0, 0, w, CEIL_H, CEIL);
+    for (let x = 0; x < w; x += 30) p.vline(x, 0, CEIL_H, 0xc9cfd6);
+    p.hline(0, 9, w, 0xc9cfd6);
+    p.hline(0, CEIL_H - 1, w, 0xb9c0c8);
+    p.hline(0, CEIL_H, w, shift(WALL, -0.4));
+    p.hline(0, 4, w, 0xffffff);
+    // fluorescent tubes
+    for (let x = 14; x < w - 30; x += 64) {
+      p.rect(x, 12, 34, 3, 0xd8dde3);
+      p.hline(x + 1, 12, 32, 0xffffff);
+      p.hline(x + 2, 15, 30, 0xeef6ff);
     }
-    // wainscot
-    const wy = WALL_BOTTOM - 22;
-    p.rect(0, wy, w, 22, WAINSCOT);
-    p.hline(0, wy, w, shift(WAINSCOT, 0.4));
-    p.hline(0, wy + 1, w, shift(WAINSCOT, 0.2));
-    for (let x = 0; x < w; x += 24) p.vline(x, wy + 3, 18, shift(WAINSCOT, -0.25));
-    p.rect(0, WALL_BOTTOM - 3, w, 3, shift(WAINSCOT, -0.55));
-
     // windows (panes transparent → outside layer shows through)
     for (const win of L.windows) {
-      p.rect(win.x - 3, win.y - 3, win.w + 6, win.h + 8, shift(WALL, -0.25));
-      p.box(win.x - 2, win.y - 2, win.w + 4, win.h + 4, 0xf7f7f7);
+      // AC unit above each window
+      const ax = win.x + Math.round(win.w * 0.55), aw = Math.min(46, win.w * 0.55);
+      p.box(ax, win.y - 16, aw, 10, 0xf4f6f8);
+      p.hline(ax + 2, win.y - 9, aw - 4, 0xb8bec8);
+      p.hline(ax + 2, win.y - 8, aw - 4, 0x9aa2ae);
+      p.px(ax + aw - 4, win.y - 13, 0x3ed17a);
+      // frame
+      p.rect(win.x - 3, win.y - 3, win.w + 6, win.h + 6, FRAME);
       for (let y = 0; y < win.h; y++) for (let x = 0; x < win.w; x++) p.clear(win.x + x, win.y + y);
-      // mullions
-      p.rect(win.x + win.w / 2 - 1, win.y, 2, win.h, 0xeaeaea);
-      p.rect(win.x, win.y + Math.round(win.h * 0.42), win.w, 2, 0xeaeaea);
+      // sliding panes: 3 mullions + transom bar
+      for (let k = 1; k < 3; k++) p.rect(win.x + Math.round((win.w * k) / 3) - 1, win.y, 2, win.h, FRAME);
+      p.rect(win.x, win.y + Math.round(win.h * 0.38), win.w, 2, 0xb8c2cc);
+      p.hline(win.x, win.y + Math.round(win.h * 0.38) + 2, win.w, 0x8a96a2);
       // sill
-      p.box(win.x - 5, win.y + win.h + 2, win.w + 10, 4, 0xe6e0d0);
-      // curtains
-      for (const side of [0, 1]) {
-        const cx = side ? win.x + win.w - 5 : win.x - 4;
-        for (let y = 0; y < win.h + 6; y++) {
-          const wob = Math.round(Math.sin(y / 4) * 1);
-          p.rect(cx + wob, win.y - 4 + y, 9, 1, y % 6 < 3 ? 0x8fc6e8 : 0x7ab4dc);
-        }
-      }
-      p.rect(win.x - 8, win.y - 6, win.w + 16, 3, 0x9a7a5a);
+      p.box(win.x - 4, win.y + win.h + 3, win.w + 8, 3, 0xdfe6ec);
     }
-
-    // notice board between windows
-    const nb = { x: L.windows[0].x + L.windows[0].w + 14, y: 44, w: 40, h: 34 };
-    if (L.windows.length > 1 && L.windows[1].x - nb.x > nb.w + 8) {
-      p.box(nb.x, nb.y, nb.w, nb.h, 0xc89a63, 2);
-      p.rect(nb.x + 3, nb.y + 3, nb.w - 6, nb.h - 6, 0xd9b07a);
-      const papers = [0xffffff, 0xffe066, 0xff9aa8, 0x9fe0ff, 0xb8f0b0];
-      const r = rng(11);
-      for (let i = 0; i < 6; i++) {
-        const px = nb.x + 5 + Math.floor(r() * (nb.w - 16)), py = nb.y + 5 + Math.floor(r() * (nb.h - 16));
-        p.rect(px, py, 10, 10, papers[i % papers.length]);
-        p.hline(px + 2, py + 3, 6, 0x9a9aa8);
-        p.hline(px + 2, py + 5, 5, 0x9a9aa8);
-        p.px(px + 4, py, 0xff4d4d);
-      }
+    // pillar between windows
+    if (L.windows.length > 1) {
+      const a = L.windows[0], b = L.windows[1];
+      const px = a.x + a.w + 3;
+      p.rect(px, CEIL_H + 1, b.x - 3 - px, WALL_BOTTOM - CEIL_H - 27, shift(WALL, 0.12));
+      p.vline(px, CEIL_H + 1, WALL_BOTTOM - CEIL_H - 27, shift(WALL, -0.15));
     }
-
-    // chalkboard
-    const b = L.board;
-    p.rect(b.x - 5, b.y - 5, b.w + 10, b.h + 10, shift(WOOD, -0.5));
-    p.box(b.x - 4, b.y - 4, b.w + 8, b.h + 8, WOOD, 2);
-    const br = ramp(BOARD);
-    p.rect(b.x, b.y, b.w, b.h, BOARD);
-    const r = rng(5);
-    for (let i = 0; i < b.w * b.h * 0.05; i++) p.px(b.x + Math.floor(r() * b.w), b.y + Math.floor(r() * b.h), r() > 0.5 ? br[1] : br[3]);
-    // eraser smudges
-    p.dither(b.x + 6, b.y + 30, 30, 8, BOARD, br[3], 0.25);
-    // chalk "5/8"
-    const chalk = 0xf4f4ea;
+    // wall fan between the window and the back corner + light switch
+    const fx = 12;
+    p.rect(fx + 4, 56, 2, 8, 0xe8ecef);
+    p.circle(fx + 5, 52, 7, 0xf4f6f8);
+    p.ring(fx + 5, 52, 7, 0xb8bec8);
+    p.circle(fx + 5, 52, 2, 0xb8bec8);
+    p.box(fx + 2, 92, 6, 5, 0xf4f6f8);
+    // whiteboard with wood frame + long wood rail along the front wall
+    const bd = L.board;
+    p.rect(bd.x - 3, bd.y - 3, bd.w + 6, bd.h + 6, shift(WOOD, -0.45));
+    p.box(bd.x - 2, bd.y - 2, bd.w + 4, bd.h + 4, WOOD);
+    p.rect(bd.x, bd.y, bd.w, bd.h, BOARD);
+    p.dither(bd.x, bd.y + bd.h - 8, bd.w, 8, BOARD, 0xe6e0cc, 0.3);
+    for (let i = 0; i < 16; i++) p.px(bd.x + Math.floor(r() * bd.w), bd.y + Math.floor(r() * bd.h), 0xdcd5c0);
+    // marker writing: "5/8" + date line + smiley
+    const ink = 0x2f4fd0;
     const big: Record<string, string[]> = {
-      '5': ['aaaaa', 'a....', 'aaaa.', '....a', '....a', 'a...a', '.aaa.'],
-      '/': ['....a', '...a.', '...a.', '..a..', '.a...', '.a...', 'a....'],
-      '8': ['.aaa.', 'a...a', 'a...a', '.aaa.', 'a...a', 'a...a', '.aaa.'],
+      '5': ['aaaa', 'a...', 'aaa.', '...a', 'aaa.'],
+      '/': ['...a', '..a.', '.a..', 'a...', 'a...'],
+      '8': ['.aa.', 'a..a', '.aa.', 'a..a', '.aa.'],
     };
-    let cx = b.x + 10;
+    let cx = bd.x + 6;
     for (const ch of '5/8') {
-      for (const [j, row] of big[ch].entries()) for (let i = 0; i < row.length; i++) if (row[i] === 'a') p.rect(cx + i * 2, b.y + 8 + j * 2, 2, 2, chalk);
-      cx += 14;
+      for (const [j, row] of big[ch].entries()) for (let i = 0; i < row.length; i++) if (row[i] === 'a') p.rect(cx + i * 2, bd.y + 6 + j * 2, 2, 2, ink);
+      cx += 11;
     }
-    // doodles: star + smiley + underline
-    p.hline(b.x + 10, b.y + 25, 38, chalk);
-    p.ring(b.x + b.w - 18, b.y + 16, 7, chalk);
-    p.px(b.x + b.w - 21, b.y + 14, chalk); p.px(b.x + b.w - 15, b.y + 14, chalk);
-    p.hline(b.x + b.w - 21, b.y + 19, 7, chalk);
-    for (let i = 0; i < 4; i++) p.hline(b.x + 10, b.y + 36 + i * 6, 20 + Math.floor(r() * 30), 0xcfe7d8);
-    p.px(b.x + b.w - 30, b.y + 44, 0xffe066); p.px(b.x + b.w - 29, b.y + 44, 0xffe066);
-    // chalk tray
-    p.box(b.x - 2, b.y + b.h + 1, b.w + 4, 3, shift(WOOD, 0.1));
-    p.rect(b.x + 10, b.y + b.h, 5, 1, 0xffffff);
-    p.rect(b.x + 20, b.y + b.h, 4, 1, 0xff9aa8);
-
-    // clock above the board
-    const ck = { x: b.x + b.w / 2, y: 20 };
-    p.circle(ck.x, ck.y, 8, 0x2b3263);
-    p.circle(ck.x, ck.y, 7, 0xffffff);
-    p.vline(ck.x, ck.y - 5, 5, 0x2b3263);
-    p.hline(ck.x, ck.y, 4, 0xff5a6e);
-    // class sign
-    p.box(b.x - 40, 18, 28, 12, 0x3d6fd6);
-    for (const [j, row] of ['aaa.a.aaa', 'a..a..a.a', 'aaa.a.aaa', '..a.a.a.a', 'aaa.a.aaa'].entries())
-      for (let i = 0; i < row.length; i++) if (row[i] === 'a') p.px(b.x - 36 + i * 2, 21 + j, 0xffffff), p.px(b.x - 35 + i * 2, 21 + j, 0xffffff);
+    p.hline(bd.x + 6, bd.y + 20, 30, 0xd04040);
+    for (let i = 0; i < 3; i++) p.hline(bd.x + 6, bd.y + 26 + i * 6, 14 + Math.floor(r() * 24), 0x6a78b8);
+    p.ring(bd.x + bd.w - 14, bd.y + 14, 6, 0xd04040);
+    p.px(bd.x + bd.w - 16, bd.y + 12, 0xd04040); p.px(bd.x + bd.w - 12, bd.y + 12, 0xd04040);
+    p.hline(bd.x + bd.w - 16, bd.y + 16, 5, 0xd04040);
+    p.box(bd.x + 4, bd.y + bd.h + 1, bd.w - 8, 2, shift(WOOD, 0.15));
+    p.rect(bd.x + 12, bd.y + bd.h, 4, 1, 0x2f4fd0); p.rect(bd.x + 20, bd.y + bd.h, 4, 1, 0xd04040);
+    p.rect(bd.x - 40, bd.y - 5, w - bd.x + 40, 2, WOOD);
+    // round clock above the board
+    const ck = { x: bd.x + 12, y: bd.y - 14 };
+    p.circle(ck.x, ck.y, 7, 0x24242c);
+    p.circle(ck.x, ck.y, 6, 0xffffff);
+    p.vline(ck.x, ck.y - 4, 4, 0x24242c);
+    p.hline(ck.x, ck.y, 3, 0x24242c);
+    // school poster (blue/white) and rainbow poster
+    const ps = { x: bd.x + bd.w - 34, y: bd.y - 24 + 0 };
+    p.box(ps.x, ps.y - 2, 22, 18, 0xffffff);
+    p.rect(ps.x + 2, ps.y, 18, 3, 0x2f4fa8);
+    p.rect(ps.x + 4, ps.y + 5, 14, 2, 0x2f6fd0);
+    p.rect(ps.x + 4, ps.y + 9, 14, 3, 0xff9f43);
+    p.rect(ps.x + 4, ps.y + 13, 10, 1, 0x2f4fa8);
+    const rb = { x: bd.x - 26, y: bd.y + 4 };
+    p.rect(rb.x - 1, rb.y - 1, 18, 24, 0xd04040);
+    const bands = [0xff5a5a, 0xff9f43, 0xffe066, 0x5ac85a, 0x3d9bff, 0x8455d6];
+    bands.forEach((c, i) => p.rect(rb.x, rb.y + i * 4, 16, 4, c));
+    p.rect(rb.x + 3, rb.y + 3, 10, 5, 0xffffff);
+    p.hline(rb.x + 4, rb.y + 5, 8, 0x2f4fa8);
+    // speaker box
+    p.box(bd.x - 12, CEIL_H + 4, 7, 9, 0x2a2a32);
+    p.circle(bd.x - 9, CEIL_H + 9, 1.5, 0x55555f);
   });
 }
 
 export function paintFloor(scene: Phaser.Scene, w: number): string {
   const h = CLASS_H - WALL_BOTTOM;
   return makeTexture(scene, `cls-floor-${w}`, w, h, (p) => {
-    // perspective tiles: rows get taller toward the viewer
+    // white square tiles in light perspective
     let y = 0, row = 0;
     while (y < h) {
-      const th = 6 + row * 2;
-      const shiftX = (row % 2) * 10;
-      for (let x = -20; x < w + 20; x += 20) {
-        const c = ((x + shiftX) / 20 + row) % 2 === 0 ? FLOOR_A : FLOOR_B;
-        p.rect(x + shiftX, y, 20, th, c);
-        p.vline(x + shiftX, y, th, shift(FLOOR_B, -0.15));
+      const th = 7 + row * 2;
+      for (let x = 0; x < w + 30; x += 22) {
+        const c = (Math.floor(x / 22) + row) % 2 === 0 ? FLOOR_A : FLOOR_B;
+        p.rect(x, y, 22, th, c);
+        p.vline(x, y, th, 0xcdd5dc);
       }
-      p.hline(0, y, w, shift(FLOOR_B, -0.2));
+      p.hline(0, y, w, 0xcdd5dc);
       y += th;
       row++;
     }
-    // soft shadow along the wall
-    p.dither(0, 0, w, 3, shift(FLOOR_B, -0.3), FLOOR_A, 0.3);
+    p.dither(0, 0, w, 4, 0xc5ced6, FLOOR_A, 0.35);
+    // fluorescent reflections
+    for (let x = 30; x < w; x += 90) p.dither(x, 12, 30, 2, FLOOR_A, 0xffffff, 0.5);
   });
 }
 
-/** Window light shafts falling on the floor (drawn additive). */
+/** Soft daylight from the windows (drawn additive). */
 export function paintLightShaft(scene: Phaser.Scene): string {
-  return makeTexture(scene, 'cls-shaft', 60, 110, (p) => {
+  return makeTexture(scene, 'cls-shaft', 70, 110, (p) => {
     for (let y = 0; y < 110; y++) {
-      const x0 = Math.round(y * 0.45), wdt = 40 + Math.round(y * 0.1);
-      const a = Math.round(60 * (1 - y / 110));
-      p.hline(x0, y, wdt, 0xfff3c4, a);
+      const x0 = Math.round(y * 0.35), wdt = 50 + Math.round(y * 0.1);
+      p.hline(x0, y, wdt, 0xf4fbff, Math.round(34 * (1 - y / 110)));
     }
   });
 }
 
 export function paintDesk(scene: Phaser.Scene): void {
-  // student desk (front view-ish, facing right)
-  makeTexture(scene, 'cls-desk', 30, 22, (p) => {
-    p.box(0, 0, 30, 5, WOOD, 1);
-    p.hline(0, 5, 30, shift(WOOD, -0.5));
-    p.rect(2, 6, 3, 16, 0x8a8f9c);
-    p.rect(25, 6, 3, 16, 0x8a8f9c);
-    p.vline(2, 6, 16, 0xb0b5c0);
-    p.rect(3, 6, 24, 7, shift(WOOD, -0.25));
-    p.rect(5, 8, 8, 3, 0xffffff);
-    p.rect(14, 8, 6, 3, 0x6ec6ff);
+  // student desk: maroon wood top, drawer box, black metal frame, little sticker
+  makeTexture(scene, 'cls-desk', 30, 24, (p) => {
+    p.rect(2, 7, 2, 17, METAL); p.rect(26, 7, 2, 17, METAL);
+    p.hline(2, 20, 26, METAL);
+    p.box(0, 0, 30, 4, DESK_TOP, 1);
+    p.hline(0, 4, 30, shift(DESK_TOP, -0.5));
+    p.rect(3, 5, 24, 6, shift(DESK_TOP, -0.2));
+    p.rect(5, 6, 6, 3, 0xf4f6f8); p.px(6, 7, 0x2f4fa8); p.px(9, 7, 0xffe066);
     p.outline(-0.6);
   });
+  // chair: black metal frame, dark wood seat
   makeTexture(scene, 'cls-chair', 16, 26, (p) => {
-    p.box(0, 0, 4, 16, WOOD);
-    p.box(0, 13, 14, 4, WOOD);
-    p.rect(1, 17, 2, 9, 0x8a8f9c);
-    p.rect(11, 17, 2, 9, 0x8a8f9c);
+    p.rect(0, 0, 2, 17, METAL);
+    p.rect(0, 2, 4, 2, METAL); p.rect(0, 7, 4, 2, METAL);
+    p.box(0, 13, 14, 3, shift(DESK_TOP, -0.15));
+    p.rect(1, 16, 2, 10, METAL); p.rect(11, 16, 2, 10, METAL);
+    p.hline(1, 22, 12, METAL);
     p.outline(-0.6);
   });
   makeTexture(scene, 'cls-teacher-desk', 52, 30, (p) => {
-    p.box(0, 0, 52, 6, shift(WOOD, -0.1), 1);
-    p.box(2, 6, 48, 24, shift(WOOD, -0.25), 1);
-    p.rect(6, 10, 18, 8, shift(WOOD, -0.4));
-    p.rect(13, 13, 4, 2, 0xd9c27a);
-    // books + globe
-    p.rect(30, -0 + 0, 0, 0, 0);
+    p.box(0, 0, 52, 5, shift(WOOD, 0.15), 1);
+    p.box(2, 5, 48, 25, WOOD, 1);
+    p.rect(6, 9, 18, 8, shift(WOOD, -0.25));
+    p.rect(13, 12, 4, 2, 0xd9c27a);
+    p.rect(28, 9, 18, 18, shift(WOOD, -0.15));
     p.outline(-0.6);
   });
   makeTexture(scene, 'cls-books', 22, 14, (p) => {
     p.box(0, 8, 18, 6, 0xff7a85);
     p.box(2, 3, 16, 5, 0x6ec6ff);
     p.box(1, 0, 14, 3, 0xffe066);
-    p.ball(19, 9, 3, 3, 0x7ee8b0);
     p.outline(-0.6);
   });
-  // Ceiling fan (4 frames)
-  makeSheet(scene, 'cls-fan', 44, 18, 4, (p, i) => {
-    p.rect(21, 0, 2, 8, 0x8a8f9c);
-    p.ball(22, 10, 4, 3, 0xd8dbe4, false);
-    const blades = [[-20, 0], [-14, 1], [-6, 2], [0, 1]];
-    const [l, dy] = blades[i];
-    p.rect(22 + l, 10 + dy, 20 - Math.abs(l) / 2, 2, 0xb8bccb);
-    p.rect(24, 10 - dy, 20 - Math.abs(l) / 2, 2, 0xa0a4b4);
+  // blue plastic chair (teacher)
+  makeTexture(scene, 'cls-bluechair', 16, 24, (p) => {
+    p.box(10, 0, 5, 14, 0x3d6fd6);
+    p.box(1, 11, 14, 4, 0x3d6fd6);
+    p.rect(2, 15, 2, 9, 0x2f58b0); p.rect(12, 15, 2, 9, 0x2f58b0);
     p.outline(-0.6);
   });
-  if (!scene.anims.exists('cls-fan-spin')) scene.anims.create({ key: 'cls-fan-spin', frames: scene.anims.generateFrameNumbers('cls-fan', {}), frameRate: 14, repeat: -1 });
+  // Oscillating ceiling fan with wire cage (4 frames)
+  makeSheet(scene, 'cls-fan', 30, 26, 4, (p, i) => {
+    p.box(12, 0, 6, 5, 0xf4f6f8);
+    p.rect(14, 5, 2, 4, 0xdfe3e8);
+    const cx = 15, cy = 16, r = 9;
+    p.circle(cx, cy, r, 0xdfe6ee, 120);
+    for (let k = 0; k < 3; k++) {
+      const a = (i * Math.PI) / 6 + (k * Math.PI * 2) / 3;
+      p.stroke(cx, cy, cx + Math.cos(a) * 7, cy + Math.sin(a) * 3.5, 2, 0xc5ccd6);
+    }
+    p.ring(cx, cy, r, 0xffffff);
+    p.ring(cx, cy, r - 3, 0xe8ecf0);
+    p.circle(cx, cy, 2, 0xb8bec8);
+    p.outline(-0.5);
+  });
+  if (!scene.anims.exists('cls-fan-spin')) scene.anims.create({ key: 'cls-fan-spin', frames: scene.anims.generateFrameNumbers('cls-fan', {}), frameRate: 16, repeat: -1 });
+  // projector hanging from the ceiling
+  makeTexture(scene, 'cls-projector', 20, 16, (p) => {
+    p.rect(9, 0, 2, 7, 0xdfe3e8);
+    p.box(2, 7, 16, 8, 0x2a2a32);
+    p.circle(15, 11, 2, 0x5a6a8a);
+    p.px(14, 10, 0xbfe9ff);
+    p.outline(-0.5);
+  });
+  // aluminium door with dark glass
   makeTexture(scene, 'cls-door', 30, 70, (p) => {
-    p.box(0, 0, 30, 70, 0x9a6a3e, 2);
-    p.rect(5, 6, 20, 24, 0xb98552);
-    p.rect(8, 9, 14, 18, 0xa9e0ff);
-    p.rect(5, 36, 20, 28, 0xb98552);
-    p.ball(24, 40, 2, 2, 0xffd34d);
+    p.box(0, 0, 30, 70, 0xd8dde3, 2);
+    p.rect(4, 4, 22, 40, 0x2e4a52);
+    p.dither(4, 4, 22, 10, 0x2e4a52, 0x4f7480, 0.3);
+    p.rect(4, 48, 22, 18, 0xc5ccd4);
+    p.rect(22, 44, 4, 2, 0x8a8f9c);
+    p.outline(-0.6);
+  });
+  // straw broom + purple dustpan (cleaning corner from the photos)
+  makeTexture(scene, 'cls-broom', 20, 40, (p) => {
+    p.stroke(10, 0, 10, 22, 1, 0xd9b06a);
+    for (let i = 0; i < 9; i++) p.line(10, 20, 3 + i * 1.7, 38, i % 2 ? 0xc9963c : 0xe0b45a);
+    p.hline(7, 21, 7, 0x8a6a3a);
+    p.outline(-0.6);
+  });
+  makeTexture(scene, 'cls-dustpan', 14, 12, (p) => {
+    p.tri(1, 11, 13, 11, 9, 3, 0x9a5ad8);
+    p.rect(9, 0, 2, 5, 0x7a3ab8);
     p.outline(-0.6);
   });
   makeTexture(scene, 'cls-bin', 12, 14, (p) => {
@@ -264,19 +308,10 @@ export function paintDesk(scene: Phaser.Scene): void {
     p.vline(8, 4, 9, 0x5ab8ee);
     p.outline(-0.6);
   });
-  makeTexture(scene, 'cls-cabinet', 34, 46, (p) => {
-    p.box(0, 0, 34, 46, 0x8f98a8, 2);
-    p.vline(17, 2, 42, 0x6a7282);
-    p.rect(13, 20, 2, 6, 0xd8dbe4);
-    p.rect(19, 20, 2, 6, 0xd8dbe4);
-    p.box(3, -6, 12, 6, 0xffe066);
-    p.box(18, -5, 10, 5, 0xff7a85);
-    p.outline(-0.6);
-  });
-  makeTexture(scene, 'cls-plant', 16, 24, (p) => {
-    p.box(3, 15, 10, 9, 0xd9734e);
-    const r = rng(9);
-    for (let i = 0; i < 7; i++) p.ball(8 + (r() - 0.5) * 10, 6 + r() * 9, 4, 3, 0x58b05a, false);
+  makeTexture(scene, 'cls-bag', 12, 12, (p) => {
+    p.ball(6, 7, 5.5, 4.8, 0x24242c);
+    p.rect(3, 1, 6, 3, 0x24242c);
+    p.hline(3, 7, 6, 0xd9b04a);
     p.outline(-0.6);
   });
   makeTexture(scene, 'cls-zzz', 9, 9, (p) => p.stamp(0, 0, ['aaaa.....', '..a......', '.a.......', 'aaaa.aaa.', '......a..', '.....aaa.', '.........', '.........', '.........'], { a: 0xffffff }));
@@ -296,4 +331,5 @@ export function paintCloud(scene: Phaser.Scene): string {
   });
 }
 
+export { ramp };
 export type { Painter };

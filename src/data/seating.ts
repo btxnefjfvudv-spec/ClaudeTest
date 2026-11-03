@@ -1,46 +1,61 @@
 import type { SeatEntry } from '../core/types';
-import { CHARACTERS } from './characters';
 
 /**
- * Seating chart of the real 5/8 classroom. Until the user's chart arrives this
- * is a placeholder (rows × cols filled with the placeholder characters).
- * When real data exists it must be used as-is — never shuffled.
+ * Seating chart of classroom 5/8 (from the class's drawing):
+ *
+ *            กระดาน (board)
+ *  โต๊ะครู                           ประตู
+ *  row 1:  2  2  2  2
+ *  row 2:  2  2  2  2
+ *  row 3:  2  2  3
+ *  row 4:  2  2  5
+ *  row 5:  2  2  3                    ประตู
+ *
+ * Each number is a group of desks pushed together (39 desks). Who sits at which
+ * desk is not known yet — seats stay empty until the class assigns them
+ * (Characters → ผังที่นั่ง). Seats are never assigned randomly.
  */
-export const SEAT_ROWS = 3;
-export const SEAT_COLS = 4;
+export const SEAT_LAYOUT: number[][] = [
+  [2, 2, 2, 2],
+  [2, 2, 2, 2],
+  [2, 2, 3],
+  [2, 2, 5],
+  [2, 2, 3],
+];
 
-export const SEATING: SeatEntry[] = [];
+export const SEAT_ROWS = SEAT_LAYOUT.length;
+export const SEAT_COLS = Math.max(...SEAT_LAYOUT.map((r) => r.reduce((a, b) => a + b, 0)));
 
-function defaults(): SeatEntry[] {
-  const out: SeatEntry[] = [];
-  let n = 0;
-  for (let row = 0; row < SEAT_ROWS; row++) {
-    for (let column = 0; column < SEAT_COLS; column++) {
-      const c = CHARACTERS[n % CHARACTERS.length];
-      out.push({ name: c.name, number: n + 1, row, column, characterId: c.id });
-      n++;
-    }
-  }
-  return out;
+export function rowLength(row: number): number {
+  return (SEAT_LAYOUT[row] ?? []).reduce((a, b) => a + b, 0);
 }
 
-const STORE = 'c58-seating';
+/** Group index and position inside the group of a desk. */
+export function deskGroup(row: number, column: number): { group: number; index: number } {
+  let c = column;
+  const groups = SEAT_LAYOUT[row] ?? [];
+  for (let g = 0; g < groups.length; g++) {
+    if (c < groups[g]) return { group: g, index: c };
+    c -= groups[g];
+  }
+  return { group: groups.length - 1, index: 0 };
+}
+
+/** Assigned seats only. */
+export const SEATING: SeatEntry[] = [];
+
+const STORE = 'c58-seating-v2';
 
 export function loadSeating(): void {
   SEATING.length = 0;
   try {
     const raw = localStorage.getItem(STORE);
-    if (raw) {
-      const list = JSON.parse(raw) as SeatEntry[];
-      if (Array.isArray(list) && list.length) {
-        SEATING.push(...list.filter((s) => typeof s.row === 'number' && typeof s.column === 'number'));
-        return;
-      }
-    }
+    if (!raw) return;
+    const list = JSON.parse(raw) as SeatEntry[];
+    if (Array.isArray(list)) SEATING.push(...list.filter((s) => s.row < SEAT_ROWS && s.column < rowLength(s.row)));
   } catch {
-    /* fall through to defaults */
+    /* none */
   }
-  SEATING.push(...defaults());
 }
 
 export function saveSeating(): void {
@@ -53,4 +68,14 @@ export function saveSeating(): void {
 
 export function seatAt(row: number, column: number): SeatEntry | undefined {
   return SEATING.find((s) => s.row === row && s.column === column);
+}
+
+export function assign(row: number, column: number, characterId: string | null, name = '', number = 0): void {
+  // a friend sits in one place only
+  for (let i = SEATING.length - 1; i >= 0; i--) {
+    const s = SEATING[i];
+    if ((s.row === row && s.column === column) || (characterId && s.characterId === characterId)) SEATING.splice(i, 1);
+  }
+  if (characterId) SEATING.push({ row, column, characterId, name, number });
+  saveSeating();
 }

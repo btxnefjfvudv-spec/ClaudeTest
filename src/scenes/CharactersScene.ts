@@ -8,8 +8,8 @@ import { txt } from '../ui/text';
 import { BaseScene } from './BaseScene';
 import { ClassroomView } from './ClassroomView';
 
-const HAIR: HairStyle[] = ['short', 'spiky', 'buzz', 'side', 'curly', 'long', 'ponytail', 'bob', 'bun', 'twin'];
-const HAIR_TH: Record<HairStyle, string> = { short: 'สั้น', spiky: 'ตั้งชี้', buzz: 'เกรียน', side: 'ปัดข้าง', curly: 'หยิก', long: 'ยาว', ponytail: 'หางม้า', bob: 'บ๊อบ', bun: 'มวย', twin: 'แกละ' };
+const HAIR: HairStyle[] = ['short', 'crew', 'fade', 'buzz', 'curtain', 'bowl', 'spiky', 'side', 'curly', 'long', 'ponytail', 'bob', 'bun', 'twin'];
+const HAIR_TH: Record<HairStyle, string> = { short: 'สั้น', spiky: 'ตั้งชี้', buzz: 'เกรียน', side: 'ปัดข้าง', curly: 'หยิก', long: 'ยาว', ponytail: 'หางม้า', bob: 'บ๊อบ', bun: 'มวย', twin: 'แกละ', curtain: 'แสกกลาง', bowl: 'หน้าม้าหนา', crew: 'สั้นรองทรง', fade: 'สกินเฮด/เฟด' };
 const HAIR_COLORS = [0x1f1a26, 0x2b2030, 0x3a2622, 0x5a3426, 0x6a3a22, 0x8a5a32, 0xc98a4b, 0x7a3a8a, 0x3a5aa8];
 const SKINS = [0xffe2c6, 0xffd9b8, 0xf5c29a, 0xdca37a, 0xb97f56, 0x8f5e3e];
 const ACCENTS = [0xff5a6e, 0x3d9bff, 0x3ed17a, 0xffc93d, 0xb8a6ff, 0xff9f43, 0x3fe0e0, 0xff7a85, 0x7ee8b0, 0x8455d6];

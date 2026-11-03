@@ -1,8 +1,10 @@
 import Phaser from 'phaser';
-import { ramp, shift } from './color';
+import { mixc, ramp, shift } from './color';
 import { makeSheet, type Painter } from './Painter';
 
-export type HairStyle = 'short' | 'spiky' | 'buzz' | 'long' | 'ponytail' | 'bob' | 'bun' | 'twin' | 'curly' | 'side';
+export type HairStyle = 'short' | 'spiky' | 'buzz' | 'long' | 'ponytail' | 'bob' | 'bun' | 'twin' | 'curly' | 'side' | 'curtain' | 'bowl' | 'crew' | 'fade';
+export type Build = 'slim' | 'normal' | 'big';
+export type Outfit = 'uniform' | 'jersey' | 'jacket' | 'plain';
 export type BottomStyle = 'pants' | 'shorts' | 'skirt';
 export type Accessory = 'none' | 'glasses' | 'headband' | 'cap' | 'bandaid';
 
@@ -19,10 +21,20 @@ export interface CharacterLook {
   accent: number;
   accessory: Accessory;
   eye: number;
+  /** Body shape (torso width / face roundness). */
+  build?: Build;
+  /** uniform = school shirt (collar stars, name, emblem); jersey = sleeveless; jacket = long sleeves over shirt. */
+  outfit?: Outfit;
+  /** Colour details for the outfit (stars on collar, jersey trim, inner shirt under a jacket). */
+  detail?: number;
+  earbuds?: boolean;
+  braces?: boolean;
+  /** Signature resting mouth (e.g. 'pout'). */
+  mouth?: Mouth;
 }
 
 type Eyes = 'open' | 'blink' | 'happy' | 'x' | 'sad' | 'wide' | 'angry';
-type Mouth = 'smile' | 'open' | 'flat' | 'o' | 'sad' | 'grin' | 'teeth';
+export type Mouth = 'smile' | 'open' | 'flat' | 'o' | 'sad' | 'grin' | 'teeth' | 'pout';
 
 interface Pose {
   /** Body vertical offset (positive = down). */
@@ -112,12 +124,15 @@ function armEnd(sx: number, sy: number, deg: number, len: number): [number, numb
 }
 
 function drawArm(p: Painter, sx: number, sy: number, deg: number, look: CharacterLook, back: boolean): void {
-  const sleeve = back ? shift(look.shirt, -0.25) : look.shirt;
+  const base = look.outfit === 'jersey' ? look.skin : look.shirt;
+  const sleeve = back ? shift(base, -0.25) : base;
   const skin = back ? shift(look.skin, -0.25) : look.skin;
-  const [ex, ey] = armEnd(sx, sy, deg, 3);
+  const sleeveLen = look.outfit === 'jacket' ? 5 : 3;
+  const [ex, ey] = armEnd(sx, sy, deg, sleeveLen);
   const [hx, hy] = armEnd(sx, sy, deg, 6);
   p.stroke(sx, sy, ex, ey, 2, sleeve);
   p.stroke(ex, ey, hx, hy, 2, skin);
+  if (look.outfit === 'jersey') p.px(Math.round(sx), Math.round(sy), back ? shift(look.shirt, -0.25) : look.shirt);
 }
 
 function drawLeg(p: Painter, hipX: number, hipY: number, fx: number, fy: number, look: CharacterLook, back: boolean): void {
@@ -127,6 +142,7 @@ function drawLeg(p: Painter, hipX: number, hipY: number, fx: number, fy: number,
   const footX = hipX + fx;
   const footY = 30 + fy;
   p.stroke(hipX, hipY, footX, footY - 1, 2, c);
+  if (look.bottomStyle !== 'pants') p.rect(footX - 1, footY - 2, 2, 1, back ? 0xc9ccd6 : 0xf4f4f8);
   // shoe points forward (right)
   p.rect(footX - 1, footY - 1, 4, 2, shoe);
   p.px(footX + 2, footY - 1, shift(shoe, 0.4));
@@ -135,9 +151,10 @@ function drawLeg(p: Painter, hipX: number, hipY: number, fx: number, fy: number,
 
 function shadeHead(p: Painter, cx: number, cy: number, look: CharacterLook): void {
   const s = ramp(look.skin);
-  for (let y = Math.floor(cy - 7); y <= cy + 7; y++) {
-    for (let x = Math.floor(cx - 8); x <= cx + 8; x++) {
-      const nx = (x + 0.5 - cx) / 7.5, ny = (y + 0.5 - cy) / 7;
+  const rx = look.build === 'big' ? 8.1 : 7.5, ry = look.build === 'big' ? 7.3 : 7;
+  for (let y = Math.floor(cy - 8); y <= cy + 8; y++) {
+    for (let x = Math.floor(cx - 9); x <= cx + 9; x++) {
+      const nx = (x + 0.5 - cx) / rx, ny = (y + 0.5 - cy) / ry;
       const d = nx * nx + ny * ny;
       if (d > 1) continue;
       let c = s[2];
@@ -179,6 +196,21 @@ function hairAt(style: HairStyle, x: number, y: number, cx: number, cy: number):
     case 'long':
     case 'twin':
       return inCap && (y <= fringe || (backSide && x < cx - 2));
+    case 'curtain': {
+      // voluminous middle-part: taller crown, fringe swept up at the front
+      const nx2 = (x + 0.5 - cx) / 8.6, ny2 = (y + 0.5 - (cy - 0.6)) / 8.4;
+      const front = x > cx + 1;
+      const sweep = cy - 3 + (x > cx + 5 ? 1 : 0) + (x === cx + 3 ? -1 : 0);
+      return nx2 * nx2 + ny2 * ny2 <= 1 && (front ? y <= sweep : y <= cy - 1 || (backSide && y <= cy + 2 && x < cx - 3));
+    }
+    case 'bowl': {
+      const nx2 = (x + 0.5 - cx) / 8.7, ny2 = (y + 0.5 - cy) / 8.2;
+      return nx2 * nx2 + ny2 * ny2 <= 1 && (y <= cy - 1 || (backSide && y <= cy + 3 && x < cx - 2));
+    }
+    case 'crew':
+      return inCap && (y <= cy - 3 + (x > cx + 4 ? 0 : 0) || (backSide && y <= cy + 1 && x < cx - 3));
+    case 'fade':
+      return inCap && y <= cy - 4 + (backSide ? 1 : 0);
   }
 }
 
@@ -215,6 +247,17 @@ function drawHair(p: Painter, cx: number, cy: number, look: CharacterLook, behin
       else if (ny < -0.55 && nx < 0.1) c = h[3];
       p.px(x, y, c);
     }
+  }
+  if (style === 'fade') {
+    // faded sides: a soft band between hair and skin
+    const band = mixc(look.hair, look.skin, 0.55);
+    for (let y = cy - 3; y <= cy; y++) for (let x = cx - 8; x <= cx - 2; x++) {
+      const nx = (x + 0.5 - cx) / 7.5, ny = (y + 0.5 - cy) / 7;
+      if (nx * nx + ny * ny <= 1) p.px(x, y, y === cy - 3 ? mixc(look.hair, look.skin, 0.3) : band);
+    }
+  }
+  if (style === 'curtain') {
+    p.px(cx + 1, cy - 8, h[3]); p.px(cx + 2, cy - 9, h[2]);
   }
   if (style === 'spiky') {
     for (const [sx, top] of [[cx - 5, cy - 10], [cx - 1, cy - 11], [cx + 3, cy - 10]] as const) {
@@ -281,7 +324,12 @@ function drawFace(p: Painter, cx: number, cy: number, pose: Pose, look: Characte
   p.px(cx + 5, cy + 3, BLUSH);
   const mx = cx + 3, my = cy + 4;
   const mouthC = 0x6b2433;
-  switch (pose.mouth) {
+  // Signature resting mouth replaces the neutral smile.
+  const mouth = pose.mouth === 'smile' && look.mouth ? look.mouth : pose.mouth;
+  switch (mouth) {
+    case 'pout':
+      p.rect(mx + 1, my, 2, 2, 0xd9837f); p.px(mx + 3, my, 0xd9837f); p.px(mx + 1, my, 0xf0a8a0); p.px(mx + 2, my + 1, mouthC);
+      break;
     case 'smile': p.px(mx - 1, my, mouthC); p.px(mx, my + 1, mouthC); p.px(mx + 1, my, mouthC); break;
     case 'grin': p.hline(mx - 1, my, 3, mouthC); p.hline(mx, my + 1, 2, 0xff6680); break;
     case 'teeth': p.rect(mx - 1, my, 4, 2, mouthC); p.hline(mx - 1, my, 4, 0xffffff); break;
@@ -290,6 +338,7 @@ function drawFace(p: Painter, cx: number, cy: number, pose: Pose, look: Characte
     case 'flat': p.hline(mx, my + 1, 2, mouthC); break;
     case 'sad': p.px(mx - 1, my + 1, mouthC); p.px(mx, my, mouthC); p.px(mx + 1, my + 1, mouthC); break;
   }
+  if (look.braces && (mouth === 'teeth' || mouth === 'grin' || mouth === 'open')) p.hline(mx - 1, my, mouth === 'open' ? 2 : 3, 0x3d6fff);
 }
 
 function drawAccessory(p: Painter, cx: number, cy: number, look: CharacterLook): void {
@@ -328,39 +377,70 @@ function drawFrame(p: Painter, look: CharacterLook, pose: Pose): void {
   const cy = 11 + by + (pose.hy ?? 0);
 
   // contact shadow handled by the engine; here only the sprite.
-  drawArm(p, 13, torsoTop + 2, -pose.arms[0] + 0, look, true);
+  const shoulderBack = look.build === 'big' ? 12 : 13;
+  const shoulderFront = look.build === 'big' ? 20 : look.build === 'slim' ? 18 : 19;
+  drawArm(p, shoulderBack, torsoTop + 2, -pose.arms[0] + 0, look, true);
   if (!pose.sit) drawLeg(p, 14, hipY, pose.legs[0], pose.legs[1], look, true);
   drawHair(p, cx, cy, look, true);
 
-  // torso
+  // torso (width depends on build)
+  const tl = look.build === 'big' ? 10 : 11;
+  const tr = look.build === 'big' ? 21 : look.build === 'slim' ? 19 : 20;
+  const outfit = look.outfit ?? 'plain';
   const sh = ramp(look.shirt);
   for (let y = torsoTop; y < hipY; y++) {
-    for (let x = 11; x <= 20; x++) {
-      const corner = (y === torsoTop && (x === 11 || x === 20));
+    for (let x = tl; x <= tr; x++) {
+      const corner = (y === torsoTop && (x === tl || x === tr));
       if (corner) continue;
       let c = sh[2];
-      if (x <= 12) c = sh[1];
-      if (x >= 19 && y > torsoTop) c = sh[3];
+      if (x <= tl + 1) c = sh[1];
+      if (x >= tr - 1 && y > torsoTop) c = sh[3];
       if (y === hipY - 1) c = sh[1];
       p.px(x, y, c);
     }
   }
-  // collar + ribbon/emblem in accent colour
-  p.px(16, torsoTop, sh[0]); p.px(17, torsoTop, sh[0]);
-  p.rect(16, torsoTop + 1, 2, 2, look.accent);
-  p.px(16, torsoTop + 1, shift(look.accent, 0.4));
-  p.px(19, torsoTop + 3, shift(look.accent, -0.2));
+  const mid = Math.round((tl + tr) / 2);
+  if (outfit === 'uniform') {
+    // collar points, two stars, embroidered name, school emblem, placket
+    const col = shift(look.shirt, 0.45);
+    p.px(mid - 1, torsoTop, col); p.px(mid + 2, torsoTop, col);
+    p.px(mid, torsoTop, look.skin); p.px(mid + 1, torsoTop, look.skin);
+    p.px(mid + 1, torsoTop + 1, sh[1]);
+    p.px(mid - 2, torsoTop + 1, look.detail ?? 0x2f4fd0);
+    p.px(tr - 1, torsoTop + 1, look.detail ?? 0x2f4fd0);
+    p.hline(tl + 2, torsoTop + 3, 2, 0x3a5ad8);
+    p.px(tr - 2, torsoTop + 4, 0xf08a2a);
+    p.px(tr - 3, torsoTop + 4, 0xd9692a);
+    p.vline(mid + 1, torsoTop + 2, hipY - torsoTop - 3, sh[1]);
+  } else if (outfit === 'jersey') {
+    const trim = look.detail ?? 0xd9b04a;
+    p.px(mid, torsoTop, look.skin); p.px(mid + 1, torsoTop, look.skin); p.px(mid, torsoTop + 1, look.skin);
+    p.px(mid - 1, torsoTop, trim); p.px(mid + 2, torsoTop, trim); p.px(mid + 1, torsoTop + 1, trim); p.px(mid - 1, torsoTop + 1, trim);
+    // gold chest print + number
+    p.hline(tl + 2, torsoTop + 3, tr - tl - 3, trim);
+    p.px(tl + 3, torsoTop + 5, shift(trim, -0.2)); p.px(tl + 5, torsoTop + 5, shift(trim, -0.2));
+  } else if (outfit === 'jacket') {
+    const inner = look.detail ?? 0x9be6c8;
+    p.px(mid, torsoTop, inner); p.px(mid + 1, torsoTop, inner); p.px(mid - 1, torsoTop, inner); p.px(mid, torsoTop + 1, inner);
+    p.vline(mid + 1, torsoTop + 1, hipY - torsoTop - 2, sh[0]);
+    p.px(mid + 2, torsoTop + 3, sh[3]); p.px(mid + 2, torsoTop + 5, sh[3]);
+  } else {
+    // plain shirt: collar + signature colour tie/ribbon
+    p.px(16, torsoTop, sh[0]); p.px(17, torsoTop, sh[0]);
+    p.rect(16, torsoTop + 1, 2, 2, look.accent);
+    p.px(16, torsoTop + 1, shift(look.accent, 0.4));
+  }
 
   // bottom
   const bt = ramp(look.bottom);
   if (look.bottomStyle === 'skirt') {
-    for (let j = 0; j < 4; j++) p.hline(11 - Math.floor(j / 2), hipY - 1 + j, 10 + Math.floor(j / 2) * 2, j % 2 ? bt[1] : bt[2]);
-    for (let x = 11; x <= 20; x += 3) p.vline(x, hipY, 2, bt[0]);
+    for (let j = 0; j < 4; j++) p.hline(tl - Math.floor(j / 2), hipY - 1 + j, tr - tl + 1 + Math.floor(j / 2) * 2, j % 2 ? bt[1] : bt[2]);
+    for (let x = tl; x <= tr; x += 3) p.vline(x, hipY, 2, bt[0]);
   } else {
-    p.hline(11, hipY - 1, 10, bt[2]);
-    p.hline(11, hipY, 10, bt[1]);
+    p.hline(tl, hipY - 1, tr - tl + 1, bt[2]);
+    p.hline(tl, hipY, tr - tl + 1, bt[1]);
     p.px(15, hipY, bt[0]);
-    if (look.bottomStyle === 'shorts') p.hline(11, hipY + 1, 10, bt[1]);
+    if (look.bottomStyle === 'shorts') p.hline(tl, hipY + 1, tr - tl + 1, bt[1]);
   }
   if (!pose.sit) drawLeg(p, 18, hipY, pose.legs[2], pose.legs[3], look, false);
   else {
@@ -371,13 +451,15 @@ function drawFrame(p: Painter, look: CharacterLook, pose: Pose): void {
 
   // head
   shadeHead(p, cx, cy, look);
-  // ear
-  p.px(cx - 3, cy + 1, shift(look.skin, -0.3));
+  // ear (+ white earbud)
+  p.px(cx - 3, cy + 1, look.earbuds ? 0xffffff : shift(look.skin, -0.3));
+  if (look.earbuds) p.px(cx - 3, cy + 2, 0xd8dbe4);
   drawFace(p, cx, cy, pose, look);
   drawHair(p, cx, cy, look, false);
   drawAccessory(p, cx, cy, look);
 
-  drawArm(p, 19, torsoTop + 2, pose.arms[1], look, false);
+  drawArm(p, shoulderFront, torsoTop + 2, pose.arms[1], look, false);
+  if (look.earbuds) p.px(cx - 3, cy + 1, 0xffffff);
   p.outline(-0.75);
 }
 
