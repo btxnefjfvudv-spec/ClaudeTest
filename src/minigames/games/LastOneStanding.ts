@@ -14,7 +14,7 @@ const TILE = 32;
 interface Tile { gx: number; gy: number; img: Phaser.GameObjects.Image; state: 'ok' | 'warn' | 'gone'; d: number }
 
 /** #6 — Sumo on a raft that breaks apart ring by ring. */
-export class LastOneStanding extends BaseMinigame {
+export default class LastOneStanding extends BaseMinigame {
   private kit!: ArenaKit;
   private tiles: Tile[] = [];
   private grid = new Map<string, Tile>();

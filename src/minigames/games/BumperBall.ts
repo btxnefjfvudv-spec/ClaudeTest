@@ -16,7 +16,7 @@ const GOAL_H = 150;
 const BALL_R = 13;
 
 /** #11 — 2v2 bumper-car soccer. Left team P1+P3, right team P2+P4. */
-export class BumperBall extends BaseMinigame {
+export default class BumperBall extends BaseMinigame {
   private kit!: ArenaKit;
   private ball!: Phaser.GameObjects.Image;
   private ballShadow!: Phaser.GameObjects.Image;

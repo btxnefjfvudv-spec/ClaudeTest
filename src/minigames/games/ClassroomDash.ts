@@ -51,7 +51,7 @@ interface Runner {
 }
 
 /** #1 — Alternate L/R to sprint, jump hurdles, hit boost pads. Split screen per player. */
-export class ClassroomDash extends BaseMinigame {
+export default class ClassroomDash extends BaseMinigame {
   private split!: SplitKit;
   private runners: Runner[] = [];
   private obs: Ob[] = [];

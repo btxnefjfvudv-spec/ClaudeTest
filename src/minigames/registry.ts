@@ -2,26 +2,34 @@ import type { MinigameStatus } from '../core/types';
 import type { BaseMinigame } from './BaseMinigame';
 import { CATALOG, CATALOG_LIST } from './catalog';
 import type { MinigameMeta } from './types';
-import { LastOneStanding } from './games/LastOneStanding';
-import { ClassroomDash } from './games/ClassroomDash';
-import { BumperBall } from './games/BumperBall';
 
-type SceneClass = new () => BaseMinigame;
+type SceneClass = (new () => BaseMinigame) & { status?: MinigameStatus };
 
-/** Implemented scenes, with their verified status. */
-const IMPLEMENTED: [SceneClass, MinigameStatus][] = [
-  [ClassroomDash, 'implemented'],
-  [LastOneStanding, 'implemented'],
-  [BumperBall, 'implemented'],
-];
+/**
+ * Every file in ./games/ default-exports one minigame scene class.
+ * They are discovered automatically (no manual registration needed).
+ * A class may declare `static status` (defaults to 'implemented').
+ */
+const modules = import.meta.glob<{ default: SceneClass }>('./games/*.ts', { eager: true });
 
-export const SCENES: SceneClass[] = IMPLEMENTED.map(([c]) => c);
-
+export const SCENES: SceneClass[] = [];
 const statusById = new Map<string, MinigameStatus>();
-for (const [C, status] of IMPLEMENTED) {
-  const id = (new C()).meta.id;
+
+for (const [path, mod] of Object.entries(modules)) {
+  const C = mod.default;
+  if (typeof C !== 'function') {
+    console.warn(`[registry] ${path} has no default export`);
+    continue;
+  }
+  const id = new C().meta.id;
+  if (!CATALOG[id]) {
+    console.warn(`[registry] ${path}: unknown game id ${id}`);
+    continue;
+  }
+  const status = C.status ?? 'implemented';
   statusById.set(id, status);
   CATALOG[id].status = status;
+  SCENES.push(C);
 }
 
 export function isPlayable(id: string): boolean {
