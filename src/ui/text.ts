@@ -1,7 +1,8 @@
 import Phaser from 'phaser';
 import { View } from '../config';
 
-export const UI_FONT = '"Sukhumvit Set", "Kanit", "Thonburi", "Noto Sans Thai", system-ui, -apple-system, sans-serif';
+// Kanit (bundled, works offline) for Thai + Latin; system fonts only as fallback.
+export const UI_FONT = '"Kanit", "Sukhumvit Set", "Thonburi", system-ui, sans-serif';
 
 export interface TextOpts {
   size?: number;

@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@fontsource/kanit": "^5.3.0",
     "phaser": "3.90.0"
   },
   "devDependencies": {

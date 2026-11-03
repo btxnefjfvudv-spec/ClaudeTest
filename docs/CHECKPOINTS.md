@@ -9,4 +9,5 @@
 | 5 | Offline service worker, icons, auto-pause | — |
 | 6 | Character editor, seating editor, wake lock | — |
 | 7 | Classroom 5/8 + 11 friends from photos, real seating chart | — |
-| 8 | All friends in white school uniform; checkpoint rule | (this commit) |
+| 8 | All friends in white school uniform; checkpoint rule | 8e69bfa |
+| 9 | Game font → Kanit (bundled, offline) | (this commit) |

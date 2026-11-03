@@ -1,3 +1,7 @@
+import '@fontsource/kanit/thai-400.css';
+import '@fontsource/kanit/latin-400.css';
+import '@fontsource/kanit/thai-700.css';
+import '@fontsource/kanit/latin-700.css';
 import Phaser from 'phaser';
 import { MAX_POINTERS, View, computeView } from './config';
 import { SCENES, playableIds } from './minigames/registry';
@@ -27,6 +31,14 @@ document.addEventListener('touchmove', block, { passive: false });
 
 computeView(window.innerWidth, window.innerHeight, window.devicePixelRatio || 1);
 
+// Text is rasterised when created, so load the font first (max 2.5 s wait).
+const fontsReady = Promise.race([
+  Promise.all(['400 20px Kanit', '700 20px Kanit'].map((f) => document.fonts.load(f, 'กขคABC123'))),
+  new Promise((r) => setTimeout(r, 2500)),
+]);
+void fontsReady.then(start);
+
+function start(): void {
 const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'game',
@@ -60,3 +72,4 @@ function fitToScreen(): void {
 }
 window.addEventListener('resize', fitToScreen);
 window.visualViewport?.addEventListener('resize', fitToScreen);
+}
