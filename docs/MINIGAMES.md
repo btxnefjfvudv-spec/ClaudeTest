@@ -23,12 +23,12 @@ Status: Planned → Prototype → In Development → Implemented → Playtested 
 | 13 | BOOMERANG BATTLE | ฟิสิกส์ & ต่อสู้ | Planned | – |
 | 14 | BALLOON BRAWL | ฟิสิกส์ & ต่อสู้ | Planned | – |
 | 15 | WOBBLE RACE | ฟิสิกส์ & ต่อสู้ | Planned | – |
-| 16 | QUICK DRAW | ปฏิกิริยา | Planned | – |
-| 17 | COLOR PANIC | ปฏิกิริยา | Planned | – |
-| 18 | BUTTON MASHER | ปฏิกิริยา | Planned | – |
-| 19 | MEMORY FLASH | ปฏิกิริยา | Planned | – |
-| 20 | REACTION TILES | ปฏิกิริยา | Planned | – |
-| 21 | MINI BASKETBALL | กีฬา | Planned | – |
+| 16 | QUICK DRAW | ปฏิกิริยา | Implemented | – |
+| 17 | COLOR PANIC | ปฏิกิริยา | Implemented | – |
+| 18 | BUTTON MASHER | ปฏิกิริยา | Implemented | – |
+| 19 | MEMORY FLASH | ปฏิกิริยา | Implemented | – |
+| 20 | REACTION TILES | ปฏิกิริยา | Implemented | – |
+| 21 | MINI BASKETBALL | กีฬา | Implemented | – |
 | 22 | TABLE TENNIS | กีฬา | Planned | – |
 | 23 | MINI GOLF MAYHEM | กีฬา | Planned | – |
 | 24 | TARGET BLAST | กีฬา | Planned | – |
