@@ -9,44 +9,44 @@ Status: Planned → Prototype → In Development → Implemented → Playtested 
 | # | Game | Category | Status | Smoke test |
 |---|---|---|---|---|
 | 1 | CLASSROOM DASH | แข่งความเร็ว | Implemented | – |
-| 2 | FLOOR IS LAVA | แข่งความเร็ว | Planned | – |
-| 3 | RAINBOW RUN | แข่งความเร็ว | Planned | – |
-| 4 | OBSTACLE CHAOS | แข่งความเร็ว | Planned | – |
-| 5 | HUMAN PINBALL | แข่งความเร็ว | Planned | – |
+| 2 | FLOOR IS LAVA | แข่งความเร็ว | Implemented | – |
+| 3 | RAINBOW RUN | แข่งความเร็ว | Implemented | – |
+| 4 | OBSTACLE CHAOS | แข่งความเร็ว | Implemented | – |
+| 5 | HUMAN PINBALL | แข่งความเร็ว | Implemented | – |
 | 6 | LAST ONE STANDING | เอาตัวรอด | Implemented | – |
-| 7 | FALLING BLOCKS | เอาตัวรอด | Planned | – |
-| 8 | TORNADO TROUBLE | เอาตัวรอด | Planned | – |
-| 9 | BOMB TAG | เอาตัวรอด | Planned | – |
-| 10 | ICE SURVIVAL | เอาตัวรอด | Planned | – |
+| 7 | FALLING BLOCKS | เอาตัวรอด | Implemented | – |
+| 8 | TORNADO TROUBLE | เอาตัวรอด | Implemented | – |
+| 9 | BOMB TAG | เอาตัวรอด | Implemented | – |
+| 10 | ICE SURVIVAL | เอาตัวรอด | Implemented | – |
 | 11 | BUMPER BALL | ฟิสิกส์ & ต่อสู้ | Implemented | – |
-| 12 | BOXING BUDDIES | ฟิสิกส์ & ต่อสู้ | Planned | – |
-| 13 | BOOMERANG BATTLE | ฟิสิกส์ & ต่อสู้ | Planned | – |
-| 14 | BALLOON BRAWL | ฟิสิกส์ & ต่อสู้ | Planned | – |
-| 15 | WOBBLE RACE | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 12 | BOXING BUDDIES | ฟิสิกส์ & ต่อสู้ | Implemented | – |
+| 13 | BOOMERANG BATTLE | ฟิสิกส์ & ต่อสู้ | Implemented | – |
+| 14 | BALLOON BRAWL | ฟิสิกส์ & ต่อสู้ | Implemented | – |
+| 15 | WOBBLE RACE | ฟิสิกส์ & ต่อสู้ | Implemented | – |
 | 16 | QUICK DRAW | ปฏิกิริยา | Implemented | – |
 | 17 | COLOR PANIC | ปฏิกิริยา | Implemented | – |
 | 18 | BUTTON MASHER | ปฏิกิริยา | Implemented | – |
 | 19 | MEMORY FLASH | ปฏิกิริยา | Implemented | – |
 | 20 | REACTION TILES | ปฏิกิริยา | Implemented | – |
 | 21 | MINI BASKETBALL | กีฬา | Implemented | – |
-| 22 | TABLE TENNIS | กีฬา | Planned | – |
-| 23 | MINI GOLF MAYHEM | กีฬา | Planned | – |
-| 24 | TARGET BLAST | กีฬา | Planned | – |
-| 25 | PAPER PLANE RACE | กีฬา | Planned | – |
-| 26 | CHAOTIC KITCHEN | ทำอาหาร & ทีม | Planned | – |
-| 27 | PIZZA PANIC | ทำอาหาร & ทีม | Planned | – |
-| 28 | DELIVERY DASH | ทำอาหาร & ทีม | Planned | – |
-| 29 | TEAMWORK TUG | ทำอาหาร & ทีม | Planned | – |
-| 30 | FIX THE CLASSROOM | ทำอาหาร & ทีม | Planned | – |
-| 31 | NUMBER RUSH | ปริศนา | Planned | – |
-| 32 | WORD SCRAMBLE | ปริศนา | Planned | – |
-| 33 | PATTERN MASTER | ปริศนา | Planned | – |
-| 34 | HIDDEN OBJECTS | ปริศนา | Planned | – |
-| 35 | PUZZLE PANIC | ปริศนา | Planned | – |
-| 36 | DRAW IT FAST | สร้างสรรค์ & ฮา | Planned | – |
-| 37 | DANCE OFF | สร้างสรรค์ & ฮา | Planned | – |
-| 38 | SILLY FACES | สร้างสรรค์ & ฮา | Planned | – |
-| 39 | BALANCE MASTER | สร้างสรรค์ & ฮา | Planned | – |
+| 22 | TABLE TENNIS | กีฬา | Implemented | – |
+| 23 | MINI GOLF MAYHEM | กีฬา | Implemented | – |
+| 24 | TARGET BLAST | กีฬา | Implemented | – |
+| 25 | PAPER PLANE RACE | กีฬา | Implemented | – |
+| 26 | CHAOTIC KITCHEN | ทำอาหาร & ทีม | Implemented | – |
+| 27 | PIZZA PANIC | ทำอาหาร & ทีม | Implemented | – |
+| 28 | DELIVERY DASH | ทำอาหาร & ทีม | Implemented | – |
+| 29 | TEAMWORK TUG | ทำอาหาร & ทีม | Implemented | – |
+| 30 | FIX THE CLASSROOM | ทำอาหาร & ทีม | Implemented | – |
+| 31 | NUMBER RUSH | ปริศนา | Implemented | – |
+| 32 | WORD SCRAMBLE | ปริศนา | Implemented | – |
+| 33 | PATTERN MASTER | ปริศนา | Implemented | – |
+| 34 | HIDDEN OBJECTS | ปริศนา | Implemented | – |
+| 35 | PUZZLE PANIC | ปริศนา | Implemented | – |
+| 36 | DRAW IT FAST | สร้างสรรค์ & ฮา | Implemented | – |
+| 37 | DANCE OFF | สร้างสรรค์ & ฮา | Implemented | – |
+| 38 | SILLY FACES | สร้างสรรค์ & ฮา | Implemented | – |
+| 39 | BALANCE MASTER | สร้างสรรค์ & ฮา | Implemented | – |
 | 40 | CHAOS BUTTON | สร้างสรรค์ & ฮา | Implemented | – |
 | 41 | TREASURE THIEVES | ปาร์ตี้ขั้นสูง | Implemented | – |
 | 42 | HIDE AND SEEK | ปาร์ตี้ขั้นสูง | Implemented | – |
