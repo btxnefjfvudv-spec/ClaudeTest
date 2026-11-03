@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { buildCharacter } from '../art/CharacterArt';
 import { buildCommonTextures, buildIconTextures } from '../art/common';
-import { CHARACTERS } from '../data/characters';
+import { CHARACTERS, loadCharacterEdits } from '../data/characters';
 import { Audio } from '../systems/audio/AudioManager';
 import { Party } from '../systems/party/Party';
 import { loadSettings } from '../systems/settings';
@@ -18,6 +18,7 @@ export class BootScene extends BaseScene {
 
   build(): void {
     loadSettings();
+    loadCharacterEdits();
     buildCommonTextures(this);
     buildIconTextures(this);
     for (const c of CHARACTERS) buildCharacter(this, c.id, c.look);

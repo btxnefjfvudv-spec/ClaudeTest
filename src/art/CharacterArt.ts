@@ -278,7 +278,7 @@ function drawFace(p: Painter, cx: number, cy: number, pose: Pose, look: Characte
   eye(ex2);
   // blush
   p.px(cx, cy + 3, BLUSH);
-  p.hline(cx + 5, cy + 3, 2, BLUSH);
+  p.px(cx + 5, cy + 3, BLUSH);
   const mx = cx + 3, my = cy + 4;
   const mouthC = 0x6b2433;
   switch (pose.mouth) {
@@ -396,4 +396,12 @@ export function buildCharacter(scene: Phaser.Scene, id: string, look: CharacterL
     });
   }
   return key;
+}
+
+/** Repaint a character after its look was edited (drops cached texture + anims). */
+export function rebuildCharacter(scene: Phaser.Scene, id: string, look: CharacterLook): string {
+  const key = `char-${id}`;
+  for (const name of Object.keys(CHAR_ANIMS)) scene.anims.remove(`${key}-${name}`);
+  if (scene.textures.exists(key)) scene.textures.remove(key);
+  return buildCharacter(scene, id, look);
 }

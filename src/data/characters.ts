@@ -34,3 +34,32 @@ export const CHARACTERS: CharacterEntry[] = [
 export function characterById(id: string): CharacterEntry {
   return CHARACTERS.find((c) => c.id === id) ?? CHARACTERS[0];
 }
+
+const STORE = 'c58-chars';
+
+/** Apply edits saved on this device (names / looks) over the defaults. */
+export function loadCharacterEdits(): void {
+  try {
+    const raw = localStorage.getItem(STORE);
+    if (!raw) return;
+    const edits = JSON.parse(raw) as Record<string, { name?: string; look?: Partial<CharacterLook> }>;
+    for (const c of CHARACTERS) {
+      const e = edits[c.id];
+      if (!e) continue;
+      if (typeof e.name === 'string' && e.name.trim()) c.name = e.name.trim().slice(0, 16);
+      if (e.look) Object.assign(c.look, e.look);
+    }
+  } catch {
+    /* storage blocked: defaults */
+  }
+}
+
+export function saveCharacterEdits(): void {
+  try {
+    const out: Record<string, { name: string; look: CharacterLook }> = {};
+    for (const c of CHARACTERS) out[c.id] = { name: c.name, look: c.look };
+    localStorage.setItem(STORE, JSON.stringify(out));
+  } catch {
+    /* ignore */
+  }
+}

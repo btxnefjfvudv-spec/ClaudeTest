@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { MAX_POINTERS, View, computeView } from './config';
 import { SCENES, playableIds } from './minigames/registry';
 import { Party } from './systems/party/Party';
+import { CHARACTERS } from './data/characters';
 import { BootScene } from './scenes/BootScene';
 import { CharactersScene } from './scenes/CharactersScene';
 import { CreditsScene } from './scenes/CreditsScene';
@@ -46,7 +47,7 @@ const game = new Phaser.Game({
 });
 
 game.events.once(Phaser.Core.Events.READY, () => Audio.init(game));
-Object.assign(window as unknown as Record<string, unknown>, { __game: game, __party: Party, __playable: playableIds() });
+Object.assign(window as unknown as Record<string, unknown>, { __game: game, __party: Party, __playable: playableIds(), __chars: CHARACTERS });
 
 // Keep the canvas matched to the screen (rotation, Split View, toolbar changes).
 function fitToScreen(): void {
