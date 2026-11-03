@@ -9,7 +9,6 @@ import { rankBy } from '../../systems/party/Party';
 import { Avatar, playerMarkerKey } from '../../systems/players/Avatar';
 import { Vfx, burst } from '../../systems/vfx/Vfx';
 import { TouchButton } from '../../ui/Controls';
-import { txt } from '../../ui/text';
 import { BaseMinigame } from '../BaseMinigame';
 import { CATALOG } from '../catalog';
 import { SplitKit } from '../kit/SplitKit';
@@ -216,7 +215,7 @@ export default class ClassroomDash extends BaseMinigame {
     for (const [deg, y] of [[0, this.vh / 2 + 9], [180, this.vh / 2 - 9]] as const) {
       const x0 = 60, x1 = this.vw - 60;
       const line = this.add.rectangle(this.vw / 2, y, x1 - x0, 4, 0x1b1f3b, 0.8).setDepth(940);
-      const flag = txt(this, deg === 0 ? x1 + 10 : x0 - 10, y, '🏁', { size: 12, strokeWidth: 0 }).setDepth(941).setAngle(deg);
+      const flag = this.add.image(deg === 0 ? x1 + 12 : x0 - 12, y, 'dash-finish').setScale(0.5).setDepth(941).setAngle(deg);
       const marks = this.players.map((p) => this.add.image(x0, y, playerMarkerKey(this, p)).setScale(S * 0.7).setDepth(942).setAngle(deg));
       this.bars.push(marks);
       void line; void flag;
@@ -256,7 +255,7 @@ export default class ClassroomDash extends BaseMinigame {
     }
     // ranking text in HUD
     const order = [...this.runners].sort((a, b) => (a.finished >= 0 ? -1e6 + a.finished : 0) - (b.finished >= 0 ? -1e6 + b.finished : 0) || b.x - a.x);
-    order.forEach((r, i) => (this.hudText[r.p] = r.finished >= 0 ? `🏁 ${['1st', '2nd', '3rd', '4th'][this.finishOrder.indexOf(r.p)]}` : ['1st', '2nd', '3rd', '4th'][i]));
+    order.forEach((r, i) => (this.hudText[r.p] = r.finished >= 0 ? `✓ ${['1st', '2nd', '3rd', '4th'][this.finishOrder.indexOf(r.p)]}` : ['1st', '2nd', '3rd', '4th'][i]));
     const allDone = this.runners.every((r) => r.finished >= 0);
     if (allDone || (this.firstFinishAt >= 0 && this.elapsed - this.firstFinishAt > 12) || this.elapsed > 75) this.finish();
   }

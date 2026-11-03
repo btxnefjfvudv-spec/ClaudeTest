@@ -71,7 +71,7 @@ export class LibraryScene extends BaseScene {
       txt(this, cx, cy - 78, `${m.nameTh} · ${CATEGORY_LABEL[m.category]}`, { size: 14, color: '#5a4fa0', strokeWidth: 0, shadow: false }),
       txt(this, cx, cy - 46, m.blurb, { size: 13, color: '#1b1f3b', strokeWidth: 0, shadow: false, wrap: 360 }),
       txt(this, cx, cy - 2, m.howTo.map((s) => '• ' + s).join('\n'), { size: 12, color: '#3b3f63', strokeWidth: 0, shadow: false, wrap: 360, bold: false }),
-      txt(this, cx, cy + 40, `🎮 ${m.controls}   👥 ${m.minPlayers}–${m.maxPlayers} คน${m.team ? ' (ทีม)' : ''}   ⏱ ${m.duration ? m.duration + ' วิ' : 'จนกว่าจะจบ'}`, { size: 11, color: '#3b3f63', strokeWidth: 0, shadow: false, bold: false, wrap: 370 }),
+      txt(this, cx, cy + 40, `ควบคุม: ${m.controls}  ·  ${m.minPlayers}–${m.maxPlayers} คน${m.team ? ' (ทีม)' : ''}  ·  ${m.duration ? m.duration + ' วินาที' : 'จนกว่าจะมีผู้ชนะ'}`, { size: 11, color: '#3b3f63', strokeWidth: 0, shadow: false, bold: false, wrap: 370 }),
     ]);
     if (ok) {
       d.add(new Button(this, cx - 95, cy + 92, { w: 170, h: 44, label: this.pick ? 'เล่นเกมนี้!' : 'เล่น (ฟรีเพลย์)', size: 15, skin: 'ui-btn-mint', onTap: () => { Party.start(this.pick ? 'quick' : 'free'); this.goto(this.pick ? 'RoundIntro' : m.id, this.pick ? { gameId: m.id } : undefined); } }));

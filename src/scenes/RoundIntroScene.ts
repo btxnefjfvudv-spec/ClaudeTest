@@ -7,6 +7,8 @@ import { Audio } from '../systems/audio/AudioManager';
 import { Party } from '../systems/party/Party';
 import { Vfx } from '../systems/vfx/Vfx';
 import { txt } from '../ui/text';
+import { Avatar } from '../systems/players/Avatar';
+import { crownKey } from '../art/stage';
 import { BaseScene } from './BaseScene';
 import { ClassroomView } from './ClassroomView';
 
@@ -32,6 +34,19 @@ export class RoundIntroScene extends BaseScene {
       st.forEach((r, i) => {
         const c = PLAYER_COLORS[r.player];
         txt(this, 16, 20 + i * 20, `${r.rank}. P${r.player + 1}  ${Party.totals[r.player]}`, { size: 12, color: toCss(c.light), origin: [0, 0.5] }).setDepth(30);
+      });
+      // The class leader celebrates in front of the board; the others react.
+      st.forEach((r, i) => {
+        const x = this.vw * 0.16 + i * 62, y = this.vh - 22;
+        const av = new Avatar(this, r.player, x, y, { depthSort: false });
+        av.sprite.setDepth(35);
+        av.marker?.setDepth(36);
+        av.shadow?.setDepth(34);
+        av.play(r.rank === 1 ? 'win' : i === st.length - 1 ? 'lose' : 'idle');
+        if (r.rank === 1) {
+          const crown = this.add.image(x, y - 82, crownKey(this)).setScale(2).setDepth(37);
+          this.tweens.add({ targets: crown, y: crown.y - 5, yoyo: true, repeat: -1, duration: 500, ease: 'Sine.easeInOut' });
+        }
       });
     }
     // Spinning card

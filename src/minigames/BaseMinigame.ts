@@ -156,7 +156,7 @@ export abstract class BaseMinigame extends BaseScene {
     }
     if (this.timerTexts.length) {
       const sec = Math.max(0, Math.ceil(this.timeLeft));
-      const label = `⏱ ${sec}`;
+      const label = `${sec}`;
       for (const t of this.timerTexts) {
         if (t.text !== label) t.setText(label);
         t.setColor(sec <= 5 && this.state === 'play' ? '#ff7a85' : '#fff8e7');
@@ -181,7 +181,7 @@ export abstract class BaseMinigame extends BaseScene {
     const cat = txt(this, w / 2 - 14, -38, CATEGORY_LABEL[m.category], { size: 11, color: '#ffffff', origin: [1, 0.5] });
     const title = txt(this, 0, -38, m.name, { size: 18, color: '#ffffff' });
     const how = txt(this, 0, -4, m.howTo.join('\n'), { size: 13, color: '#1b1f3b', strokeWidth: 0, shadow: false, wrap: w - 30 });
-    const ctl = txt(this, 0, 34, `🎮 ${m.controls}`, { size: 11, color: '#5a4fa0', strokeWidth: 0, shadow: false, bold: false, wrap: w - 30 });
+    const ctl = txt(this, 0, 34, `ควบคุม: ${m.controls}`, { size: 11, color: '#5a4fa0', strokeWidth: 0, shadow: false, bold: false, wrap: w - 30 });
     c.add([bg, strip, title, num, cat, how, ctl]);
     return c;
   }

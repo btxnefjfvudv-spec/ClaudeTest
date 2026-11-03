@@ -34,9 +34,9 @@ export class SettingsScene extends BaseScene {
     const toggle = (y: number, label: () => string, fn: () => void) => {
       const b: Button = new Button(this, cx, y, { w: 280, h: 38, label: label(), size: 14, skin: 'ui-btn-purple', onTap: () => { fn(); b.setLabel(label()); saveSettings(); } });
     };
-    toggle(286, () => (Audio.volume.muted ? '🔇 ปิดเสียงอยู่' : '🔊 เปิดเสียงอยู่'), () => { Audio.volume.muted = !Audio.volume.muted; Audio.applyVolume(); });
-    toggle(330, () => (Party.fillCpu ? '🤖 เติม CPU ที่นั่งว่าง: เปิด' : '🤖 เติม CPU ที่นั่งว่าง: ปิด'), () => { Party.fillCpu = !Party.fillCpu; });
-    toggle(374, () => (Settings.reduceShake ? '📳 ลดการสั่นจอ: เปิด' : '📳 ลดการสั่นจอ: ปิด'), () => { Settings.reduceShake = !Settings.reduceShake; });
+    toggle(286, () => (Audio.volume.muted ? 'ปิดเสียงอยู่' : 'เปิดเสียงอยู่'), () => { Audio.volume.muted = !Audio.volume.muted; Audio.applyVolume(); });
+    toggle(330, () => (Party.fillCpu ? 'เติม CPU ที่นั่งว่าง: เปิด' : 'เติม CPU ที่นั่งว่าง: ปิด'), () => { Party.fillCpu = !Party.fillCpu; });
+    toggle(374, () => (Settings.reduceShake ? 'ลดการสั่นจอ: เปิด' : 'ลดการสั่นจอ: ปิด'), () => { Settings.reduceShake = !Settings.reduceShake; });
     new Button(this, cx, 438, { w: 140, h: 40, label: '◀ กลับ', size: 16, skin: 'ui-btn-grey', sound: 'back', onTap: () => this.goto('Menu') });
   }
 }

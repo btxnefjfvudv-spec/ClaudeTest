@@ -1,62 +1,64 @@
 # 50 Minigames — Status Tracker
 
-สถานะ: Planned → Prototype → In Development → Implemented → Playtested → Verified
+Status: Planned → Prototype → In Development → Implemented → Playtested → Verified
 
-เกมที่มีแค่หน้า Preview **ไม่นับ** ว่าเสร็จ. เกมนับเป็น Verified ได้เมื่อผ่าน QA checklist บน iPad จริงเท่านั้น
+- **Implemented** = real gameplay, CPU AI, art, VFX, sound, passes the automated smoke test (headless iPad emulation, random multi-touch).
+- **Playtested** = played by real people on a real iPad. **Verified** = passed the full QA checklist on a real iPad.
+- A preview page alone never counts as done.
 
-| # | เกม | หมวด | สถานะ |
-|---|---|---|---|
-| 1 | CLASSROOM DASH | A — Racing | Planned |
-| 2 | FLOOR IS LAVA | A — Racing | Planned |
-| 3 | RAINBOW RUN | A — Racing | Planned |
-| 4 | OBSTACLE CHAOS | A — Racing | Planned |
-| 5 | HUMAN PINBALL | A — Racing | Planned |
-| 6 | LAST ONE STANDING | B — Survival | Planned |
-| 7 | FALLING BLOCKS | B — Survival | Planned |
-| 8 | TORNADO TROUBLE | B — Survival | Planned |
-| 9 | BOMB TAG | B — Survival | Planned |
-| 10 | ICE SURVIVAL | B — Survival | Planned |
-| 11 | BUMPER BALL | C — Physics & Fighting | Planned |
-| 12 | BOXING BUDDIES | C — Physics & Fighting | Planned |
-| 13 | BOOMERANG BATTLE | C — Physics & Fighting | Planned |
-| 14 | BALLOON BRAWL | C — Physics & Fighting | Planned |
-| 15 | WOBBLE RACE | C — Physics & Fighting | Planned |
-| 16 | QUICK DRAW | D — Reflex | Planned |
-| 17 | COLOR PANIC | D — Reflex | Planned |
-| 18 | BUTTON MASHER | D — Reflex | Planned |
-| 19 | MEMORY FLASH | D — Reflex | Planned |
-| 20 | REACTION TILES | D — Reflex | Planned |
-| 21 | MINI BASKETBALL | E — Sports | Planned |
-| 22 | TABLE TENNIS | E — Sports | Planned |
-| 23 | MINI GOLF MAYHEM | E — Sports | Planned |
-| 24 | TARGET BLAST | E — Sports | Planned |
-| 25 | PAPER PLANE RACE | E — Sports | Planned |
-| 26 | CHAOTIC KITCHEN | F — Cooking & Cooperation | Planned |
-| 27 | PIZZA PANIC | F — Cooking & Cooperation | Planned |
-| 28 | DELIVERY DASH | F — Cooking & Cooperation | Planned |
-| 29 | TEAMWORK TUG | F — Cooking & Cooperation | Planned |
-| 30 | FIX THE CLASSROOM | F — Cooking & Cooperation | Planned |
-| 31 | NUMBER RUSH | G — Puzzle | Planned |
-| 32 | WORD SCRAMBLE | G — Puzzle | Planned |
-| 33 | PATTERN MASTER | G — Puzzle | Planned |
-| 34 | HIDDEN OBJECTS | G — Puzzle | Planned |
-| 35 | PUZZLE PANIC | G — Puzzle | Planned |
-| 36 | DRAW IT FAST | H — Creative & Funny | Planned |
-| 37 | DANCE OFF | H — Creative & Funny | Planned |
-| 38 | SILLY FACES | H — Creative & Funny | Planned |
-| 39 | BALANCE MASTER | H — Creative & Funny | Planned |
-| 40 | CHAOS BUTTON | H — Creative & Funny | Planned |
-| 41 | TREASURE THIEVES | I — Advanced Party | Planned |
-| 42 | HIDE AND SEEK | I — Advanced Party | Planned |
-| 43 | KING OF THE HILL | I — Advanced Party | Planned |
-| 44 | MAGNET MADNESS | I — Advanced Party | Planned |
-| 45 | GRAVITY SWITCH | I — Advanced Party | Planned |
-| 46 | FISHING FRENZY | J — Wild Card | Planned |
-| 47 | SNOWBALL SHOWDOWN | J — Wild Card | Planned |
-| 48 | ROCKET JUMP | J — Wild Card | Planned |
-| 49 | MINI TANK BATTLE | J — Wild Card | Planned |
-| 50 | FINAL CHAOS | J — Wild Card | Planned |
+| # | Game | Category | Status | Smoke test |
+|---|---|---|---|---|
+| 1 | CLASSROOM DASH | แข่งความเร็ว | Planned | – |
+| 2 | FLOOR IS LAVA | แข่งความเร็ว | Planned | – |
+| 3 | RAINBOW RUN | แข่งความเร็ว | Planned | – |
+| 4 | OBSTACLE CHAOS | แข่งความเร็ว | Planned | – |
+| 5 | HUMAN PINBALL | แข่งความเร็ว | Planned | – |
+| 6 | LAST ONE STANDING | เอาตัวรอด | Planned | – |
+| 7 | FALLING BLOCKS | เอาตัวรอด | Planned | – |
+| 8 | TORNADO TROUBLE | เอาตัวรอด | Planned | – |
+| 9 | BOMB TAG | เอาตัวรอด | Planned | – |
+| 10 | ICE SURVIVAL | เอาตัวรอด | Planned | – |
+| 11 | BUMPER BALL | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 12 | BOXING BUDDIES | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 13 | BOOMERANG BATTLE | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 14 | BALLOON BRAWL | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 15 | WOBBLE RACE | ฟิสิกส์ & ต่อสู้ | Planned | – |
+| 16 | QUICK DRAW | ปฏิกิริยา | Planned | – |
+| 17 | COLOR PANIC | ปฏิกิริยา | Planned | – |
+| 18 | BUTTON MASHER | ปฏิกิริยา | Planned | – |
+| 19 | MEMORY FLASH | ปฏิกิริยา | Planned | – |
+| 20 | REACTION TILES | ปฏิกิริยา | Planned | – |
+| 21 | MINI BASKETBALL | กีฬา | Planned | – |
+| 22 | TABLE TENNIS | กีฬา | Planned | – |
+| 23 | MINI GOLF MAYHEM | กีฬา | Planned | – |
+| 24 | TARGET BLAST | กีฬา | Planned | – |
+| 25 | PAPER PLANE RACE | กีฬา | Planned | – |
+| 26 | CHAOTIC KITCHEN | ทำอาหาร & ทีม | Planned | – |
+| 27 | PIZZA PANIC | ทำอาหาร & ทีม | Planned | – |
+| 28 | DELIVERY DASH | ทำอาหาร & ทีม | Planned | – |
+| 29 | TEAMWORK TUG | ทำอาหาร & ทีม | Planned | – |
+| 30 | FIX THE CLASSROOM | ทำอาหาร & ทีม | Planned | – |
+| 31 | NUMBER RUSH | ปริศนา | Planned | – |
+| 32 | WORD SCRAMBLE | ปริศนา | Planned | – |
+| 33 | PATTERN MASTER | ปริศนา | Planned | – |
+| 34 | HIDDEN OBJECTS | ปริศนา | Planned | – |
+| 35 | PUZZLE PANIC | ปริศนา | Planned | – |
+| 36 | DRAW IT FAST | สร้างสรรค์ & ฮา | Planned | – |
+| 37 | DANCE OFF | สร้างสรรค์ & ฮา | Planned | – |
+| 38 | SILLY FACES | สร้างสรรค์ & ฮา | Planned | – |
+| 39 | BALANCE MASTER | สร้างสรรค์ & ฮา | Planned | – |
+| 40 | CHAOS BUTTON | สร้างสรรค์ & ฮา | Planned | – |
+| 41 | TREASURE THIEVES | ปาร์ตี้ขั้นสูง | Planned | – |
+| 42 | HIDE AND SEEK | ปาร์ตี้ขั้นสูง | Planned | – |
+| 43 | KING OF THE HILL | ปาร์ตี้ขั้นสูง | Planned | – |
+| 44 | MAGNET MADNESS | ปาร์ตี้ขั้นสูง | Planned | – |
+| 45 | GRAVITY SWITCH | ปาร์ตี้ขั้นสูง | Planned | – |
+| 46 | FISHING FRENZY | ไวลด์การ์ด | Planned | – |
+| 47 | SNOWBALL SHOWDOWN | ไวลด์การ์ด | Planned | – |
+| 48 | ROCKET JUMP | ไวลด์การ์ด | Planned | – |
+| 49 | MINI TANK BATTLE | ไวลด์การ์ด | Planned | – |
+| 50 | FINAL CHAOS | ไวลด์การ์ด | Planned | – |
 
-## QA checklist (ต่อเกม)
+## QA checklist (per game)
 
 เปิดได้ · เริ่มได้ · เล่นได้ 1/2/3/4 คน · Multi-touch ทำงาน · Input ไม่ชนกัน · Score ถูก · Win/Lose ถูก · Animation · Sound · Restart ได้ · Cleanup ถูก · ไม่มี Error

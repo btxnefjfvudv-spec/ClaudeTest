@@ -23,8 +23,8 @@ export class ModeScene extends BaseScene {
     const nGames = playableIds().length;
     if (data?.next === 'quick') {
       txt(this, cx, 130, 'เล่นด่วน · QUICK PLAY', { size: 24, color: '#1b1f3b', stroke: '#ffffff', strokeWidth: 0, shadow: false }).setDepth(30);
-      new Button(this, cx, 210, { w: 260, h: 56, label: '🎲 สุ่มเกม!', sub: `จาก ${nGames} เกมที่พร้อมเล่น`, size: 22, onTap: () => { Party.start('quick'); this.goto('RoundIntro'); } }).setDepth(30);
-      new Button(this, cx, 280, { w: 260, h: 56, label: '📚 เลือกเกมเอง', sub: 'MINIGAME COLLECTION', skin: 'ui-btn-blue', size: 20, onTap: () => this.goto('Library', { pick: true }) }).setDepth(30);
+      new Button(this, cx, 210, { w: 260, h: 56, label: 'สุ่มเกม!', sub: `จาก ${nGames} เกมที่พร้อมเล่น`, size: 22, onTap: () => { Party.start('quick'); this.goto('RoundIntro'); } }).setDepth(30);
+      new Button(this, cx, 280, { w: 260, h: 56, label: 'เลือกเกมเอง', sub: 'MINIGAME COLLECTION', skin: 'ui-btn-blue', size: 20, onTap: () => this.goto('Library', { pick: true }) }).setDepth(30);
       new Button(this, cx, 360, { w: 140, h: 40, label: '◀ กลับ', skin: 'ui-btn-grey', sound: 'back', onTap: back }).setDepth(30);
       return;
     }

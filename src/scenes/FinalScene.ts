@@ -24,8 +24,8 @@ export class FinalScene extends BaseScene {
     const cx = this.vw / 2;
     const champ = st[0];
     const cc = PLAYER_COLORS[champ.player];
-    for (const [deg, y] of [[0, this.vh - 120], [180, 36]] as const) {
-      const t = txt(this, cx, y, `🏆 P${champ.player + 1} แชมป์ห้อง 5/8! 🏆`, { size: 26, color: toCss(cc.light), strokeWidth: 7 }).setAngle(deg).setDepth(50);
+    for (const [deg, y] of [[0, this.vh - 86], [180, 36]] as const) {
+      const t = txt(this, cx, y, `★ P${champ.player + 1} แชมป์ห้อง 5/8! ★`, { size: 24, color: toCss(cc.light), strokeWidth: 7 }).setAngle(deg).setDepth(50);
       this.tweens.add({ targets: t, scale: { from: 0.2, to: 1 }, duration: 600, delay: 1800, ease: 'Back.easeOut' });
       t.setScale(0);
     }
@@ -68,7 +68,7 @@ export class FinalScene extends BaseScene {
     });
     // Round history ribbon
     const hist = Party.history.map((h, i) => `${i + 1}.${CATALOG[h.gameId]?.name ?? h.gameId} → P${(h.results.find((r) => r.rank === 1)?.player ?? 0) + 1}`).join('   ');
-    txt(this, cx, this.vh - 70, hist, { size: 9, color: '#c7c9d6', strokeWidth: 2, wrap: this.vw - 40 }).setDepth(30);
+    txt(this, cx, this.vh - 58, hist, { size: 9, color: '#c7c9d6', strokeWidth: 2, wrap: this.vw - 40 }).setDepth(30);
     new Button(this, cx - 100, this.vh - 26, { w: 180, h: 40, label: 'เล่นอีกปาร์ตี้ ↻', size: 15, skin: 'ui-btn-mint', onTap: () => { Party.start('party', Party.rounds); this.goto('RoundIntro'); } }).setDepth(60);
     new Button(this, cx + 100, this.vh - 26, { w: 180, h: 40, label: 'กลับเมนู', size: 15, skin: 'ui-btn-grey', onTap: () => this.goto('Menu') }).setDepth(60);
     if (Party.fast) this.time.delayedCall(600, () => this.goto('Menu'));

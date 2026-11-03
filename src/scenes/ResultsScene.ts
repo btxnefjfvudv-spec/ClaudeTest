@@ -65,12 +65,12 @@ export class ResultsScene extends BaseScene {
     const by = this.vh - 26;
     const btns: { label: string; skin: string; fn: () => void }[] = [];
     if (Party.mode === 'party') {
-      if (Party.over) btns.push({ label: 'ดูผู้ชนะ! 🏆', skin: 'ui-btn', fn: () => this.goto('Final') });
+      if (Party.over) btns.push({ label: 'ดูผู้ชนะ! ★', skin: 'ui-btn', fn: () => this.goto('Final') });
       else btns.push({ label: `รอบต่อไป (${Party.round + 1}/${Party.rounds}) ▶`, skin: 'ui-btn-mint', fn: () => this.goto('RoundIntro') });
       btns.push({ label: 'ออก', skin: 'ui-btn-grey', fn: () => this.goto('Menu') });
     } else {
       btns.push({ label: 'เล่นอีก ↻', skin: 'ui-btn-mint', fn: () => this.goto(gameId) });
-      if (Party.mode === 'quick') btns.push({ label: 'สุ่มเกมใหม่ 🎲', skin: 'ui-btn', fn: () => this.goto('RoundIntro') });
+      if (Party.mode === 'quick') btns.push({ label: 'สุ่มเกมใหม่', skin: 'ui-btn', fn: () => this.goto('RoundIntro') });
       else btns.push({ label: 'คลังเกม', skin: 'ui-btn-blue', fn: () => this.goto('Library') });
       btns.push({ label: 'เมนู', skin: 'ui-btn-grey', fn: () => this.goto('Menu') });
     }
