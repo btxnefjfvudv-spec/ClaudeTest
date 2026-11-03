@@ -518,8 +518,9 @@ export default class GravitySwitch extends BaseMinigame {
     else r.av.play('idle');
     spr.anims.timeScale = r.av.anim === 'run' ? 0.6 + this.speedOf(r) / 320 : 1;
     // marker sits on the "up" side of the body
-    const up = r.grounded ? r.side : r.vy >= 0 ? 1 : -1;
-    r.mark.setPosition(r.x, y0 + r.cy - up * 46 + Math.sin(this.t * 4.5) * 2).setFlipY(false);
+    const off = Phaser.Math.Linear((spr.getData('mOff') as number | undefined) ?? 46, r.side * 46, 0.22);
+    spr.setData('mOff', off);
+    r.mark.setPosition(r.x, y0 + r.cy - off + Math.sin(this.t * 4.5) * 2);
     // contact shadow on the target surface
     const surf = r.side === 1 ? FLOOR : CEIL;
     const dist = Math.abs(r.cy - this.target(r.side));
@@ -545,8 +546,7 @@ export default class GravitySwitch extends BaseMinigame {
       if (!o) continue;
       g.s.setPosition(o.x, y0 + o.cy).setAngle(o.spr.angle).setFlipX(o.spr.flipX);
       g.s.setFrame(o.spr.frame.name);
-      const oup = o.grounded ? o.side : o.vy >= 0 ? 1 : -1;
-      g.m.setPosition(o.x, y0 + o.cy - oup * 44);
+      g.m.setPosition(o.x, y0 + o.cy - ((o.spr.getData('mOff') as number | undefined) ?? 46));
       const vis = Math.abs(o.x - r.x) > 6;
       g.s.setVisible(vis); g.m.setVisible(vis);
     }
