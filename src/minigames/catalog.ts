@@ -59,7 +59,7 @@ const defs: M[] = [
   { id: 'target-blast', num: 24, name: 'TARGET BLAST', nameTh: 'ยิงเป้าปืนฟองสบู่', category: 'sports', color: 0xff5a6e, duration: 45,
     blurb: 'เล็งยิงเป้าที่วิ่งไปมา เป้าทองได้เยอะ', howTo: ['ลากนิ้วเลื่อนเป้าเล็ง', 'กดปุ่มยิง · เป้าระเบิด = −'], controls: 'ลากนิ้ว + ปุ่มยิง' },
   { id: 'paper-plane-race', num: 25, name: 'PAPER PLANE RACE', nameTh: 'เครื่องบินกระดาษ', category: 'sports', color: 0x6ec6ff, duration: 45,
-    blurb: 'แตะให้เครื่องบินลอย ลอดช่องหน้าต่างให้ไกลที่สุด', howTo: ['แตะ = เชิด · ไม่แตะ = ร่อนลง', 'ชน = ช้าลง · ไกลสุดชนะ'], controls: 'แตะ' },
+    blurb: 'แตะให้เครื่องบินลอย ลอดช่องหน้าต่างให้ไกลที่สุด', howTo: ['แตะ = เชิด · ไม่แตะ = ร่อนลง · ดิ่ง = เร็วขึ้น', 'ลอดช่อง เก็บดาว = บูสต์ · ชน = ช้าลง · ไกลสุดชนะ'], controls: 'แตะที่ไหนก็ได้ในโซน' },
   // F — Cooking & Coop
   { id: 'chaotic-kitchen', num: 26, name: 'CHAOTIC KITCHEN', nameTh: 'ครัวป่วน', category: 'cooking-coop', color: 0xff9f43, duration: 60,
     blurb: 'ย่างหมูปิ้งให้สุกพอดี กลับด้านให้ทัน อย่าให้ไหม้!', howTo: ['แตะไม้เสียบเพื่อวางบนเตา / กลับด้าน', 'สุกพอดีทั้งสองด้าน แตะส่งลูกค้า'], controls: 'แตะ' },
