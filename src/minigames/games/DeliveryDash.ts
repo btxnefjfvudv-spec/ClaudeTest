@@ -136,12 +136,17 @@ export default class DeliveryDash extends BaseMinigame {
       p.outline(-0.7);
     });
     // Pad where parcels appear
-    makeTexture(this, `${ID}-pad`, 22, 14, (p) => {
-      p.ellipse(11, 7, 11, 7, 0x8a6a4a);
-      p.ellipse(11, 6.5, 10, 6, 0xf0d68a);
-      p.ellipse(11, 6.5, 7, 4, 0xe5c06a);
-      for (let i = 0; i < 22; i += 4) p.vline(i, 3, 8, 0xd6ad55);
-      p.ellipse(11, 6.5, 3, 2, 0xf6e3a8);
+    makeTexture(this, `${ID}-pad`, 22, 16, (p) => {
+      // wooden pallet seen from above
+      p.rect(0, 1, 22, 15, 0x4a3420);
+      for (let i = 0; i < 4; i++) {
+        const y = 1 + i * 4;
+        p.box(0, y, 22, 3, i % 2 ? 0xc0905a : 0xcf9e66, 1);
+        p.px(3, y + 1, 0x8a5a2e); p.px(18, y + 1, 0x8a5a2e);
+      }
+      p.rect(9, 0, 4, 16, 0xb07a44);
+      p.vline(9, 0, 16, 0xd8aa72);
+      p.outline(-0.7);
     });
     // Spinning request gem
     makeSheet(this, `${ID}-gem`, 12, 14, 6, (p, i) => {
@@ -203,13 +208,19 @@ export default class DeliveryDash extends BaseMinigame {
         for (let k = 0; k < 5; k++) p.ellipse(cx + (r() - 0.5) * 22, cy + (r() - 0.5) * 10, 10 + r() * 8, 6 + r() * 4, 0x10304a);
       }
     });
-    makeSheet(this, `${ID}-flag`, 12, 8, 4, (p, i) => {
-      for (let x = 0; x < 10; x++) {
-        const dy = Math.round(Math.sin((x + i * 2.5) * 0.8) * 1);
-        p.vline(x + 1, 1 + dy, 5, x < 5 ? 0xff5a6e : 0xff7a85);
-        p.px(x + 1, 1 + dy, 0xffb3bd);
+    makeSheet(this, `${ID}-flag`, 16, 26, 4, (p, i) => {
+      p.vline(1, 2, 24, 0xd8dbe4);
+      p.vline(2, 2, 24, 0x9aa0b8);
+      p.ball(1.5, 1.5, 1.6, 1.6, 0xffd23d);
+      for (let x = 0; x < 12; x++) {
+        const dy = Math.round(Math.sin((x + i * 3) * 0.7) * 1.2 * (x / 11));
+        p.vline(x + 3, 3 + dy, 8, x < 6 ? 0xff5a6e : 0xf04a5e);
+        p.px(x + 3, 3 + dy, 0xffb3bd);
+        p.px(x + 3, 10 + dy, 0xb3263a);
       }
-      p.vline(0, 0, 8, 0xe8e8f0);
+      p.rect(7, 5 + Math.round(Math.sin((4 + i * 3) * 0.7) * 0.5), 4, 3, 0xffffff);
+      p.px(8, 6, 0xc9c2d8); p.px(9, 6, 0xc9c2d8);
+      p.rect(0, 24, 4, 2, 0x5a5a6a);
       p.outline(-0.7);
     });
     if (!this.anims.exists(`${ID}-flag-wave`)) this.anims.create({ key: `${ID}-flag-wave`, frames: this.anims.generateFrameNumbers(`${ID}-flag`, {}), frameRate: 8, repeat: -1 });
@@ -375,7 +386,7 @@ export default class DeliveryDash extends BaseMinigame {
     this.solids.push(this.po);
     this.add.image(this.cx + 5, this.cy + 7, `${ID}-poshadow`).setScale(S).setAlpha(0.25).setDepth(-45);
     this.add.image(this.cx, this.cy, `${ID}-po`).setScale(S).setDepth(this.cy + h / 2 - 4);
-    const flag = this.add.sprite(this.cx + w / 2 - 14, this.cy - h / 2 - 2, `${ID}-flag`).setOrigin(0, 1).setScale(S).setDepth(this.cy + h);
+    const flag = this.add.sprite(this.cx + w / 2 - 12, this.cy - h / 2 + 10, `${ID}-flag`).setOrigin(0.1, 1).setScale(S).setDepth(this.cy + h);
     flag.play(`${ID}-flag-wave`);
     // four pads at the diagonals (one per seat direction = fair)
     for (const [sx, sy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {

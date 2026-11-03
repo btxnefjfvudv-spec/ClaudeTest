@@ -45,7 +45,7 @@ interface Mess {
   age: number;
 }
 
-interface Finger { mess?: Mess; lx: number; ly: number; vx: number; vy: number }
+interface Finger { mess?: Mess; lx: number; ly: number; hist: { x: number; y: number; t: number }[] }
 
 interface Cpu {
   hand: Phaser.GameObjects.Image;
@@ -121,7 +121,7 @@ export default class FixTheClassroom extends BaseMinigame {
       if (this.isCpu(p)) {
         const z = zonePoint(this.touch, this.zoneOf(p), 0.5, 0.75);
         const hand = this.add.image(z.x, z.y, `${ID}-hand-${p}`).setScale(S).setDepth(3000).setOrigin(0.3, 0.1);
-        this.cpus.set(p, { hand, x: z.x, y: z.y, think: 0.5 + Math.random() * 0.5, act: 0, phase: 0, skill: 0.55 + Math.random() * 0.25, tapT: 0 });
+        this.cpus.set(p, { hand, x: z.x, y: z.y, think: 0.5 + Math.random() * 0.5, act: 0, phase: 0, skill: 0.45 + Math.random() * 0.45, tapT: 0 });
       }
     }
     this.touch.on('down', (t: TrackedTouch) => this.onDown(t));
@@ -526,6 +526,8 @@ export default class FixTheClassroom extends BaseMinigame {
     const sp = Math.hypot(vx, vy);
     m.held = undefined;
     m.thrownBy = by;
+    // dropped straight onto the bin also counts
+    if (Math.hypot(m.x - this.cx, m.y - this.cy) < BIN_R + 14) { this.complete(m, by); return; }
     if (sp < 120) { m.vx = vx * 0.3; m.vy = vy * 0.3; return; }
     // Aim assist toward the shared bin when the throw is roughly aimed at it.
     const bx = this.cx - m.x, by_ = this.cy - m.y;
@@ -545,7 +547,7 @@ export default class FixTheClassroom extends BaseMinigame {
 
   private onDown(t: TrackedTouch): void {
     if (this.state !== 'play' || this.isCpu(t.player) || this.endT >= 0) return;
-    const f: Finger = { lx: t.x, ly: t.y, vx: 0, vy: 0 };
+    const f: Finger = { lx: t.x, ly: t.y, hist: [{ x: t.x, y: t.y, t: this.time.now }] };
     const m = this.messAt(t.x, t.y);
     if (m) {
       if (m.kind === 'desk') this.bonk(m, t.player);
@@ -559,7 +561,15 @@ export default class FixTheClassroom extends BaseMinigame {
     const f = this.fingers.get(t.pointerId);
     this.fingers.delete(t.pointerId);
     if (!f?.mess || f.mess.done) return;
-    if (f.mess.kind === 'trash' && f.mess.held === t.pointerId) this.fling(f.mess, f.vx, f.vy, t.player);
+    if (f.mess.kind === 'trash' && f.mess.held === t.pointerId) {
+      // release velocity from the last ~120 ms of finger movement
+      const now = this.time.now;
+      f.hist.push({ x: t.x, y: t.y, t: now });
+      const old = f.hist.find((h) => now - h.t <= 200) ?? f.hist[0];
+      const dts = Math.max(0.03, (now - old.t) / 1000);
+      f.mess.x = t.x; f.mess.y = t.y;
+      this.fling(f.mess, (t.x - old.x) / dts, (t.y - old.y) / dts, t.player);
+    }
   }
 
   private humanInput(dt: number): void {
@@ -570,8 +580,9 @@ export default class FixTheClassroom extends BaseMinigame {
         if (!f) continue;
         const dx = t.x - f.lx, dy = t.y - f.ly;
         const d = Math.hypot(dx, dy);
-        if (dt > 0) { f.vx = f.vx * 0.5 + (dx / dt) * 0.5; f.vy = f.vy * 0.5 + (dy / dt) * 0.5; }
         f.lx = t.x; f.ly = t.y;
+        f.hist.push({ x: t.x, y: t.y, t: this.time.now });
+        if (f.hist.length > 30) f.hist.shift();
         let m = f.mess;
         if (m?.done) m = f.mess = undefined;
         if (!m) {

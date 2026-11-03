@@ -18,7 +18,7 @@ const PERFECT = 0.075;
 const GOOD = 0.17;
 const R_TARGET = 24;
 const R_START = 74;
-const PULL = 4.2;
+const PULL = 4.8;
 const TEAM_COL = [0xff5a6e, 0x3d9bff];
 
 type Grade = 'perfect' | 'good' | 'miss';
@@ -550,6 +550,10 @@ export default class TeamworkTug extends BaseMinigame {
       this.playEnding(team);
     }
     super.finish();
+  }
+
+  __probe(): unknown {
+    return { pos: Math.round(this.pos), target: Math.round(this.target), contrib: this.pullers.map((p) => p.contrib) };
   }
 
   results(): PlayerResult[] {
