@@ -97,3 +97,14 @@ Screenshot a game: open `http://localhost:<PORT>/?auto&fast&game=<id>` in Playwr
 ## 10. Done checklist (per game)
 
 Opens · starts · works with 1–4 humans (others CPU) · multi-touch per player independent · score + win/lose correct · animations · VFX · sound · restart works (pause → เริ่มใหม่) · no console errors · smoke test PASS · screenshot reviewed.
+
+## 11. Lessons from building all 50 (read before adding a game)
+
+- **Depth layers:** backgrounds ≤ −2000 · gameplay 0…~2500 (Avatar sorts by y; shadows at y−1000, markers at y+2000) · pop text 2900 · touch controls 3990–4001 · HUD 4100 (`HUD_DEPTH`) · intro/finish overlays 5000 · pause 6000.
+- **HUD safe area:** the score chip sits in each zone's outer corner nearest its player, the timer and pause button sit at the top/bottom centre. In PanelKit layouts keep the bottom ~40 px of every panel clear.
+- **Name clashes:** don't declare members called `build`, `updateHud`, `lights`, `physics`, `cameras` etc. on a game class (they collide with BaseMinigame / Phaser.Scene).
+- **`shutdown()`** on a game is now called automatically when the scene shuts down.
+- **Effects inside rotated panels:** `burst()` / `Vfx.popText` work in world space; inside a PanelKit panel create particles/text as children of `panel.c` so they move "up" for every seat.
+- **Split-screen:** `Vfx.flash` / `Vfx.explosion` affect every camera — use per-camera shake/flash for one player.
+- **Several players out at once:** `eliminate()` ends the game when one is left; games with simultaneous knock-outs should track elimination themselves and call `finish()`.
+- **Taps:** a tap is a press shorter than 350 ms with little movement; for "press" behaviour listen to `'down'`.

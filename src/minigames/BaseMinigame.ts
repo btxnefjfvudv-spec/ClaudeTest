@@ -13,6 +13,9 @@ import { CATEGORY_LABEL, type MinigameMeta } from './types';
 
 export type GameState = 'intro' | 'countdown' | 'play' | 'end';
 
+/** HUD layer: above gameplay (avatars ≤ ~2500, pop text 2900, touch controls 4000). */
+export const HUD_DEPTH = 4100;
+
 /**
  * Shared lifecycle for all 50 minigames:
  * INTRO (rules + everyone taps ready) → COUNTDOWN → PLAY → END → Results scene.
@@ -99,7 +102,11 @@ export abstract class BaseMinigame extends BaseScene {
     // Auto-pause when the iPad is locked / app switched.
     const onHidden = () => { if (document.visibilityState === 'hidden' && !this.paused && this.state === 'play') this.togglePause(); };
     document.addEventListener('visibilitychange', onHidden);
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => document.removeEventListener('visibilitychange', onHidden));
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      document.removeEventListener('visibilitychange', onHidden);
+      // Phaser never calls a scene's shutdown() itself; games may define one for cleanup.
+      (this as unknown as { shutdown?: () => void }).shutdown?.();
+    });
   }
 
   // ───────────────────────────── HUD ─────────────────────────────
@@ -111,7 +118,7 @@ export abstract class BaseMinigame extends BaseScene {
       const zone = this.zoneOf(p);
       const r = this.touch.zoneRect(zone);
       const c = PLAYER_COLORS[p];
-      const panel = this.add.container(0, 0).setDepth(950);
+      const panel = this.add.container(0, 0).setDepth(HUD_DEPTH);
       const bg = this.add.nineslice(0, 0, 'ui-panel-dark', undefined, 40, 15, 6, 6, 6, 6).setScale(S).setAlpha(0.88);
       const chip = this.add.rectangle(-30, 0, 16, 16, c.main).setStrokeStyle(2, c.dark);
       const num = txt(this, -30, 0, `${p + 1}`, { size: 12, color: '#ffffff', strokeWidth: 0 });
@@ -132,12 +139,12 @@ export abstract class BaseMinigame extends BaseScene {
     this.timerTexts = [];
     if (this.meta.duration > 0) {
       for (const deg of [0, 180]) {
-        const t = txt(this, this.vw / 2, deg === 0 ? this.vh - 14 : 14, '', { size: 16, color: '#fff8e7' }).setDepth(950).setAngle(deg);
+        const t = txt(this, this.vw / 2, deg === 0 ? this.vh - 14 : 14, '', { size: 16, color: '#fff8e7' }).setDepth(HUD_DEPTH).setAngle(deg);
         this.timerTexts.push(t);
       }
     }
     // Pause button in the middle edge between the two near-side players.
-    const pb = this.add.image(this.vw / 2 + 60, this.vh - 14, 'icon-pause').setScale(S * 1.2).setDepth(950).setAlpha(0.6).setInteractive({ useHandCursor: true });
+    const pb = this.add.image(this.vw / 2 + 60, this.vh - 14, 'icon-pause').setScale(S * 1.2).setDepth(HUD_DEPTH).setAlpha(0.6).setInteractive({ useHandCursor: true });
     pb.on(Phaser.Input.Events.POINTER_UP, () => this.togglePause());
   }
 
@@ -324,7 +331,7 @@ export abstract class BaseMinigame extends BaseScene {
   // ─────────────────────────── PAUSE ───────────────────────────
 
   togglePause(): void {
-    if (this.state === 'end') return;
+    if (this.state === 'end' || !this.touch) return;
     if (this.paused) return this.resumeGame();
     this.paused = true;
     this.tweens.pauseAll();

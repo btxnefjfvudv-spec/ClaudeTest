@@ -33,7 +33,7 @@ export default class LastOneStanding extends BaseMinigame {
     this.grid.clear();
     this.cx = this.vw / 2;
     this.cy = this.vh / 2;
-    this.water = addWater(this, this.vw, this.vh);
+    this.water = addWater(this, this.vw, this.vh, 0x2f9fd8, -3100);
     this.paintTiles();
     // Floating ducks for life
     const duck = makeTexture(this, 'duck', 12, 10, (p) => {
@@ -45,7 +45,7 @@ export default class LastOneStanding extends BaseMinigame {
     });
     for (let i = 0; i < 5; i++) {
       const x = Phaser.Math.Between(20, this.vw - 20), y = i % 2 ? 24 + i * 6 : this.vh - 30 - i * 6;
-      const d = this.add.image(x, y, duck).setScale(S).setDepth(-60);
+      const d = this.add.image(x, y, duck).setScale(S).setDepth(-3060);
       this.tweens.add({ targets: d, y: y + 3, angle: 6, yoyo: true, repeat: -1, duration: 900 + i * 200, ease: 'Sine.easeInOut' });
       this.tweens.add({ targets: d, x: x + Phaser.Math.Between(-40, 40), yoyo: true, repeat: -1, duration: 5000 + i * 900, ease: 'Sine.easeInOut' });
     }
@@ -82,8 +82,8 @@ export default class LastOneStanding extends BaseMinigame {
         const x = this.cx + gx * TILE, y = this.cy + gy * TILE;
         const d = Math.hypot(gx * TILE, gy * TILE);
         if (d > maxR) continue;
-        this.add.image(x + 4, y + 6, shadow).setScale(S).setDepth(-55).setAlpha(0.35);
-        const img = this.add.image(x, y, variants[Math.floor(r() * 3)]).setScale(S).setDepth(-50);
+        this.add.image(x + 4, y + 6, shadow).setScale(S).setDepth(-3055).setAlpha(0.35);
+        const img = this.add.image(x, y, variants[Math.floor(r() * 3)]).setScale(S).setDepth(-3050);
         const t: Tile = { gx, gy, img, state: 'ok', d };
         this.tiles.push(t);
         this.grid.set(`${gx},${gy}`, t);
@@ -92,7 +92,7 @@ export default class LastOneStanding extends BaseMinigame {
     // rope ring
     const rope = makeTexture(this, 'rope', 4, 4, (p) => { p.rect(0, 0, 4, 4, 0xfff1c9); p.px(0, 0, 0xd9b77a); p.px(2, 2, 0xd9b77a); });
     for (let a = 0; a < Math.PI * 2; a += 0.06) {
-      this.add.image(this.cx + Math.cos(a) * (maxR - 4), this.cy + Math.sin(a) * (maxR - 4), rope).setScale(S * 0.9).setDepth(-49).setData('rope', 1);
+      this.add.image(this.cx + Math.cos(a) * (maxR - 4), this.cy + Math.sin(a) * (maxR - 4), rope).setScale(S * 0.9).setDepth(-3049).setData('rope', 1);
     }
   }
 

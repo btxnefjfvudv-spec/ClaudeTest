@@ -115,7 +115,7 @@ export default class BumperBall extends BaseMinigame {
       // crowd boards
       for (let x = m; x < aw - m; x += 24) { p.rect(x, 2, 20, m - 4, x % 48 ? 0xffe066 : 0xff7a85); p.rect(x, ah - m + 2, 20, m - 4, x % 48 ? 0x6ec6ff : 0xb8a6ff); }
     });
-    this.add.image(0, 0, key).setOrigin(0).setScale(S).setDepth(-100);
+    this.add.image(0, 0, key).setOrigin(0).setScale(S).setDepth(-3100);
   }
 
   private resetBall(): void {

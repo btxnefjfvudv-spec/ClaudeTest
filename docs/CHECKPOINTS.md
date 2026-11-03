@@ -16,4 +16,5 @@
 | 12 | Batch H merged: Gravity Switch, Fishing Frenzy, Snowball Showdown, Rocket Jump, Mini Tank Battle, Final Chaos (smoke 6/6 PASS) | done |
 | 13 | Batch C merged: Quick Draw, Color Panic, Button Masher, Memory Flash, Reaction Tiles, Mini Basketball (smoke 6/6 PASS) | done |
 | 14 | All 50 games merged (batches A, B, D, E, F) — full smoke run next | done |
-| 15 | Full smoke: all 50 games PASS (headless iPad, random 4-finger input) | (this commit) |
+| 15 | Full smoke: all 50 games PASS (headless iPad, random 4-finger input) | done |
+| 16 | Framework cleanup: HUD above markers, auto shutdown hook, 350 ms taps, shadow layering fix, dev-guide lessons | (this commit) |

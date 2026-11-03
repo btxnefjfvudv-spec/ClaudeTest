@@ -39,7 +39,7 @@ export function splash(scene: Phaser.Scene, x: number, y: number): void {
   });
   em.setDepth(2000);
   em.explode(22);
-  const ring = scene.add.image(x, y, 'ring').setScale(0.5, 0.25).setDepth(-50).setTint(0xdff6ff);
+  const ring = scene.add.image(x, y, 'ring').setScale(0.5, 0.25).setDepth(-2000).setTint(0xdff6ff);
   scene.tweens.add({ targets: ring, scaleX: 3, scaleY: 1.4, alpha: 0, duration: 700, onComplete: () => ring.destroy() });
   scene.time.delayedCall(800, () => em.destroy());
 }

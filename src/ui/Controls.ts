@@ -63,8 +63,8 @@ export class TouchButton {
     this.hitR = radius * S * 1.45;
     this.upKey = buttonTexture(scene, player, radius, false);
     this.downKey = buttonTexture(scene, player, radius, true);
-    this.img = scene.add.image(pt.x, pt.y, this.upKey).setScale(S).setDepth(900).setAngle(zone.facing).setAlpha(0.92);
-    if (icon) this.icon = scene.add.image(pt.x, pt.y - (zone.facing === 180 ? -1 : 1) * 1, `icon-${icon}`).setScale(S * 1.3).setDepth(901).setAngle(zone.facing).setTint(0xffffff);
+    this.img = scene.add.image(pt.x, pt.y, this.upKey).setScale(S).setDepth(4000).setAngle(zone.facing).setAlpha(0.92);
+    if (icon) this.icon = scene.add.image(pt.x, pt.y - (zone.facing === 180 ? -1 : 1) * 1, `icon-${icon}`).setScale(S * 1.3).setDepth(4001).setAngle(zone.facing).setTint(0xffffff);
     scene.events.on(Phaser.Scenes.Events.PRE_UPDATE, this.poll, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => scene.events.off(Phaser.Scenes.Events.PRE_UPDATE, this.poll, this));
   }
@@ -129,8 +129,8 @@ export class DragStick {
     const c = PLAYER_COLORS[player];
     const bk = makeTexture(scene, `stick-base-${player}`, 32, 32, (g) => { g.ring(16, 16, 15.5, c.light, 2); g.ring(16, 16, 12, c.main, 1); });
     const kk = makeTexture(scene, `stick-knob-${player}`, 14, 14, (g) => { g.ball(7, 7, 6.5, 6.5, c.main); g.outline(-0.6); });
-    this.base = scene.add.image(0, 0, bk).setScale(S * radius / 30).setDepth(890).setAlpha(0.55).setVisible(false);
-    this.knob = scene.add.image(0, 0, kk).setScale(S).setDepth(891).setVisible(false);
+    this.base = scene.add.image(0, 0, bk).setScale(S * radius / 30).setDepth(3990).setAlpha(0.55).setVisible(false);
+    this.knob = scene.add.image(0, 0, kk).setScale(S).setDepth(3991).setVisible(false);
     scene.events.on(Phaser.Scenes.Events.PRE_UPDATE, this.poll, this);
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => scene.events.off(Phaser.Scenes.Events.PRE_UPDATE, this.poll, this));
   }

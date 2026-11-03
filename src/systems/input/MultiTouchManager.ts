@@ -75,7 +75,7 @@ export function toLocal(facing: number, dx: number, dy: number): { x: number; y:
   }
 }
 
-const TAP_MAX_MS = 250;
+const TAP_MAX_MS = 350;
 const TAP_MAX_MOVE = 0.03; // fraction of the shorter screen side
 const SWIPE_MIN_MOVE = 0.06;
 
