@@ -43,6 +43,7 @@ export default class FallingBlocks extends BaseMinigame {
   private pickups: Pickup[] = [];
   private hearts = [HEARTS, HEARTS, HEARTS, HEARTS];
   private grabs = [0, 0, 0, 0];
+  private lastHit = [0, 0, 0, 0];
   private shields: (Phaser.GameObjects.Image | undefined)[] = [];
   private spawnT = 0;
   private aimT = 0;
@@ -64,6 +65,7 @@ export default class FallingBlocks extends BaseMinigame {
     this.pickups = [];
     this.hearts = [HEARTS, HEARTS, HEARTS, HEARTS];
     this.grabs = [0, 0, 0, 0];
+    this.lastHit = [0, 0, 0, 0];
     this.shields = [];
     this.spawnT = 1.2;
     this.aimT = 3;
@@ -421,6 +423,7 @@ export default class FallingBlocks extends BaseMinigame {
       return;
     }
     this.hearts[b.p]--;
+    this.lastHit[b.p] = this.elapsed;
     b.stun = 0.55;
     Audio.sfx('hit', 1 + b.p * 0.1);
     Vfx.hit(this, b.x, b.y - 22);
@@ -492,7 +495,7 @@ export default class FallingBlocks extends BaseMinigame {
     const value = (p: PlayerIndex) => {
       const i = this.eliminated.indexOf(p);
       if (i !== -1) return i * 10;
-      return 1000 + this.hearts[p] * 100 + (this.shields[p] ? 50 : 0) + this.grabs[p];
+      return 1000 + this.hearts[p] * 100 + (this.shields[p] ? 50 : 0) + this.grabs[p] + (100 - this.lastHit[p]) / 1000;
     };
     return rankBy(this.players, value).map((r) => ({ ...r, score: this.hearts[r.player] }));
   }
