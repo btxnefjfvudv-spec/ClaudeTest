@@ -39,6 +39,7 @@ export abstract class BaseMinigame extends BaseScene {
   private ready = [false, false, false, false];
   private finished = false;
   private lastTick = -1;
+  private hitStopT = 0;
 
   constructor(meta: MinigameMeta) {
     super(meta.id);
@@ -258,6 +259,11 @@ export abstract class BaseMinigame extends BaseScene {
   update(_time: number, deltaMs: number): void {
     const dt = Math.min(0.05, deltaMs / 1000);
     if (this.paused) return;
+    if (this.hitStopT > 0) {
+      this.hitStopT -= deltaMs / 1000;
+      this.updateHud();
+      return;
+    }
     const steps = this.state === 'play' ? Party.speed : 1;
     for (let i = 0; i < steps; i++) {
       this.ambient(dt);
@@ -274,6 +280,12 @@ export abstract class BaseMinigame extends BaseScene {
       }
     }
     this.updateHud();
+  }
+
+  /** Freeze gameplay for a few frames on big impacts (game feel). */
+  hitStop(ms = 60): void {
+    if (Party.speed > 1) return;
+    this.hitStopT = Math.max(this.hitStopT, ms / 1000);
   }
 
   /** Eliminate a player (survival games). Ends the game when one is left. */

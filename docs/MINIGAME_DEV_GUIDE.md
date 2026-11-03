@@ -44,7 +44,7 @@ export default class MyGame extends BaseMinigame {
 
 Available on `this`: `vw`/`vh` (world size, vh = 480, vw ≈ 640–768), `players` (active seats),
 `isCpu(p)`, `state`, `elapsed`, `timeLeft`, `score[]`, `addScore(p, n)` (with HUD pop), `hudText[p]` (override HUD text),
-`eliminate(p)` (auto-finishes when one is left), `alive(p)`, `finish()`, `touch` (MultiTouchManager), `zoneOf(p)`, `angleFor(p)`.
+`eliminate(p)` (auto-finishes when one is left), `alive(p)`, `finish()`, `hitStop(ms)` (freeze-frame on big impacts), `touch` (MultiTouchManager), `zoneOf(p)`, `angleFor(p)`.
 
 - `meta.duration > 0` → the timer ends the game. `duration: 0` → you must call `this.finish()` (always add a hard cap, e.g. 90 s).
 - Results: `rankBy(players, valueFn, higherIsBetter)` from `systems/party/Party`. Ties share a rank. Team games: winners rank 1, losers rank 3, draw = all rank 2; set `team`.

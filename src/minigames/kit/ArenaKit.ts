@@ -225,7 +225,7 @@ export class ArenaKit {
         if (power > 120) {
           Vfx.hit(this.g, (a.x + b.x) / 2, (a.y + b.y) / 2 - 14);
           Audio.sfx(power > 300 ? 'bigHit' : 'hit');
-          if (power > 300) Vfx.shake(this.g, 0.006, 140);
+          if (power > 300) { Vfx.shake(this.g, 0.006, 140); this.g.hitStop(55); }
           Vfx.hitFlash(this.g, a.dashT > 0 ? b.avatar.sprite : a.avatar.sprite);
         } else if (power > 40) Audio.sfx('bounce');
         this.onBump?.(a, b, power);
