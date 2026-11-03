@@ -5,6 +5,7 @@ import { PLAYER_COLORS } from '../../core/palette';
 import type { PlayerIndex } from '../../core/types';
 import type { TouchZone, TrackedTouch } from '../../systems/input/MultiTouchManager';
 import type { BaseMinigame } from '../BaseMinigame';
+import { addScreenDividers } from './dividers';
 
 /**
  * Per-player panel: a container centred on the player's zone and rotated to
@@ -40,6 +41,7 @@ export class PanelKit {
       if (!g.players.includes(p)) c.setAlpha(0.3);
       this.panels.push({ p, zone, rect, c, w, h });
     }
+    addScreenDividers(g, 3700);
   }
 
   panel(p: PlayerIndex): Panel {

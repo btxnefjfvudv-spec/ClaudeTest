@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { View } from '../../config';
 import type { PlayerIndex } from '../../core/types';
 import type { BaseMinigame } from '../BaseMinigame';
+import { addScreenDividers } from './dividers';
 
 /**
  * Split screen: one camera per player in their quadrant, each looking at its
@@ -31,6 +32,7 @@ export class SplitKit {
     list.splice(list.indexOf(main), 1);
     list.push(main);
     main.transparent = true;
+    addScreenDividers(g, 900);
     g.scale.on(Phaser.Scale.Events.RESIZE, this.layout, this);
     g.events.once(Phaser.Scenes.Events.SHUTDOWN, () => g.scale.off(Phaser.Scale.Events.RESIZE, this.layout, this));
   }
