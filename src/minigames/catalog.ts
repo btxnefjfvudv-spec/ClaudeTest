@@ -20,7 +20,7 @@ const defs: M[] = [
   { id: 'last-one-standing', num: 6, name: 'LAST ONE STANDING', nameTh: 'ซูโม่บนเวทีหด', category: 'survival', color: 0xffc93d, duration: 0,
     blurb: 'ผลักเพื่อนตกเวทีที่หดเล็กลงเรื่อยๆ คนสุดท้ายชนะ', howTo: ['ลากนิ้วเพื่อเดิน', 'กดปุ่มพุ่งเพื่อกระแทกเพื่อนตกเวที'], controls: 'ลากนิ้ว = เดิน · ปุ่มพุ่ง' },
   { id: 'falling-blocks', num: 7, name: 'FALLING BLOCKS', nameTh: 'ของหล่นจากฟ้า', category: 'survival', color: 0x6ec6ff, duration: 60,
-    blurb: 'หลบหนังสือ เก้าอี้ และกระดานที่ตกลงมา ดูเงาให้ดี', howTo: ['ลากนิ้วเพื่อหลบ · เงาดำ = ของกำลังจะตก', 'โดน 3 ครั้งออก · เก็บโล่กันได้ 1 ครั้ง'], controls: 'ลากนิ้ว = เดิน' },
+    blurb: 'หลบหนังสือ เก้าอี้ และกระดานที่ตกลงมา ดูเงาให้ดี', howTo: ['ลากนิ้วเพื่อหลบ · เงาดำ = ของกำลังจะตก', 'โดน 3 ครั้งออก · เก็บโล่กันได้ 1 ครั้ง'], controls: 'ลากนิ้ว = เดิน · ปุ่มพุ่งหลบ' },
   { id: 'tornado-trouble', num: 8, name: 'TORNADO TROUBLE', nameTh: 'พายุหมุนป่วนห้อง', category: 'survival', color: 0x7ee8b0, duration: 60,
     blurb: 'พายุดูดทุกอย่าง กดค้างเกาะพื้นแต่แรงหมดได้!', howTo: ['ลากนิ้วเพื่อหนี · กดค้างปุ่มเกาะพื้น', 'แรงเกาะหมดได้ · ถูกดูดเข้าพายุ = ออก'], controls: 'ลากนิ้ว + ปุ่มเกาะ (กดค้าง)' },
   { id: 'bomb-tag', num: 9, name: 'BOMB TAG', nameTh: 'ระเบิดส่งต่อ', category: 'survival', color: 0xff5a6e, duration: 0,
