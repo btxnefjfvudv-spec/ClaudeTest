@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+
+# Reference photos of real classmates stay local: the repo is public.
+reference/photos/*
+!reference/photos/.gitkeep
